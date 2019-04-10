@@ -17,14 +17,27 @@ import (
 
 const(
 	host="127.0.0.1:14014"
+	testAddress="io187wzp08vnhjjpkydnr97qlh8kh0dpkkytfam8j"
+	testPrivateKey="0806c458b262edd333a191e92f561aff338211ee3e18ab315a074a2d82aa343f"
+	testPublicKey="044e18306ae9ef4ec9d07bf6e705442d4d1a75e6cdf750330ca2d880f2cc54607c9c33deb9eae9c06e06e04fe9ce3d43962cc67d5aa34fbeb71270d4bad3d648d9"
 )
+
 func TestGetAccount(t *testing.T) {
 	require := require.New(t)
 	rpc,err:=NewRPCMethod(host)
 	require.NoError(err)
 	req:=iotexapi.GetAccountRequest{}
-	req.Address="io1mflp9m6hcgm2qcghchsdqj3z3eccrnekx9p0ms"
+	req.Address=testAddress
 	res,err:=rpc.GetAccount(&req)
+	require.NoError(err)
+	fmt.Println(res)
+}
+func TestGetChainMeta(t *testing.T) {
+	require := require.New(t)
+	rpc,err:=NewRPCMethod(host)
+	require.NoError(err)
+	req:=iotexapi.GetChainMetaRequest{}
+	res,err:=rpc.GetChainMeta(&req)
 	require.NoError(err)
 	fmt.Println(res)
 }
