@@ -96,8 +96,9 @@ func TestGetReceiptByAction(t *testing.T) {
 	require := require.New(t)
 	rpc, err := NewRPCMethod(host)
 	require.NoError(err)
-	testTransfer, _ := testutil.SignedTransfer(ta.Addrinfo["charlie"].String(), ta.Keyinfo["producer"].PriKey, 1,
-		big.NewInt(10), []byte{}, testutil.TestGasLimit, big.NewInt(testutil.TestGasPriceInt64))
+	testTransfer, err := testutil.SignedTransfer(ta.Addrinfo["alfa"].String(),
+		ta.Keyinfo["alfa"].PriKey, 3, big.NewInt(10), []byte{}, testutil.TestGasLimit,
+		big.NewInt(testutil.TestGasPriceInt64))
 	transferHash := testTransfer.Hash()
 	request := &iotexapi.GetReceiptByActionRequest{ActionHash: hex.EncodeToString(transferHash[:])}
 	res, err := rpc.GetReceiptByAction(request)
