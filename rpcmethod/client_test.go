@@ -67,7 +67,7 @@ func TestGetBlockMetas(t *testing.T) {
 	request := &iotexapi.GetBlockMetasRequest{
 		Lookup: &iotexapi.GetBlockMetasRequest_ByIndex{
 			ByIndex: &iotexapi.GetBlockMetasByIndexRequest{
-				Start: 0,
+				Start: 1,
 				Count: 3,
 			},
 		},
