@@ -7,6 +7,7 @@
 package rpcmethod
 
 import (
+	"encoding/hex"
 	"fmt"
 	"math/big"
 	"testing"
@@ -88,6 +89,18 @@ func TestSendAction(t *testing.T) {
 	request := &iotexapi.SendActionRequest{Action: testTransferPb}
 
 	res, err := rpc.SendAction(request)
+	require.NoError(err)
+	fmt.Println(res)
+}
+func TestGetReceiptByAction(t *testing.T) {
+	require := require.New(t)
+	rpc, err := NewRPCMethod(host)
+	require.NoError(err)
+	testTransfer, _ := testutil.SignedTransfer(ta.Addrinfo["charlie"].String(), ta.Keyinfo["producer"].PriKey, 1,
+		big.NewInt(10), []byte{}, testutil.TestGasLimit, big.NewInt(testutil.TestGasPriceInt64))
+	transferHash := testTransfer.Hash()
+	request := &iotexapi.GetReceiptByActionRequest{ActionHash: hex.EncodeToString(transferHash[:])}
+	res, err := rpc.GetReceiptByAction(request)
 	require.NoError(err)
 	fmt.Println(res)
 }
