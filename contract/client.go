@@ -224,9 +224,8 @@ func (sct *SmartContract) runExecution(
 	}
 	hash := exec.Hash()
 	hashString := hex.EncodeToString(hash[:])
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 25)
 	fmt.Println(hashString)
-	hashString = "63c74277bcbfcef195f57713131b05cb54c47461f7e64b8f32fb58f9b8445265"
 	request3 := &iotexapi.GetReceiptByActionRequest{ActionHash: hashString}
 	res3, err := sct.rpc.GetReceiptByAction(request3)
 	if err != nil {
