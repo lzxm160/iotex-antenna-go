@@ -188,6 +188,7 @@ func (sct *SmartContract) runExecution(
 	ecfg *ExecutionConfig,
 	contractAddr string,
 ) (err error) {
+	fmt.Println(ecfg)
 	log.S().Info(ecfg.Comment)
 	request := &iotexapi.GetAccountRequest{Address: ecfg.Executor().String()}
 	res, err := sct.rpc.GetAccount(request)
