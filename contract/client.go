@@ -234,7 +234,7 @@ func (sct *SmartContract) runExecution(
 }
 
 func (sct *SmartContract) DeployContracts() (err error) {
-	for i, contract := range sct.Deployments {
+	for _, contract := range sct.Deployments {
 		if contract.AppendContractAddress {
 			contract.ContractAddressToAppend = sct.contractAddresses[contract.ContractIndexToAppend]
 		}
