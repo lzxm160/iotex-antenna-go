@@ -9,9 +9,15 @@ package contract
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"math/big"
 	"os"
+	"time"
+
+	"github.com/cenkalti/backoff"
+	"github.com/iotexproject/iotex-core/protogen/iotextypes"
+	"github.com/pkg/errors"
 
 	"go.uber.org/zap"
 
@@ -217,7 +223,8 @@ func (sct *SmartContract) runExecution(
 		return
 	}
 	hash := exec.Hash()
-	sct.deployActionHash = append(sct.deployActionHash, hash)
+	sct.deployActionHash = append(sct.deployActionHash, &hash)
+	sct.GetContractAddressFromChain()
 	return
 }
 
@@ -230,23 +237,57 @@ func (sct *SmartContract) DeployContracts() (err error) {
 		if err != nil {
 			return
 		}
+
 	}
 	return
 }
 func (sct *SmartContract) GetContractAddresses() []string {
 	return sct.contractAddresses
 }
+
 func (sct *SmartContract) GetContractAddressFromChain() {
 	for _, hash := range sct.deployActionHash {
 		hashString := hex.EncodeToString(hash[:])
-		request3 := &iotexapi.GetReceiptByActionRequest{ActionHash: hashString}
-		res3, err := sct.rpc.GetReceiptByAction(request3)
+		receipt, err := sct.CheckCallResult(hashString)
 		if err != nil {
-			return
+			fmt.Println(err)
+			continue
 		}
-		cd := res3.ReceiptInfo.Receipt.ContractAddress
-		sct.contractAddresses = append(sct.contractAddresses, cd)
+		sct.contractAddresses = append(sct.contractAddresses, receipt.ContractAddress)
 	}
+}
+func (sct *SmartContract) CheckCallResult(h string) (*iotextypes.Receipt, error) {
+	var rec *iotextypes.Receipt
+	// max retry 120 times with interval = 500ms
+	checkNum := 120
+	err := backoff.Retry(func() error {
+		var err error
+		rec, err = sct.checkCallResult(h)
+		fmt.Printf("Hash: %s <= CheckNum: %d\n", h, checkNum)
+		checkNum--
+		return err
+	}, backoff.WithMaxRetries(backoff.NewConstantBackOff(time.Millisecond*500), uint64(checkNum)))
+	return rec, err
+}
+
+func (sct *SmartContract) checkCallResult(h string) (*iotextypes.Receipt, error) {
+	//conn, err := grpc.Dial(c.cs, grpc.WithInsecure())
+	//if err != nil {
+	//	return nil, err
+	//}
+	//defer conn.Close()
+
+	//cli := iotexapi.NewAPIServiceClient(conn)
+	//ctx := context.Background()
+	response, err := sct.rpc.GetReceiptByAction(&iotexapi.GetReceiptByActionRequest{ActionHash: h})
+	if err != nil {
+		return nil, err
+	}
+	if response.ReceiptInfo.Receipt.Status != 1 {
+		return nil, errors.Errorf("tx 0x%s execution on Blockchain failed", h)
+	}
+	// TODO: check topics
+	return response.ReceiptInfo.Receipt, nil
 }
 
 //func (sct *SmartContract) run(r *require.Assertions) {

@@ -7,6 +7,7 @@
 package contract
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -24,4 +25,8 @@ func TestServer_Deploy(t *testing.T) {
 	require.NoError(err)
 	err = sct.DeployContracts()
 	require.NoError(err)
+	addrs := sct.GetContractAddresses()
+	for _, addr := range addrs {
+		fmt.Println(addr)
+	}
 }
