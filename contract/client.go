@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"math/big"
 	"os"
+	"time"
 
 	"go.uber.org/zap"
 
@@ -223,6 +224,7 @@ func (sct *SmartContract) runExecution(
 	}
 	hash := selp.Hash()
 	hashString := fmt.Sprintf("%x", hash[:])
+	time.Sleep(time.Second * 10)
 	request3 := &iotexapi.GetReceiptByActionRequest{ActionHash: hashString}
 	res3, err := sct.rpc.GetReceiptByAction(request3)
 	if err != nil {
