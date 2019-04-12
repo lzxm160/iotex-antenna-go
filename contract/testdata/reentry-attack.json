@@ -7,7 +7,7 @@
         "rawPrivateKey": "9cdf22c5caa8a4d99eb674da27756b438c05c6b1e8995f4a0586745e2071b115",
         "rawAmount": "0",
         "rawGasLimit": 5000000,
-        "rawGasPrice": "0",
+        "rawGasPrice": "10000000000",
         "expectedBalances": [],
         "comment": "deploy MiniDAO contract"
     },{
@@ -17,7 +17,7 @@
         "contractIndexToAppend": 0,
         "rawAmount": "5000000000000000000",
         "rawGasLimit": 5000000,
-        "rawGasPrice": "0",
+        "rawGasPrice": "10000000000",
         "comment": "deploy Attacker contract"
     }],
     "executions": [{
@@ -26,7 +26,7 @@
         "rawByteCode": "9e5faafc",
         "rawAmount": "0",
         "rawGasLimit": 1000000,
-        "rawGasPrice": "0",
+        "rawGasPrice": "10000000000",
         "expectedBalances": [{
             "account": "io1mflp9m6hcgm2qcghchsdqj3z3eccrnekx9p0ms",
             "rawBalance": "999999995000000000000000000"

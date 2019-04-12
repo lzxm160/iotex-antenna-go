@@ -39,7 +39,7 @@ const (
 
 func TestServer_Deploy(t *testing.T) {
 	require := require.New(t)
-	sct, err := NewSmartContract("testdata/reentry-attack.json", host)
+	sct, err := NewSmartContract("testdata/array-return.json", host)
 	require.NoError(err)
 	err = sct.DeployContracts()
 	require.NoError(err)
