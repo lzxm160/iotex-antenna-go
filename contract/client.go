@@ -9,28 +9,21 @@ package contract
 import (
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"math/big"
 	"os"
-	"time"
 
 	"go.uber.org/zap"
 
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
 	"github.com/iotexproject/iotex-core/action"
 	"github.com/iotexproject/iotex-core/address"
+	"github.com/iotexproject/iotex-core/pkg/hash"
 	"github.com/iotexproject/iotex-core/pkg/keypair"
 	"github.com/iotexproject/iotex-core/pkg/log"
 	"github.com/iotexproject/iotex-core/protogen/iotexapi"
 )
 
-//export accountPrivateKey="9cdf22c5caa8a4d99eb674da27756b438c05c6b1e8995f4a0586745e2071b115"
-//export accountAddress="io14gnqxf9dpkn05g337rl7eyt2nxasphf5m6n0rd"
-//export accountBalance="99994712164399999990848350"
-//export accountNonce="337529"
-//export accountPendingNonce="337530"
-//export accountNumActions="506609"
 // ExpectedBalance defines an account-balance pair
 type ExpectedBalance struct {
 	Account    string `json:"account"`
@@ -162,6 +155,7 @@ type SmartContract struct {
 	Deployments       []ExecutionConfig `json:"deployments"`
 	Executions        []ExecutionConfig `json:"executions"`
 	rpc               *rpcmethod.RPCMethod
+	deployActionHash  []*hash.Hash256
 	contractAddresses []string
 }
 
@@ -223,17 +217,7 @@ func (sct *SmartContract) runExecution(
 		return
 	}
 	hash := exec.Hash()
-	hashString := hex.EncodeToString(hash[:])
-	time.Sleep(time.Second * 25)
-	fmt.Println(hashString)
-	hashString = "2395442e62f5e0b6a52738232c0967ebba28f8b6de2175e7c610e0352f877476"
-	request3 := &iotexapi.GetReceiptByActionRequest{ActionHash: hashString}
-	res3, err := sct.rpc.GetReceiptByAction(request3)
-	if err != nil {
-		return
-	}
-	cd := res3.ReceiptInfo.Receipt.ContractAddress
-	sct.contractAddresses = append(sct.contractAddresses, cd)
+	sct.deployActionHash = append(sct.deployActionHash, hash)
 	return
 }
 
@@ -251,6 +235,18 @@ func (sct *SmartContract) DeployContracts() (err error) {
 }
 func (sct *SmartContract) GetContractAddresses() []string {
 	return sct.contractAddresses
+}
+func (sct *SmartContract) GetContractAddressFromChain() {
+	for _, hash := range sct.deployActionHash {
+		hashString := hex.EncodeToString(hash[:])
+		request3 := &iotexapi.GetReceiptByActionRequest{ActionHash: hashString}
+		res3, err := sct.rpc.GetReceiptByAction(request3)
+		if err != nil {
+			return
+		}
+		cd := res3.ReceiptInfo.Receipt.ContractAddress
+		sct.contractAddresses = append(sct.contractAddresses, cd)
+	}
 }
 
 //func (sct *SmartContract) run(r *require.Assertions) {
