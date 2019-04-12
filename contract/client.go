@@ -228,7 +228,7 @@ func (sct *SmartContract) runExecution(
 	if err != nil {
 		return
 	}
-	cd := res3.GetReceipt().ContractAddress
+	cd := res3.ReceiptInfo.Receipt.ContractAddress
 	sct.contractAddresses = append(sct.contractAddresses, cd)
 	return
 }
