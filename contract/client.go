@@ -69,17 +69,12 @@ type ExecutionConfig struct {
 	ExpectedLogs            []Log             `json:"expectedLogs"`
 }
 
-func (cfg *ExecutionConfig) PrivateKey() keypair.PrivateKey {
+func (cfg *ExecutionConfig) PrivateKey() (priKey keypair.PrivateKey) {
 	priKey, err := keypair.HexStringToPrivateKey(cfg.RawPrivateKey)
 	if err != nil {
-		log.L().Panic(
-			"invalid private key",
-			zap.String("privateKey", cfg.RawPrivateKey),
-			zap.Error(err),
-		)
+		return
 	}
-
-	return priKey
+	return
 }
 
 func (cfg *ExecutionConfig) Executor() address.Address {
@@ -233,7 +228,7 @@ func (sct *SmartContract) runExecution(
 	if err != nil {
 		return
 	}
-	cd := res3.GetReceipt().ContractAddress
+	cd := res3.Receipt.ContractAddress
 	sct.contractAddresses = append(sct.contractAddresses, cd)
 	return
 }
