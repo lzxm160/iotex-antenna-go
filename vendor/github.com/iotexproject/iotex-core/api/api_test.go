@@ -1291,7 +1291,6 @@ func setupChain(cfg config.Config) (blockchain.Blockchain, *protocol.Registry, e
 		blockchain.PrecreatedStateFactoryOption(sf),
 		blockchain.InMemDaoOption(),
 		blockchain.RegistryOption(&registry),
-		blockchain.EnableExperimentalActions(),
 	)
 	if bc == nil {
 		return nil, nil, errors.New("failed to create blockchain")
@@ -1334,7 +1333,7 @@ func setupChain(cfg config.Config) (blockchain.Blockchain, *protocol.Registry, e
 }
 
 func setupActPool(bc blockchain.Blockchain, cfg config.ActPool) (actpool.ActPool, error) {
-	ap, err := actpool.NewActPool(bc, cfg, actpool.EnableExperimentalActions())
+	ap, err := actpool.NewActPool(bc, cfg)
 	if err != nil {
 		return nil, err
 	}

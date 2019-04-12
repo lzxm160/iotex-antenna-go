@@ -29,7 +29,7 @@ var accountCreateCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := accountCreate()
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

@@ -26,15 +26,11 @@ const (
 type GrantReward struct {
 	AbstractAction
 
-	rewardType int
-	height     uint64
+	t int
 }
 
 // RewardType returns the grant reward type
-func (g *GrantReward) RewardType() int { return g.rewardType }
-
-// Height returns the block height to grant reward
-func (g *GrantReward) Height() uint64 { return g.height }
+func (g *GrantReward) RewardType() int { return g.t }
 
 // ByteStream returns a raw byte stream of a grant reward action
 func (g *GrantReward) ByteStream() []byte {
@@ -43,10 +39,8 @@ func (g *GrantReward) ByteStream() []byte {
 
 // Proto converts a grant reward action struct to a grant reward action protobuf
 func (g *GrantReward) Proto() *iotextypes.GrantReward {
-	gProto := iotextypes.GrantReward{
-		Height: g.height,
-	}
-	switch g.rewardType {
+	gProto := iotextypes.GrantReward{}
+	switch g.t {
 	case BlockReward:
 		gProto.Type = iotextypes.RewardType_BlockReward
 	case EpochReward:
@@ -57,14 +51,12 @@ func (g *GrantReward) Proto() *iotextypes.GrantReward {
 
 // LoadProto converts a grant reward action protobuf to a grant reward action struct
 func (g *GrantReward) LoadProto(gProto *iotextypes.GrantReward) error {
-	*g = GrantReward{
-		height: gProto.Height,
-	}
+	*g = GrantReward{}
 	switch gProto.Type {
 	case iotextypes.RewardType_BlockReward:
-		g.rewardType = BlockReward
+		g.t = BlockReward
 	case iotextypes.RewardType_EpochReward:
-		g.rewardType = EpochReward
+		g.t = EpochReward
 	}
 	return nil
 }
@@ -87,13 +79,7 @@ type GrantRewardBuilder struct {
 
 // SetRewardType sets the grant reward type
 func (b *GrantRewardBuilder) SetRewardType(t int) *GrantRewardBuilder {
-	b.grantReward.rewardType = t
-	return b
-}
-
-// SetHeight sets the grant reward block height
-func (b *GrantRewardBuilder) SetHeight(height uint64) *GrantRewardBuilder {
-	b.grantReward.height = height
+	b.grantReward.t = t
 	return b
 }
 

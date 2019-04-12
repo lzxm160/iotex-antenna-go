@@ -139,26 +139,14 @@ func main() {
 	}
 	log.L().Info("erc721 token transfer test pass!")
 
-	// test ArrayDeletePassing func
-	testArrayDeletePassing(ret.ArrDeletePassing)
-	// test ArrayString func
-	testArrayString(ret.ArrString)
+	// test ArrayDelete func
+	testArrayDelete(ret.ArrDelete)
 }
-func testArrayString(arr blockchain.ArrayString) {
-	ret, err := arr.GetString()
-	if err != nil {
-		log.L().Fatal("Failed to call array-of-strings Func", zap.Error(err))
-	}
-	expected := "bye"
-	if ret != expected {
-		log.L().Fatal("one return is incorrect:", zap.String("string", ret))
-	}
-	log.L().Info("array-of-strings test pass!")
-}
-func testArrayDeletePassing(arr blockchain.ArrayDeletePassing) {
+func testArrayDelete(arr blockchain.ArrayDelete) {
+	// get creditor balance,should be 0
 	ret, err := arr.GetArray()
 	if err != nil {
-		log.L().Fatal("Failed to call array-delete-passing GetArray Func", zap.Error(err))
+		log.L().Fatal("Failed to call array-delete Main Func", zap.Error(err))
 	}
 	expected := []*big.Int{big.NewInt(100), big.NewInt(200), big.NewInt(0), big.NewInt(400), big.NewInt(500)}
 
@@ -168,15 +156,7 @@ func testArrayDeletePassing(arr blockchain.ArrayDeletePassing) {
 		}
 	}
 
-	retNum, err := arr.GetNum()
-	if err != nil {
-		log.L().Fatal("Failed to call array-delete-passing Func", zap.Error(err))
-	}
-	expectedNum := int64(10)
-	if retNum != expectedNum {
-		log.L().Fatal("one return is incorrect:", zap.Int64("string", retNum))
-	}
-	log.L().Info("array-delete-passing test pass!")
+	log.L().Info("array-delete test pass!")
 }
 func createAccount() (string, string, string, error) {
 	priKey, err := keypair.GenerateKey()

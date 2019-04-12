@@ -32,7 +32,7 @@ var accountUpdateCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := accountUpdate(args)
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

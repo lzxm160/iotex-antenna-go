@@ -7,7 +7,6 @@
 package action
 
 import (
-	"fmt"
 	"math/big"
 
 	"github.com/spf13/cobra"
@@ -30,7 +29,7 @@ var actionInvokeCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := invoke(args)
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

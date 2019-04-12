@@ -331,14 +331,11 @@ func (api *Server) ReadContract(ctx context.Context, in *iotexapi.ReadContractRe
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	retval, receipt, err := api.bc.ExecuteContractRead(callerAddr, sc)
+	res, err := api.bc.ExecuteContractRead(callerAddr, sc)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	return &iotexapi.ReadContractResponse{
-		Data:    hex.EncodeToString(retval),
-		Receipt: receipt.ConvertToReceiptPb(),
-	}, nil
+	return &iotexapi.ReadContractResponse{Data: hex.EncodeToString(res.ReturnValue)}, nil
 }
 
 // ReadState reads state on blockchain

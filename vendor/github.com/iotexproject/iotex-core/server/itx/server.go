@@ -33,11 +33,9 @@ import (
 	"github.com/iotexproject/iotex-core/dispatcher"
 	"github.com/iotexproject/iotex-core/explorer/idl/explorer"
 	"github.com/iotexproject/iotex-core/p2p"
-	"github.com/iotexproject/iotex-core/pkg/ha"
 	"github.com/iotexproject/iotex-core/pkg/log"
 	"github.com/iotexproject/iotex-core/pkg/probe"
 	"github.com/iotexproject/iotex-core/pkg/routine"
-	"github.com/iotexproject/iotex-core/pkg/util/httputil"
 )
 
 // Server is the iotex server instance containing all components.
@@ -250,25 +248,14 @@ func StartServer(ctx context.Context, svr *Server, probeSvr *probe.Server, cfg c
 	if cfg.System.HTTPAdminPort > 0 {
 		mux := http.NewServeMux()
 		log.RegisterLevelConfigMux(mux)
-		haCtl := ha.New(svr.rootChainService.Consensus())
-		mux.Handle("/ha", http.HandlerFunc(haCtl.Handle))
-		mux.Handle("/debug/pprof/", http.HandlerFunc(pprof.Index))
-		mux.Handle("/debug/pprof/cmdline", http.HandlerFunc(pprof.Cmdline))
-		mux.Handle("/debug/pprof/profile", http.HandlerFunc(pprof.Profile))
-		mux.Handle("/debug/pprof/symbol", http.HandlerFunc(pprof.Symbol))
-		mux.Handle("/debug/pprof/trace", http.HandlerFunc(pprof.Trace))
+		mux.Handle("/debug/pprof", http.HandlerFunc(pprof.Index))
 
 		port := fmt.Sprintf(":%d", cfg.System.HTTPAdminPort)
-		adminserv = httputil.Server(port, mux)
+		adminserv = http.Server{Addr: port, Handler: mux}
 		go func() {
 			runtime.SetMutexProfileFraction(1)
 			runtime.SetBlockProfileRate(1)
-			ln, err := httputil.LimitListener(adminserv.Addr)
-			if err != nil {
-				log.L().Error("Error when listen to profiling port.", zap.Error(err))
-				return
-			}
-			if err := adminserv.Serve(ln); err != nil {
+			if err := adminserv.ListenAndServe(); err != nil {
 				log.L().Error("Error when serving performance profiling data.", zap.Error(err))
 			}
 		}()

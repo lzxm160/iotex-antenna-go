@@ -33,7 +33,7 @@ func (n *Noop) Stop(_ context.Context) error { return nil }
 
 // HandleConsensusMsg handles incoming consensus message
 func (n *Noop) HandleConsensusMsg(*iotextypes.ConsensusMessage) error {
-	log.Logger("consensus").Warn("Noop scheme does not handle incoming consensus message.")
+	log.L().Warn("Noop scheme does not handle incoming consensus message.")
 	return nil
 }
 
@@ -42,22 +42,14 @@ func (n *Noop) Calibrate(uint64) {}
 
 // ValidateBlockFooter validates the block footer
 func (n *Noop) ValidateBlockFooter(*block.Block) error {
-	log.Logger("consensus").Warn("Noop scheme could not calculate delegates by height")
+	log.L().Warn("Noop scheme could not calculate delegates by height")
 	return nil
 }
 
-// Metrics is not implemented for noop scheme
+// Metrics is not implemented for standalone scheme
 func (n *Noop) Metrics() (ConsensusMetrics, error) {
 	return ConsensusMetrics{}, errors.Wrapf(
 		ErrNotImplemented,
 		"noop scheme does not supported metrics yet",
 	)
 }
-
-// Activate is not implemented for noop scheme
-func (n *Noop) Activate(_ bool) {
-	log.S().Warn("Noop scheme could not support activate")
-}
-
-// Active is always true for noop scheme
-func (n *Noop) Active() bool { return true }

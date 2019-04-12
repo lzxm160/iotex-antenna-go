@@ -46,7 +46,7 @@ var nodeDelegateCmd = &cobra.Command{
 			output, err = delegates()
 		}
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 

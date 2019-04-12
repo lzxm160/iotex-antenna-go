@@ -21,21 +21,6 @@ var (
 	ErrNoAliasFound = errors.New("no alias is found")
 )
 
-// Flags
-var (
-	format      string
-	forceImport bool
-)
-
-type alias struct {
-	Name    string `json:"name" yaml:"name"`
-	Address string `json:"address" yaml:"address"`
-}
-
-type aliases struct {
-	Aliases []alias `json:"aliases" yaml:"aliases"`
-}
-
 // AliasCmd represents the alias command
 var AliasCmd = &cobra.Command{
 	Use:   "alias",
@@ -47,8 +32,6 @@ func init() {
 	AliasCmd.AddCommand(aliasSetCmd)
 	AliasCmd.AddCommand(aliasListCmd)
 	AliasCmd.AddCommand(aliasRemoveCmd)
-	AliasCmd.AddCommand(aliasImportCmd)
-	AliasCmd.AddCommand(aliasExportCmd)
 }
 
 // Address returns the address corresponding to alias. if 'in' is an IoTeX address, returns 'in'
@@ -63,7 +46,7 @@ func Address(in string) (string, error) {
 	if ok {
 		return addr, nil
 	}
-	return "", fmt.Errorf("cannot find address from " + in)
+	return "", fmt.Errorf("cannot find account from #%s", in)
 }
 
 // Alias returns the alias corresponding to address

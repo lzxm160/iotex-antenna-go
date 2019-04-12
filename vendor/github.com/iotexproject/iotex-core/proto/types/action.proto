@@ -38,7 +38,7 @@ message CandidateList {
 
 message PutPollResult {
   uint64 height = 1;
-  CandidateList	candidates = 2;
+	CandidateList	candidates = 2;
 }
 
 message Execution {
@@ -193,12 +193,13 @@ message Action {
 }
 
 message Receipt {
-  uint64 status = 1;
-  uint64 blkHeight = 2;
-  bytes actHash = 3;
-  uint64 gasConsumed = 4;
-  string contractAddress = 5;
-  repeated Log logs = 6;
+  bytes returnValue = 1;
+  uint64 status = 2;
+  uint64 blkHeight = 3;
+  bytes actHash = 4;
+  uint64 gasConsumed = 5;
+  string contractAddress = 6;
+  repeated Log logs = 7;
 }
 
 message Log{
@@ -232,5 +233,4 @@ enum RewardType {
 
 message GrantReward {
   RewardType type = 1;
-  uint64 height = 2;
 }

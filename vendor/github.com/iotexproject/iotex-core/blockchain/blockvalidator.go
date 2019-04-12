@@ -34,11 +34,10 @@ type Validator interface {
 }
 
 type validator struct {
-	sf                        factory.Factory
-	validatorAddr             string
-	actionEnvelopeValidators  []protocol.ActionEnvelopeValidator
-	actionValidators          []protocol.ActionValidator
-	enableExperimentalActions bool
+	sf                       factory.Factory
+	validatorAddr            string
+	actionEnvelopeValidators []protocol.ActionEnvelopeValidator
+	actionValidators         []protocol.ActionValidator
 }
 
 var (
@@ -153,9 +152,6 @@ func (v *validator) validateActions(
 
 	var wg sync.WaitGroup
 	for _, selp := range actions {
-		if !v.enableExperimentalActions && action.IsExperimentalAction(selp.Action()) {
-			return errors.New("Enable to process experimental action")
-		}
 		caller, err := address.FromBytes(selp.SrcPubkey().Hash())
 		if err != nil {
 			return err

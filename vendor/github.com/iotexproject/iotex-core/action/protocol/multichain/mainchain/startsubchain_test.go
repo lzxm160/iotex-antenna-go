@@ -328,7 +328,6 @@ func TestNoStartSubChainInGenesis(t *testing.T) {
 		cfg,
 		blockchain.InMemStateFactoryOption(),
 		blockchain.InMemDaoOption(),
-		blockchain.EnableExperimentalActions(),
 	)
 	p := NewProtocol(bc)
 	bc.GetFactory().AddActionHandlers(p)
@@ -353,7 +352,6 @@ func TestStartSubChainInGenesis(t *testing.T) {
 		blockchain.InMemStateFactoryOption(),
 		blockchain.InMemDaoOption(),
 		blockchain.RegistryOption(&registry),
-		blockchain.EnableExperimentalActions(),
 	)
 	vp := vote.NewProtocol(bc)
 	registry.Register(vote.ProtocolID, vp)

@@ -31,7 +31,7 @@ var accountDeleteCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := accountDelete(args)
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

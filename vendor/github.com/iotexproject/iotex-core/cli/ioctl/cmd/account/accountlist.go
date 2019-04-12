@@ -7,7 +7,6 @@
 package account
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
@@ -29,7 +28,7 @@ var accountListCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := accountList()
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

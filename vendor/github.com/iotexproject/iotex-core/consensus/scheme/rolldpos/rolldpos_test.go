@@ -223,7 +223,6 @@ func makeTestRollDPoSCtx(
 	}
 	return newRollDPoSCtx(
 		cfg.Consensus.RollDPoS,
-		cfg.System.Active,
 		cfg.Genesis.BlockInterval,
 		cfg.Consensus.RollDPoS.ToleratedOvertime,
 		cfg.Genesis.TimeBasedRotation,
@@ -366,7 +365,7 @@ func TestRollDPoSConsensus(t *testing.T) {
 			chain.Validator().AddActionValidators(account.NewProtocol())
 			chains = append(chains, chain)
 
-			actPool, err := actpool.NewActPool(chain, cfg.ActPool, actpool.EnableExperimentalActions())
+			actPool, err := actpool.NewActPool(chain, cfg.ActPool)
 			require.NoError(t, err)
 
 			p2p := &directOverlay{

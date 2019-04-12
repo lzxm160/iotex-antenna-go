@@ -54,7 +54,6 @@ func TestTwoChains(t *testing.T) {
 	cfg.Explorer.Enabled = true
 	cfg.Explorer.Port = testutil.RandomPort()
 	cfg.Network.Port = testutil.RandomPort()
-	cfg.System.EnableExperimentalActions = true
 
 	svr, err := itx.NewServer(cfg)
 	require.NoError(t, err)

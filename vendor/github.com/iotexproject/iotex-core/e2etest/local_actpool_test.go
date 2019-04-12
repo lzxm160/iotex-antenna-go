@@ -175,7 +175,6 @@ func newActPoolConfig() (config.Config, error) {
 	cfg.Network.Port = testutil.RandomPort()
 	cfg.Explorer.Enabled = true
 	cfg.Explorer.Port = 0
-	cfg.System.EnableExperimentalActions = true
 
 	sk, err := keypair.GenerateKey()
 	if err != nil {

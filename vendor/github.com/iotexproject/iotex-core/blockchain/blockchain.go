@@ -146,7 +146,7 @@ type Blockchain interface {
 	// For smart contract operations
 	// ExecuteContractRead runs a read-only smart contract operation, this is done off the network since it does not
 	// cause any state change
-	ExecuteContractRead(caller address.Address, ex *action.Execution) ([]byte, *action.Receipt, error)
+	ExecuteContractRead(caller address.Address, ex *action.Execution) (*action.Receipt, error)
 
 	// AddSubscriber make you listen to every single produced block
 	AddSubscriber(BlockCreationSubscriber) error
@@ -172,8 +172,6 @@ type blockchain struct {
 	sf factory.Factory
 
 	registry *protocol.Registry
-
-	enableExperimentalActions bool
 }
 
 // Option sets blockchain construction parameter
@@ -272,14 +270,6 @@ func RegistryOption(registry *protocol.Registry) Option {
 	}
 }
 
-// EnableExperimentalActions enables the blockchain to process experimental actions
-func EnableExperimentalActions() Option {
-	return func(bc *blockchain, conf config.Config) error {
-		bc.enableExperimentalActions = true
-		return nil
-	}
-}
-
 // NewBlockchain creates a new blockchain and DB instance
 func NewBlockchain(cfg config.Config, opts ...Option) Blockchain {
 	// create the Blockchain
@@ -306,11 +296,7 @@ func NewBlockchain(cfg config.Config, opts ...Option) Blockchain {
 	if err != nil {
 		log.L().Panic("Failed to get block producer address.", zap.Error(err))
 	}
-	chain.validator = &validator{
-		sf:                        chain.sf,
-		validatorAddr:             cfg.ProducerAddress().String(),
-		enableExperimentalActions: chain.enableExperimentalActions,
-	}
+	chain.validator = &validator{sf: chain.sf, validatorAddr: cfg.ProducerAddress().String()}
 
 	if chain.dao != nil {
 		chain.lifecycle.Add(chain.dao)
@@ -706,21 +692,21 @@ func (bc *blockchain) RemoveSubscriber(s BlockCreationSubscriber) error {
 
 // ExecuteContractRead runs a read-only smart contract operation, this is done off the network since it does not
 // cause any state change
-func (bc *blockchain) ExecuteContractRead(caller address.Address, ex *action.Execution) ([]byte, *action.Receipt, error) {
+func (bc *blockchain) ExecuteContractRead(caller address.Address, ex *action.Execution) (*action.Receipt, error) {
 	// use latest block as carrier to run the offline execution
 	// the block itself is not used
 	h := bc.TipHeight()
 	header, err := bc.BlockHeaderByHeight(h)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "failed to get block in ExecuteContractRead")
+		return nil, errors.Wrap(err, "failed to get block in ExecuteContractRead")
 	}
 	ws, err := bc.sf.NewWorkingSet()
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "failed to obtain working set from state factory")
+		return nil, errors.Wrap(err, "failed to obtain working set from state factory")
 	}
 	producer, err := address.FromString(header.ProducerAddress())
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	gasLimit := bc.config.Genesis.BlockGasLimit
 	ctx := protocol.WithRunActionsCtx(context.Background(), protocol.RunActionsCtx{
@@ -1112,7 +1098,7 @@ func (bc *blockchain) pickAndRunActions(ctx context.Context, actionMap map[strin
 		return hash.ZeroHash256, nil, nil, err
 	}
 	// Process grant block reward action
-	grant, err := bc.createGrantRewardAction(action.BlockReward, raCtx.BlockHeight)
+	grant, err := bc.createGrantRewardAction(action.BlockReward)
 	if err != nil {
 		return hash.ZeroHash256, nil, nil, err
 	}
@@ -1127,7 +1113,7 @@ func (bc *blockchain) pickAndRunActions(ctx context.Context, actionMap map[strin
 
 	// Process grant epoch reward action if the block is the last one in an epoch
 	if raCtx.BlockHeight == lastBlkHeight {
-		grant, err = bc.createGrantRewardAction(action.EpochReward, raCtx.BlockHeight)
+		grant, err = bc.createGrantRewardAction(action.EpochReward)
 		if err != nil {
 			return hash.ZeroHash256, nil, nil, err
 		}
@@ -1262,9 +1248,9 @@ func (bc *blockchain) refreshStateDB() error {
 	return nil
 }
 
-func (bc *blockchain) createGrantRewardAction(rewardType int, height uint64) (action.SealedEnvelope, error) {
+func (bc *blockchain) createGrantRewardAction(rewardType int) (action.SealedEnvelope, error) {
 	gb := action.GrantRewardBuilder{}
-	grant := gb.SetRewardType(rewardType).SetHeight(height).Build()
+	grant := gb.SetRewardType(rewardType).Build()
 	eb := action.EnvelopeBuilder{}
 	envelope := eb.SetNonce(0).
 		SetGasPrice(big.NewInt(0)).
