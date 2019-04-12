@@ -201,12 +201,7 @@ func AddrsFactory(factory config.AddrsFactory) Option {
 	}
 }
 
-// EnableRelay configures libp2p to enable the relay transport with
-// configuration options. By default, this option only configures libp2p to
-// accept inbound connections from relays and make outbound connections
-// _through_ relays when requested by the remote peer. (default: enabled)
-//
-// To _act_ as a relay, pass the circuit.OptHop option.
+// EnableRelay configures libp2p to enable the relay transport with configuration options.
 func EnableRelay(options ...circuit.RelayOpt) Option {
 	return func(cfg *Config) error {
 		cfg.RelayCustom = true
@@ -216,7 +211,7 @@ func EnableRelay(options ...circuit.RelayOpt) Option {
 	}
 }
 
-// DisableRelay configures libp2p to disable the relay transport.
+// DisableRelay configures libp2p to disable the relay transport
 func DisableRelay() Option {
 	return func(cfg *Config) error {
 		cfg.RelayCustom = true
@@ -225,18 +220,8 @@ func DisableRelay() Option {
 	}
 }
 
-// EnableAutoRelay configures libp2p to enable the AutoRelay subsystem. It is an
-// error to enable AutoRelay without enabling relay (enabled by default) and
-// routing (not enabled by default).
-//
-// This subsystem performs two functions:
-//
-// 1. When this libp2p node is configured to act as a relay "hop"
-//    (circuit.OptHop is passed to EnableRelay), this node will advertise itself
-//    as a public relay using the provided routing system.
-// 2. When this libp2p node is _not_ configured as a relay "hop", it will
-//    automatically detect if it is unreachable (e.g., behind a NAT). If so, it will
-//    find, configure, and announce a set of public relays.
+// EnableAutoRelay configures libp2p to enable autorelay advertising; requires relay to
+// be enabled and the Routing option to provide an instance of ContentRouting.
 func EnableAutoRelay() Option {
 	return func(cfg *Config) error {
 		cfg.EnableAutoRelay = true

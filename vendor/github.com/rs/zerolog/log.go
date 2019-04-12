@@ -152,19 +152,19 @@ func (l Level) String() string {
 // returns an error if the input string does not match known values.
 func ParseLevel(levelStr string) (Level, error) {
 	switch levelStr {
-	case LevelFieldMarshalFunc(DebugLevel):
+	case DebugLevel.String():
 		return DebugLevel, nil
-	case LevelFieldMarshalFunc(InfoLevel):
+	case InfoLevel.String():
 		return InfoLevel, nil
-	case LevelFieldMarshalFunc(WarnLevel):
+	case WarnLevel.String():
 		return WarnLevel, nil
-	case LevelFieldMarshalFunc(ErrorLevel):
+	case ErrorLevel.String():
 		return ErrorLevel, nil
-	case LevelFieldMarshalFunc(FatalLevel):
+	case FatalLevel.String():
 		return FatalLevel, nil
-	case LevelFieldMarshalFunc(PanicLevel):
+	case PanicLevel.String():
 		return PanicLevel, nil
-	case LevelFieldMarshalFunc(NoLevel):
+	case NoLevel.String():
 		return NoLevel, nil
 	}
 	return NoLevel, fmt.Errorf("Unknown Level String: '%s', defaulting to NoLevel", levelStr)
@@ -380,7 +380,7 @@ func (l *Logger) newEvent(level Level, done func(string)) *Event {
 	e.done = done
 	e.ch = l.hooks
 	if level != NoLevel {
-		e.Str(LevelFieldName, LevelFieldMarshalFunc(level))
+		e.Str(LevelFieldName, level.String())
 	}
 	if l.context != nil && len(l.context) > 0 {
 		e.buf = enc.AppendObjectData(e.buf, l.context)

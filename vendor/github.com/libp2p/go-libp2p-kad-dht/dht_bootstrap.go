@@ -136,24 +136,17 @@ func (dht *IpfsDHT) randomWalk(ctx context.Context) error {
 	}
 }
 
-// Traverse the DHT toward the self ID
-func (dht *IpfsDHT) selfWalk(ctx context.Context) error {
-	_, err := dht.walk(ctx, dht.self)
-	if err == routing.ErrNotFound {
-		return nil
-	}
-	return err
-}
-
 // runBootstrap builds up list of peers by requesting random peer IDs
 func (dht *IpfsDHT) runBootstrap(ctx context.Context, cfg BootstrapConfig) error {
+	bslog := func(msg string) {
+		logger.Debugf("DHT %s dhtRunBootstrap %s -- routing table size: %d", dht.self, msg, dht.routingTable.Size())
+	}
+	bslog("start")
+	defer bslog("end")
+	defer logger.EventBegin(ctx, "dhtRunBootstrap").Done()
+
 	doQuery := func(n int, target string, f func(context.Context) error) error {
-		logger.Infof("starting bootstrap query (%d/%d) to %s (routing table size was %d)",
-			n, cfg.Queries, target, dht.routingTable.Size())
-		defer func() {
-			logger.Infof("finished bootstrap query (%d/%d) to %s (routing table size is now %d)",
-				n, cfg.Queries, target, dht.routingTable.Size())
-		}()
+		logger.Infof("Bootstrapping query (%d/%d) to %s", n, cfg.Queries, target)
 		queryCtx, cancel := context.WithTimeout(ctx, cfg.Timeout)
 		defer cancel()
 		err := f(queryCtx)
@@ -172,7 +165,10 @@ func (dht *IpfsDHT) runBootstrap(ctx context.Context, cfg BootstrapConfig) error
 	}
 
 	// Find self to distribute peer info to our neighbors.
-	return doQuery(cfg.Queries, fmt.Sprintf("self: %s", dht.self), dht.selfWalk)
+	return doQuery(cfg.Queries, fmt.Sprintf("self: %s", dht.self), func(ctx context.Context) error {
+		_, err := dht.walk(ctx, dht.self)
+		return err
+	})
 }
 
 func (dht *IpfsDHT) BootstrapRandom(ctx context.Context) error {
@@ -180,5 +176,6 @@ func (dht *IpfsDHT) BootstrapRandom(ctx context.Context) error {
 }
 
 func (dht *IpfsDHT) BootstrapSelf(ctx context.Context) error {
-	return dht.selfWalk(ctx)
+	_, err := dht.walk(ctx, dht.self)
+	return err
 }

@@ -41,16 +41,14 @@ func (b *Bucket) Has(id peer.ID) bool {
 	return false
 }
 
-func (b *Bucket) Remove(id peer.ID) bool {
+func (b *Bucket) Remove(id peer.ID) {
 	b.lk.Lock()
 	defer b.lk.Unlock()
 	for e := b.list.Front(); e != nil; e = e.Next() {
 		if e.Value.(peer.ID) == id {
 			b.list.Remove(e)
-			return true
 		}
 	}
-	return false
 }
 
 func (b *Bucket) MoveToFront(id peer.ID) {

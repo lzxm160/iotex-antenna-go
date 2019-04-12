@@ -4,8 +4,10 @@ import (
 	"context"
 	"time"
 
-	circuit "github.com/libp2p/go-libp2p-circuit"
+	basic "github.com/libp2p/go-libp2p/p2p/host/basic"
+
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	host "github.com/libp2p/go-libp2p-host"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -13,8 +15,21 @@ var (
 	AdvertiseBootDelay = 30 * time.Second
 )
 
-// Advertise advertises this node as a libp2p relay.
-func Advertise(ctx context.Context, advertise discovery.Advertiser) {
+// RelayHost is a Host that provides Relay services.
+type RelayHost struct {
+	*basic.BasicHost
+	advertise discovery.Advertiser
+	addrsF    basic.AddrsFactory
+}
+
+// New constructs a new RelayHost
+func NewRelayHost(ctx context.Context, bhost *basic.BasicHost, advertise discovery.Advertiser) *RelayHost {
+	h := &RelayHost{
+		BasicHost: bhost,
+		addrsF:    bhost.AddrsFactory,
+		advertise: advertise,
+	}
+	bhost.AddrsFactory = h.hostAddrs
 	go func() {
 		select {
 		case <-time.After(AdvertiseBootDelay):
@@ -22,17 +37,11 @@ func Advertise(ctx context.Context, advertise discovery.Advertiser) {
 		case <-ctx.Done():
 		}
 	}()
+	return h
 }
 
-// Filter filters out all relay addresses.
-func Filter(addrs []ma.Multiaddr) []ma.Multiaddr {
-	raddrs := make([]ma.Multiaddr, 0, len(addrs))
-	for _, addr := range addrs {
-		_, err := addr.ValueForProtocol(circuit.P_CIRCUIT)
-		if err == nil {
-			continue
-		}
-		raddrs = append(raddrs, addr)
-	}
-	return raddrs
+func (h *RelayHost) hostAddrs(addrs []ma.Multiaddr) []ma.Multiaddr {
+	return filterUnspecificRelay(h.addrsF(addrs))
 }
+
+var _ host.Host = (*RelayHost)(nil)

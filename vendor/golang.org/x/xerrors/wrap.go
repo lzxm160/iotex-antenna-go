@@ -88,7 +88,7 @@ func As(err error, target interface{}) bool {
 		panic("errors: *target must be interface or implement error")
 	}
 	targetType := typ.Elem()
-	for err != nil {
+	for {
 		if reflect.TypeOf(err).AssignableTo(targetType) {
 			val.Elem().Set(reflect.ValueOf(err))
 			return true
@@ -96,9 +96,10 @@ func As(err error, target interface{}) bool {
 		if x, ok := err.(interface{ As(interface{}) bool }); ok && x.As(target) {
 			return true
 		}
-		err = Unwrap(err)
+		if err = Unwrap(err); err == nil {
+			return false
+		}
 	}
-	return false
 }
 
 var errorType = reflect.TypeOf((*error)(nil)).Elem()

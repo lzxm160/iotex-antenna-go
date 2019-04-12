@@ -1,79 +1,78 @@
 package query
 
-import (
-	"sort"
+import "sort"
 
-	goprocess "github.com/jbenet/goprocess"
-)
+func DerivedResults(qr Results, ch <-chan Result) Results {
+	return &results{
+		query: qr.Query(),
+		proc:  qr.Process(),
+		res:   ch,
+	}
+}
 
 // NaiveFilter applies a filter to the results.
 func NaiveFilter(qr Results, filter Filter) Results {
-	return ResultsFromIterator(qr.Query(), Iterator{
-		Next: func() (Result, bool) {
-			for {
-				e, ok := qr.NextSync()
-				if !ok {
-					return Result{}, false
-				}
-				if e.Error != nil || filter.Filter(e.Entry) {
-					return e, true
-				}
+	ch := make(chan Result)
+	go func() {
+		defer close(ch)
+		defer qr.Close()
+
+		for e := range qr.Next() {
+			if e.Error != nil || filter.Filter(e.Entry) {
+				ch <- e
 			}
-		},
-		Close: func() error {
-			return qr.Close()
-		},
-	})
+		}
+	}()
+
+	return DerivedResults(qr, ch)
 }
 
 // NaiveLimit truncates the results to a given int limit
 func NaiveLimit(qr Results, limit int) Results {
-	if limit == 0 {
-		// 0 means no limit
-		return qr
-	}
-	closed := false
-	return ResultsFromIterator(qr.Query(), Iterator{
-		Next: func() (Result, bool) {
-			if limit == 0 {
-				if !closed {
-					closed = true
-					err := qr.Close()
-					if err != nil {
-						return Result{Error: err}, true
-					}
-				}
-				return Result{}, false
+	ch := make(chan Result)
+	go func() {
+		defer close(ch)
+		defer qr.Close()
+
+		l := 0
+		for e := range qr.Next() {
+			if e.Error != nil {
+				ch <- e
+				continue
 			}
-			limit--
-			return qr.NextSync()
-		},
-		Close: func() error {
-			if closed {
-				return nil
+			ch <- e
+			l++
+			if limit > 0 && l >= limit {
+				break
 			}
-			closed = true
-			return qr.Close()
-		},
-	})
+		}
+	}()
+
+	return DerivedResults(qr, ch)
 }
 
 // NaiveOffset skips a given number of results
 func NaiveOffset(qr Results, offset int) Results {
-	return ResultsFromIterator(qr.Query(), Iterator{
-		Next: func() (Result, bool) {
-			for ; offset > 0; offset-- {
-				res, ok := qr.NextSync()
-				if !ok || res.Error != nil {
-					return res, ok
-				}
+	ch := make(chan Result)
+	go func() {
+		defer close(ch)
+		defer qr.Close()
+
+		sent := 0
+		for e := range qr.Next() {
+			if e.Error != nil {
+				ch <- e
 			}
-			return qr.NextSync()
-		},
-		Close: func() error {
-			return qr.Close()
-		},
-	})
+
+			if sent < offset {
+				sent++
+				continue
+			}
+			ch <- e
+		}
+	}()
+
+	return DerivedResults(qr, ch)
 }
 
 // NaiveOrder reorders results according to given orders.
@@ -84,37 +83,44 @@ func NaiveOrder(qr Results, orders ...Order) Results {
 		return qr
 	}
 
-	return ResultsWithProcess(qr.Query(), func(worker goprocess.Process, out chan<- Result) {
+	ch := make(chan Result)
+	var entries []Entry
+	go func() {
+		defer close(ch)
 		defer qr.Close()
-		var entries []Entry
-	collect:
-		for {
-			select {
-			case <-worker.Closing():
-				return
-			case e, ok := <-qr.Next():
-				if !ok {
-					break collect
-				}
-				if e.Error != nil {
-					out <- e
-					continue
-				}
-				entries = append(entries, e.Entry)
-			}
-		}
 
-		sort.Slice(entries, func(i int, j int) bool {
-			return Less(orders, entries[i], entries[j])
-		})
-		for _, e := range entries {
-			select {
-			case <-worker.Closing():
-				return
-			case out <- Result{Entry: e}:
+		for e := range qr.Next() {
+			if e.Error != nil {
+				ch <- e
 			}
+
+			entries = append(entries, e.Entry)
 		}
-	})
+		sort.Slice(entries, func(i int, j int) bool {
+			a, b := entries[i], entries[j]
+
+			for _, cmp := range orders {
+				switch cmp.Compare(a, b) {
+				case 0:
+				case -1:
+					return true
+				case 1:
+					return false
+				}
+			}
+
+			// This gives us a *stable* sort for free. We don't care
+			// preserving the order from the underlying datastore
+			// because it's undefined.
+			return a.Key < b.Key
+		})
+
+		for _, e := range entries {
+			ch <- Result{Entry: e}
+		}
+	}()
+
+	return DerivedResults(qr, ch)
 }
 
 func NaiveQueryApply(q Query, qr Results) Results {
@@ -131,7 +137,7 @@ func NaiveQueryApply(q Query, qr Results) Results {
 		qr = NaiveOffset(qr, q.Offset)
 	}
 	if q.Limit != 0 {
-		qr = NaiveLimit(qr, q.Limit)
+		qr = NaiveLimit(qr, q.Offset)
 	}
 	return qr
 }

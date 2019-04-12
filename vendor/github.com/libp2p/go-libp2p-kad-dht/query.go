@@ -28,9 +28,11 @@ type dhtQuery struct {
 }
 
 type dhtQueryResult struct {
-	peer        *pstore.PeerInfo   // FindPeer
-	closerPeers []*pstore.PeerInfo // *
-	success     bool
+	value         []byte             // GetValue
+	peer          *pstore.PeerInfo   // FindPeer
+	providerPeers []pstore.PeerInfo  // GetProviders
+	closerPeers   []*pstore.PeerInfo // *
+	success       bool
 
 	finalSet   *pset.PeerSet
 	queriedSet *pset.PeerSet
@@ -134,18 +136,15 @@ func (r *dhtQueryRunner) Run(ctx context.Context, peers []peer.ID) (*dhtQueryRes
 		r.addPeerToQuery(p)
 	}
 
-	// start the dial queue only after we've added the initial set of peers.
-	// this is to avoid race conditions that could cause the peersRemaining todoctr
-	// to be done too early if the initial dial fails before others make it into the queue.
-	r.peersDialed.Start()
-
 	// go do this thing.
 	// do it as a child proc to make sure Run exits
 	// ONLY AFTER spawn workers has exited.
 	r.proc.Go(r.spawnWorkers)
 
+	// so workers are working.
+
 	// wait until they're done.
-	var err error
+	err := routing.ErrNotFound
 
 	// now, if the context finishes, close the proc.
 	// we have to do it here because the logic before is setup, which
@@ -298,9 +297,6 @@ func (r *dhtQueryRunner) queryPeer(proc process.Process, p peer.ID) {
 		r.Lock()
 		r.result = res
 		r.Unlock()
-		if res.peer != nil {
-			r.query.dht.peerstore.AddAddrs(res.peer.ID, res.peer.Addrs, pstore.TempAddrTTL)
-		}
 		go r.proc.Close() // signal to everyone that we're done.
 		// must be async, as we're one of the children, and Close blocks.
 

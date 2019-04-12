@@ -1,4 +1,4 @@
-// +build !windows,!wasm
+// +build !windows
 
 package dht
 

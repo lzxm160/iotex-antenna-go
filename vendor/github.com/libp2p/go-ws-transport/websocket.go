@@ -86,7 +86,7 @@ func (t *WebsocketTransport) maDial(ctx context.Context, raddr ma.Multiaddr) (ma
 		return nil, err
 	}
 
-	mnc, err := manet.WrapNetConn(NewConn(wscon))
+	mnc, err := manet.WrapNetConn(NewConn(wscon, nil))
 	if err != nil {
 		wscon.Close()
 		return nil, err

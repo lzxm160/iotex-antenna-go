@@ -93,7 +93,7 @@ func (nmgr *natManager) discoverNAT() {
 
 		natInstance, err := inat.DiscoverNAT(goprocessctx.OnClosingContext(worker))
 		if err != nil {
-			log.Info("DiscoverNAT error:", err)
+			log.Error("DiscoverNAT error:", err)
 			close(nmgr.ready)
 			return
 		}

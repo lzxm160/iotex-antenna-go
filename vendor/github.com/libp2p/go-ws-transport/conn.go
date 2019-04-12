@@ -19,6 +19,7 @@ var _ net.Conn = (*Conn)(nil)
 type Conn struct {
 	*ws.Conn
 	DefaultMessageType int
+	done               func()
 	reader             io.Reader
 	closeOnce          sync.Once
 }
@@ -84,14 +85,14 @@ func (c *Conn) Write(b []byte) (n int, err error) {
 func (c *Conn) Close() error {
 	var err error
 	c.closeOnce.Do(func() {
-		err1 := c.Conn.WriteControl(ws.CloseMessage, nil, time.Now().Add(GracefulCloseTimeout))
-		err2 := c.Conn.Close()
-		switch {
-		case err1 != nil:
-			err = err1
-		case err2 != nil:
-			err = err2
+		if c.done != nil {
+			c.done()
+			// Be nice to GC
+			c.done = nil
 		}
+
+		c.Conn.WriteControl(ws.CloseMessage, nil, time.Now().Add(GracefulCloseTimeout))
+		err = c.Conn.Close()
 	})
 	return err
 }
@@ -121,9 +122,10 @@ func (c *Conn) SetWriteDeadline(t time.Time) error {
 }
 
 // NewConn creates a Conn given a regular gorilla/websocket Conn.
-func NewConn(raw *ws.Conn) *Conn {
+func NewConn(raw *ws.Conn, done func()) *Conn {
 	return &Conn{
 		Conn:               raw,
 		DefaultMessageType: ws.BinaryMessage,
+		done:               done,
 	}
 }
