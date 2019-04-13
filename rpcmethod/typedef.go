@@ -46,6 +46,3 @@ type GetEpochMetaResponse struct {
 type ReadStateResponse struct {
 	*iotexapi.ReadStateResponse
 }
-type ReadContractRequest struct {
-	*iotexapi.ReadContractRequest
-}

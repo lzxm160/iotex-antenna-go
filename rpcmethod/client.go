@@ -10,6 +10,8 @@ import (
 	"context"
 	"math/big"
 
+	"github.com/iotexproject/iotex-core/protogen/iotextypes"
+
 	"google.golang.org/grpc"
 
 	"github.com/iotexproject/iotex-core/action"
@@ -266,24 +268,10 @@ func (r *RPCMethod) GetReceiptByAction(hash string) (*GetReceiptByActionResponse
 }
 
 // ReadContract reads contract
-func (r *RPCMethod) ReadContract(hash string, checkPending bool) (*ReadContractResponse, error) {
+func (r *RPCMethod) ReadContract(action *iotextypes.Action, checkPending bool) (*ReadContractResponse, error) {
 	ctx := context.Background()
-	exec, err := r.GetActionsByHash(hash, checkPending)
-	if err != nil {
-		return nil, err
-	}
-	in := &iotexapi.ReadContractRequest{Action: exec.ActionInfo[0].Action}
+	in := &iotexapi.ReadContractRequest{Action: action}
 	ret, err := r.cli.ReadContract(ctx, in)
-	if err != nil {
-		return nil, err
-	}
-	res := &ReadContractResponse{ret}
-	return res, nil
-}
-func (r *RPCMethod) ReadContract2(rcr *ReadContractRequest, checkPending bool) (*ReadContractResponse, error) {
-	ctx := context.Background()
-
-	ret, err := r.cli.ReadContract(ctx, rcr.ReadContractRequest)
 	if err != nil {
 		return nil, err
 	}

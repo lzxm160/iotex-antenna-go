@@ -12,8 +12,6 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/iotexproject/iotex-core/protogen/iotexapi"
-
 	"github.com/cenkalti/backoff"
 
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
@@ -146,7 +144,7 @@ func (c *contract) SendToChain(data []byte, readOnly bool) (string, error) {
 		return "", err
 	}
 	if readOnly {
-		response, err := c.rpc.ReadContract2(&rpcmethod.ReadContractRequest{&iotexapi.ReadContractRequest{Action: selp.Proto()}}, true)
+		response, err := c.rpc.ReadContract(selp.Proto(), true)
 		if err != nil {
 			return "", err
 		}
@@ -164,14 +162,14 @@ func (c *contract) SendToChain(data []byte, readOnly bool) (string, error) {
 func (c *contract) CheckCallResult(h string) (*iotextypes.Receipt, error) {
 	var rec *iotextypes.Receipt
 	// max retry 120 times with interval = 500ms
-	checkNum := 120
+	num := 120
 	err := backoff.Retry(func() error {
 		var err error
 		rec, err = c.checkCallResult(h)
-		log.Printf("Hash: %s <= CheckNum: %d", h, checkNum)
-		checkNum--
+		log.Printf("Hash: %s times: %d", h, num)
+		num--
 		return err
-	}, backoff.WithMaxRetries(backoff.NewConstantBackOff(time.Millisecond*500), uint64(checkNum)))
+	}, backoff.WithMaxRetries(backoff.NewConstantBackOff(time.Millisecond*500), uint64(num)))
 	return rec, err
 }
 
