@@ -73,6 +73,7 @@ func (r *RPCMethod) getActions(in *iotexapi.GetActionsRequest) (*GetActionsRespo
 	res := &GetActionsResponse{ret}
 	return res, nil
 }
+
 // GetActionsByIndex
 func (r *RPCMethod) GetActionsByIndex(start, count uint64) (*GetActionsResponse, error) {
 	in := &iotexapi.GetActionsRequest{
@@ -85,6 +86,7 @@ func (r *RPCMethod) GetActionsByIndex(start, count uint64) (*GetActionsResponse,
 	}
 	return r.getActions(in)
 }
+
 // GetActionsByHash
 func (r *RPCMethod) GetActionsByHash(hash string, checkPending bool) (*GetActionsResponse, error) {
 	in := &iotexapi.GetActionsRequest{
@@ -97,6 +99,7 @@ func (r *RPCMethod) GetActionsByHash(hash string, checkPending bool) (*GetAction
 	}
 	return r.getActions(in)
 }
+
 // GetActionsByAddress
 func (r *RPCMethod) GetActionsByAddress(address string, start, count uint64) (*GetActionsResponse, error) {
 	in := &iotexapi.GetActionsRequest{
@@ -110,6 +113,7 @@ func (r *RPCMethod) GetActionsByAddress(address string, start, count uint64) (*G
 	}
 	return r.getActions(in)
 }
+
 // GetUnconfirmedActionsByAddress
 func (r *RPCMethod) GetUnconfirmedActionsByAddress(address string, start, count uint64) (*GetActionsResponse, error) {
 	in := &iotexapi.GetActionsRequest{
@@ -123,6 +127,7 @@ func (r *RPCMethod) GetUnconfirmedActionsByAddress(address string, start, count 
 	}
 	return r.getActions(in)
 }
+
 // GetActionsByBlock
 func (r *RPCMethod) GetActionsByBlock(blockHash string, start, count uint64) (*GetActionsResponse, error) {
 	in := &iotexapi.GetActionsRequest{
@@ -152,6 +157,7 @@ func (r *RPCMethod) GetBlockMetasByIndexAndCount(index, count uint64) (*GetBlock
 	}
 	return r.getBlockMetas(in)
 }
+
 // GetBlockMetasByBlockHash
 func (r *RPCMethod) GetBlockMetasByBlockHash(blockHash string) (*GetBlockMetasResponse, error) {
 	in := &iotexapi.GetBlockMetasRequest{
@@ -268,6 +274,16 @@ func (r *RPCMethod) ReadContract(hash string, checkPending bool) (*ReadContractR
 	}
 	in := &iotexapi.ReadContractRequest{Action: exec.ActionInfo[0].Action}
 	ret, err := r.cli.ReadContract(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	res := &ReadContractResponse{ret}
+	return res, nil
+}
+func (r *RPCMethod) ReadContract2(rcr *ReadContractRequest, checkPending bool) (*ReadContractResponse, error) {
+	ctx := context.Background()
+
+	ret, err := r.cli.ReadContract(ctx, rcr.ReadContractRequest)
 	if err != nil {
 		return nil, err
 	}

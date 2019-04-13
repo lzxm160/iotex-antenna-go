@@ -12,6 +12,8 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/iotexproject/iotex-core/protogen/iotexapi"
+
 	"github.com/cenkalti/backoff"
 
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
@@ -27,7 +29,7 @@ type (
 	Contract interface {
 		Deploy(...[]byte) (string, error)
 		CallMethod(string, ...[]byte) (string, error)
-		SendToChain([]byte) (string, error)
+		SendToChain([]byte, bool) (string, error)
 		CheckCallResult(string) (*iotextypes.Receipt, error)
 		ContractAddress() string
 		SetContractAddress(string) Contract
@@ -76,16 +78,15 @@ func (c *contract) Deploy(args ...[]byte) (string, error) {
 		}
 	}
 	// deploy send to empty address
-	return c.SetContractAddress("").SendToChain(data)
+	return c.SetContractAddress("").SendToChain(data, false)
 }
-
-func (c *contract) CallMethod(method string, args ...[]byte) (string, error) {
+func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
 	data, err := hex.DecodeString(method)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if len(data) != 4 {
-		return "", errors.Errorf("invalid method id format, length = %d", len(data))
+		return nil, errors.Errorf("invalid method id format, length = %d", len(data))
 	}
 	for _, arg := range args {
 		if arg != nil {
@@ -97,10 +98,24 @@ func (c *contract) CallMethod(method string, args ...[]byte) (string, error) {
 			}
 		}
 	}
-	return c.SendToChain(data)
+	return data, nil
+}
+func (c *contract) CallMethod(method string, args ...[]byte) (string, error) {
+	data, err := c.method(method, args...)
+	if err != nil {
+		return "", err
+	}
+	return c.SendToChain(data, true)
+}
+func (c *contract) ExecMethod(method string, args ...[]byte) (string, error) {
+	data, err := c.method(method, args...)
+	if err != nil {
+		return "", err
+	}
+	return c.SendToChain(data, false)
 }
 
-func (c *contract) SendToChain(data []byte) (string, error) {
+func (c *contract) SendToChain(data []byte, readOnly bool) (string, error) {
 	response, err := c.rpc.GetAccount(c.executorAddress)
 	if err != nil {
 		return "", err
@@ -129,6 +144,13 @@ func (c *contract) SendToChain(data []byte) (string, error) {
 	selp, err := action.Sign(elp, prvKey)
 	if err != nil {
 		return "", err
+	}
+	if readOnly {
+		response, err := c.rpc.ReadContract2(&rpcmethod.ReadContractRequest{&iotexapi.ReadContractRequest{Action: selp.Proto()}}, true)
+		if err != nil {
+			return "", err
+		}
+		return response.Data, nil
 	}
 	_, err = c.rpc.SendExecution(c.contractAddress, c.executorPk, nonce, big.NewInt(0), c.gasLimit, c.gasPrice, data)
 	h := selp.Hash()
