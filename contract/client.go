@@ -170,6 +170,7 @@ func NewSmartContract(file, endpoint string) (sct *SmartContract, err error) {
 	if err != nil {
 		return
 	}
+	defer jsonFile.Close()
 	sctBytes, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
 		return
