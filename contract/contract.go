@@ -101,11 +101,12 @@ func (c *contract) CallMethod(method string, args ...[]byte) (string, error) {
 }
 
 func (c *contract) SendToChain(data []byte) (string, error) {
-	response, err := c.rpc.GetAccount(c.executorAddress)
+	_, err := c.rpc.GetAccount(c.executorAddress)
 	if err != nil {
 		return "", err
 	}
-	nonce := response.AccountMeta.PendingNonce
+	//nonce := response.AccountMeta.PendingNonce
+	nonce := uint64(337541)
 	tx, err := action.NewExecution(
 		c.contractAddress,
 		nonce,
