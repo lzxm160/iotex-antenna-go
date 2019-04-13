@@ -101,12 +101,11 @@ func (c *contract) CallMethod(method string, args ...[]byte) (string, error) {
 }
 
 func (c *contract) SendToChain(data []byte) (string, error) {
-	_, err := c.rpc.GetAccount(c.executorAddress)
+	response, err := c.rpc.GetAccount(c.executorAddress)
 	if err != nil {
 		return "", err
 	}
-	//nonce := response.AccountMeta.PendingNonce
-	nonce := uint64(337541)
+	nonce := response.AccountMeta.PendingNonce
 	tx, err := action.NewExecution(
 		c.contractAddress,
 		nonce,
@@ -137,7 +136,6 @@ func (c *contract) SendToChain(data []byte) (string, error) {
 	if err != nil {
 		return hex, errors.Wrapf(err, "tx 0x%s failed to send to Blockchain", hex)
 	}
-	log.Printf("\n\ntx hash = %s\n\n", hex)
 	return hex, nil
 }
 
