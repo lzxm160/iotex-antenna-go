@@ -190,42 +190,46 @@ func (sct *SmartContract) runExecution(
 	contractAddr string,
 ) (err error) {
 	log.S().Info(ecfg.Comment)
-	request := &iotexapi.GetAccountRequest{Address: ecfg.Executor().String()}
-	res, err := sct.rpc.GetAccount(request)
+	res, err := sct.rpc.GetAccount(ecfg.Executor().String())
 	nonce := res.AccountMeta.Nonce
 	if err != nil {
 		return
 	}
-	exec, err := action.NewExecution(
-		contractAddr,
-		nonce+1,
-		ecfg.Amount(),
-		ecfg.GasLimit(),
-		ecfg.GasPrice(),
-		ecfg.ByteCode(),
-	)
-	if err != nil {
-		return
-	}
+	exeResult, err := sct.rpc.SendExecution(contractAddr, ecfg.RawPrivateKey, nonce+1, ecfg.Amount(), ecfg.GasLimit(), ecfg.GasPrice(), ecfg.ByteCode())
+	exeResult.SendActionResponse.
+		//exec, err := action.NewExecution(
 
-	builder := &action.EnvelopeBuilder{}
-	elp := builder.SetAction(exec).
-		SetNonce(exec.Nonce()).
-		SetGasLimit(ecfg.GasLimit()).
-		SetGasPrice(ecfg.GasPrice()).
-		Build()
-	selp, err := action.Sign(elp, ecfg.PrivateKey())
-	if err != nil {
-		return
-	}
-	request2 := &iotexapi.SendActionRequest{Action: selp.Proto()}
-	_, err = sct.rpc.SendAction(request2)
-	if err != nil {
-		return
-	}
-	hash := exec.Hash()
-	sct.deployActionHash = append(sct.deployActionHash, &hash)
-	sct.GetContractAddressFromChain()
+		//	contractAddr,
+		//	nonce+1,
+		//	ecfg.Amount(),
+		//	ecfg.GasLimit(),
+		//	ecfg.GasPrice(),
+		//	ecfg.ByteCode(),
+		//)
+		//if err != nil {
+		//	return
+		//}
+		//
+		//builder := &action.EnvelopeBuilder{}
+		//elp := builder.SetAction(exec).
+		//	SetNonce(exec.Nonce()).
+		//	SetGasLimit(ecfg.GasLimit()).
+		//	SetGasPrice(ecfg.GasPrice()).
+		//	Build()
+		//selp, err := action.Sign(elp, ecfg.PrivateKey())
+		//if err != nil {
+		//	return
+		//}
+		//request2 := &iotexapi.SendActionRequest{Action: selp.Proto()}
+		//SendExecution(contractAddr, executorPriKey string, nonce uint64, amount *big.Int, gasLimit uint64, gasPrice *big.Int, data []byte)
+		//_, err = sct.rpc.SendAction(request2)
+
+		//if err != nil {
+		//	return
+		//}
+		//hash := exec.Hash()
+		//sct.deployActionHash = append(sct.deployActionHash, &hash)
+		sct.GetContractAddressFromChain()
 	return
 }
 
