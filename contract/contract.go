@@ -25,7 +25,7 @@ import (
 )
 
 type (
-	// Contract is a basic contract
+	// Contract is contract interface
 	Contract interface {
 		Deploy(...[]byte) (string, error)
 		CallMethod(string, ...[]byte) (string, error)
