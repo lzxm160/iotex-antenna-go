@@ -11,6 +11,12 @@ import (
 	"math/big"
 	"testing"
 
+	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/iotexproject/iotex-core/pkg/keypair"
+
+	"github.com/iotexproject/iotex-core/address"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,6 +26,15 @@ const (
 
 func TestServer_Deploy(t *testing.T) {
 	require := require.New(t)
+	priKey, err := keypair.HexStringToPrivateKey("cfa6ef757dee2e50351620dca002d32b9c090cfda55fb81f37f1d26b273743f1")
+	require.NoError(err)
+	addr, err := address.FromBytes(priKey.PublicKey().Hash())
+	require.NoError(err)
+	fmt.Println(addr.String())
+	var evmContractAddrHash common.Address
+	copy(evmContractAddrHash[:], addr.Bytes())
+	fmt.Println(evmContractAddrHash.String())
+
 	bin := "6080604052348015600f57600080fd5b5060a18061001e6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063febb0f7e146044575b600080fd5b348015604f57600080fd5b506056606c565b6040518082815260200191505060405180910390f35b600060649050905600a165627a7a72305820631492f34cc1852dd0cfbfaa0631b86e9c06d7ba577caf330b4535651fd1408a0029"
 	gasLimit := uint64(1000000)
 	gasPrice := big.NewInt(9000000000000)
