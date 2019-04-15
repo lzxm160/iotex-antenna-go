@@ -131,7 +131,7 @@ func (c *contract) decodeRet(method, data string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	var out []interface{}
+	var out interface{}
 	err = abi.Unpack(&out, "bar", encb)
 	if err != nil {
 		fmt.Println("there:", err)
