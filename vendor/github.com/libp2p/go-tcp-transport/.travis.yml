@@ -11,6 +11,7 @@ env:
     - GOTFLAGS="-race"
     - TEST_STRESS_TIMEOUT_MS=180000
   matrix:
+    - BUILD_DEPTYPE=gx
     - BUILD_DEPTYPE=gomod
 
 
@@ -24,6 +25,7 @@ script:
 
 cache:
   directories:
+    - $GOPATH/src/gx
     - $GOPATH/pkg/mod
     - $HOME/.cache/go-build
 

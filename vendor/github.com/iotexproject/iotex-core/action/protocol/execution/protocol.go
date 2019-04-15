@@ -12,10 +12,10 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
-	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-core/action"
 	"github.com/iotexproject/iotex-core/action/protocol"
 	"github.com/iotexproject/iotex-core/action/protocol/execution/evm"
+	"github.com/iotexproject/iotex-core/address"
 	"github.com/iotexproject/iotex-core/pkg/hash"
 	"github.com/iotexproject/iotex-core/pkg/log"
 )
@@ -50,7 +50,7 @@ func (p *Protocol) Handle(ctx context.Context, act action.Action, sm protocol.St
 	if !ok {
 		return nil, nil
 	}
-	_, receipt, err := evm.ExecuteContract(ctx, sm, exec, p.cm)
+	receipt, err := evm.ExecuteContract(ctx, sm, exec, p.cm)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to execute contract")

@@ -42,9 +42,9 @@
     },
     {
       "author": "whyrusleeping",
-      "hash": "QmQVoMEL1CxrVusTSUdYsiJXVBnvSqNUpBsGybkwSfksEF",
+      "hash": "Qma3Xp3FXFSP4prirEiRYHJ2tgGE8EAx9i6JLziPLpAQjq",
       "name": "go-libp2p-swarm",
-      "version": "3.0.35"
+      "version": "3.0.34"
     },
     {
       "author": "whyrusleeping",
@@ -64,5 +64,5 @@
   "license": "",
   "name": "go-libp2p-autonat",
   "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
-  "version": "1.0.14"
+  "version": "1.0.13"
 }

@@ -7,7 +7,6 @@
 package action
 
 import (
-	"fmt"
 	"math/big"
 
 	"github.com/spf13/cobra"
@@ -23,14 +22,14 @@ import (
 // actionInvokeCmd represents the action invoke command
 var actionInvokeCmd = &cobra.Command{
 	Use: "invoke (ALIAS|CONTRACT_ADDRESS) [AMOUNT_IOTX]" +
-		" -s SIGNER -b BYTE_CODE -l GAS_LIMIT [-p GAS_PRICE]",
+		" -l GAS_LIMIT -p GAS_PRICE -s SIGNER -b BYTE_CODE",
 	Short: "Invoke smart contract on IoTeX blockchain",
 	Args:  cobra.RangeArgs(1, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.SilenceUsage = true
 		output, err := invoke(args)
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},
@@ -53,17 +52,9 @@ func invoke(args []string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var gasPriceRau *big.Int
-	if len(gasPrice) == 0 {
-		gasPriceRau, err = GetGasPrice()
-		if err != nil {
-			return "", err
-		}
-	} else {
-		gasPriceRau, err = util.StringToRau(gasPrice, util.GasPriceDecimalNum)
-		if err != nil {
-			return "", err
-		}
+	gasPriceRau, err := util.StringToRau(gasPrice, util.GasPriceDecimalNum)
+	if err != nil {
+		return "", err
 	}
 	if nonce == 0 {
 		accountMeta, err := account.GetAccountMeta(executor)

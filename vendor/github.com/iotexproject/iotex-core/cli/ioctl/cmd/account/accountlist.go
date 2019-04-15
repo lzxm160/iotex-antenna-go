@@ -7,14 +7,13 @@
 package account
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 
-	"github.com/iotexproject/iotex-address/address"
+	"github.com/iotexproject/iotex-core/address"
 	"github.com/iotexproject/iotex-core/cli/ioctl/cmd/alias"
 	"github.com/iotexproject/iotex-core/cli/ioctl/cmd/config"
 	"github.com/iotexproject/iotex-core/pkg/log"
@@ -29,7 +28,7 @@ var accountListCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := accountList()
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

@@ -29,7 +29,7 @@ var nodeRewardCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := reward(args)
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

@@ -31,7 +31,7 @@ var accountImportCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := accountImport(args)
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

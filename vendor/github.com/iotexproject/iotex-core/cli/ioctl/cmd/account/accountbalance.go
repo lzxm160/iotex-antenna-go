@@ -25,7 +25,7 @@ var accountBalanceCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := balance(args)
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

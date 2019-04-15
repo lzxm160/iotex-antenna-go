@@ -7,9 +7,6 @@
 package action
 
 import (
-	"fmt"
-	"math/big"
-
 	"github.com/spf13/cobra"
 
 	"github.com/iotexproject/iotex-core/action"
@@ -20,14 +17,14 @@ import (
 
 // actionClaimCmd represents the action claim command
 var actionClaimCmd = &cobra.Command{
-	Use:   "claim AMOUNT_IOTX [DATA] -s SIGNER [-l GAS_LIMIT] [-p GASPRICE]",
+	Use:   "claim AMOUNT_IOTX [DATA] -l GAS_LIMIT -p GASPRICE -s SIGNER",
 	Short: "Claim rewards from rewarding fund",
 	Args:  cobra.RangeArgs(1, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.SilenceUsage = true
 		output, err := claim(args)
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},
@@ -47,21 +44,9 @@ func claim(args []string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if gasLimit == 0 {
-		gasLimit = action.ClaimFromRewardingFundBaseGas +
-			action.ClaimFromRewardingFundGasPerByte*uint64(len(payload))
-	}
-	var gasPriceRau *big.Int
-	if len(gasPrice) == 0 {
-		gasPriceRau, err = GetGasPrice()
-		if err != nil {
-			return "", err
-		}
-	} else {
-		gasPriceRau, err = util.StringToRau(gasPrice, util.GasPriceDecimalNum)
-		if err != nil {
-			return "", err
-		}
+	gasPriceRau, err := util.StringToRau(gasPrice, util.GasPriceDecimalNum)
+	if err != nil {
+		return "", err
 	}
 	if nonce == 0 {
 		accountMeta, err := account.GetAccountMeta(sender)

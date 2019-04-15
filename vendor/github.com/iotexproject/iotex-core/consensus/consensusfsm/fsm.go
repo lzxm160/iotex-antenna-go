@@ -58,9 +58,6 @@ const (
 
 	// BackdoorEvent indicates a backdoor event type
 	BackdoorEvent fsm.EventType = "E_BACKDOOR"
-
-	// InitState refers the initial state of the consensus fsm
-	InitState = sPrepare
 )
 
 var (
@@ -379,12 +376,10 @@ func (m *ConsensusFSM) calibrate(evt fsm.Event) (fsm.State, error) {
 }
 
 func (m *ConsensusFSM) prepare(_ fsm.Event) (fsm.State, error) {
-	active, isProposer, proposal, isDelegate, locked, delay, err := m.ctx.Prepare()
+	isProposer, proposal, isDelegate, locked, delay, err := m.ctx.Prepare()
 	switch {
 	case err != nil:
 		m.ctx.Logger().Error("Error during prepare", zap.Error(err))
-		fallthrough
-	case !active:
 		fallthrough
 	case !isDelegate:
 		return m.BackToPrepare(delay)

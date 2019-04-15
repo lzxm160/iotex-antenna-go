@@ -11,7 +11,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -106,9 +105,6 @@ func (p *Agent) Start(ctx context.Context) error {
 		p2p.Gossip(),
 		p2p.SecureIO(),
 		p2p.MasterKey(p.cfg.MasterKey),
-	}
-	if p.cfg.EnableRateLimit {
-		opts = append(opts, p2p.WithRateLimit(p.cfg.RateLimit))
 	}
 	if p.cfg.ExternalHost != "" {
 		opts = append(opts, p2p.ExternalHostName(p.cfg.ExternalHost))
@@ -219,14 +215,13 @@ func (p *Agent) Start(ctx context.Context) error {
 	}
 
 	if len(p.cfg.BootstrapNodes) > 0 {
-		var tryNum, errNum, connNum, desiredConnNum int
-
+		var (
+			tryNum  int
+			errNum  int
+			connNum int
+		)
 		conn := make(chan interface{}, len(p.cfg.BootstrapNodes))
 		connErrChan := make(chan error, len(p.cfg.BootstrapNodes))
-		desiredConnNum = int(math.RoundToEven(float64(len(p.cfg.BootstrapNodes)) / 2))
-		if float64(desiredConnNum) <= float64(len(p.cfg.BootstrapNodes))/2 {
-			desiredConnNum++
-		}
 
 		// try to connect to all bootstrap node beside itself.
 		for _, bootstrapNode := range p.cfg.BootstrapNodes {
@@ -263,12 +258,15 @@ func (p *Agent) Start(ctx context.Context) error {
 				connNum++
 			}
 			// can add more condition later
-			if connNum >= desiredConnNum {
+			if connNum >= 1 {
 				break
 			}
 		}
 	}
-	host.JoinOverlay(ctx)
+
+	if err := host.JoinOverlay(ctx); err != nil {
+		return errors.Wrap(err, "error when joining overlay")
+	}
 	p.host = host
 	close(ready)
 	return nil

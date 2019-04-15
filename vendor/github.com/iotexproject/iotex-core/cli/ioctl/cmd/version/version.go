@@ -29,7 +29,7 @@ var VersionCmd = &cobra.Command{
 		cmd.SilenceUsage = true
 		output, err := version()
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},

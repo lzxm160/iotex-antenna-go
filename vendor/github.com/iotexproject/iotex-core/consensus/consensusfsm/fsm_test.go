@@ -29,8 +29,8 @@ func TestBackdoorEvt(t *testing.T) {
 	mockCtx := NewMockContext(ctrl)
 	mockCtx.EXPECT().IsFutureEvent(gomock.Any()).Return(false).AnyTimes()
 	mockCtx.EXPECT().IsStaleEvent(gomock.Any()).Return(false).AnyTimes()
-	mockCtx.EXPECT().Logger().Return(log.Logger("consensus")).AnyTimes()
-	mockCtx.EXPECT().Prepare().Return(true, false, nil, true, false, time.Duration(0), nil).AnyTimes()
+	mockCtx.EXPECT().Logger().Return(log.L()).AnyTimes()
+	mockCtx.EXPECT().Prepare().Return(false, nil, true, false, time.Duration(0), nil).AnyTimes()
 	mockCtx.EXPECT().NewConsensusEvent(gomock.Any(), gomock.Any()).DoAndReturn(
 		func(eventType fsm.EventType, data interface{}) *ConsensusEvent {
 			return &ConsensusEvent{
@@ -67,7 +67,7 @@ func TestStateTransitionFunctions(t *testing.T) {
 	defer ctrl.Finish()
 	mockClock := clock.NewMock()
 	mockCtx := NewMockContext(ctrl)
-	mockCtx.EXPECT().Logger().Return(log.Logger("consensus")).AnyTimes()
+	mockCtx.EXPECT().Logger().Return(log.L()).AnyTimes()
 	mockCtx.EXPECT().NewConsensusEvent(gomock.Any(), gomock.Any()).DoAndReturn(
 		func(eventType fsm.EventType, data interface{}) *ConsensusEvent {
 			return &ConsensusEvent{
@@ -89,17 +89,7 @@ func TestStateTransitionFunctions(t *testing.T) {
 
 	t.Run("prepare", func(t *testing.T) {
 		t.Run("with-error", func(t *testing.T) {
-			mockCtx.EXPECT().Prepare().Return(true, false, nil, false, false, 10*time.Second, errors.New("some error")).Times(1)
-			state, err := cfsm.prepare(nil)
-			require.NoError(err)
-			require.Equal(sPrepare, state)
-			time.Sleep(100 * time.Millisecond)
-			mockClock.Add(10 * time.Second)
-			evt := <-cfsm.evtq
-			require.Equal(ePrepare, evt.Type())
-		})
-		t.Run("stand-by", func(t *testing.T) {
-			mockCtx.EXPECT().Prepare().Return(false, false, nil, false, false, 10*time.Second, nil).Times(1)
+			mockCtx.EXPECT().Prepare().Return(false, nil, false, false, 10*time.Second, errors.New("some error")).Times(1)
 			state, err := cfsm.prepare(nil)
 			require.NoError(err)
 			require.Equal(sPrepare, state)
@@ -109,7 +99,7 @@ func TestStateTransitionFunctions(t *testing.T) {
 			require.Equal(ePrepare, evt.Type())
 		})
 		t.Run("is-not-delegate", func(t *testing.T) {
-			mockCtx.EXPECT().Prepare().Return(true, false, nil, false, false, 10*time.Second, nil).Times(1)
+			mockCtx.EXPECT().Prepare().Return(false, nil, false, false, 10*time.Second, nil).Times(1)
 			state, err := cfsm.prepare(nil)
 			require.NoError(err)
 			require.Equal(sPrepare, state)
@@ -120,7 +110,7 @@ func TestStateTransitionFunctions(t *testing.T) {
 		})
 		t.Run("is-delegate", func(t *testing.T) {
 			t.Run("is-locked", func(t *testing.T) {
-				mockCtx.EXPECT().Prepare().Return(true, false, nil, true, true, time.Duration(0), nil).Times(1)
+				mockCtx.EXPECT().Prepare().Return(false, nil, true, true, time.Duration(0), nil).Times(1)
 				state, err := cfsm.prepare(nil)
 				require.NoError(err)
 				require.Equal(sAcceptBlockProposal, state)
@@ -140,7 +130,7 @@ func TestStateTransitionFunctions(t *testing.T) {
 				require.Equal(eStopReceivingLockEndorsement, evt.Type())
 			})
 			t.Run("is-not-locked", func(t *testing.T) {
-				mockCtx.EXPECT().Prepare().Return(true, false, nil, true, false, time.Duration(0), nil).Times(1)
+				mockCtx.EXPECT().Prepare().Return(false, nil, true, false, time.Duration(0), nil).Times(1)
 				state, err := cfsm.prepare(nil)
 				require.NoError(err)
 				require.Equal(sAcceptBlockProposal, state)
@@ -159,7 +149,7 @@ func TestStateTransitionFunctions(t *testing.T) {
 		})
 		t.Run("is-proposer", func(t *testing.T) {
 			t.Run("fail-to-mint", func(t *testing.T) {
-				mockCtx.EXPECT().Prepare().Return(true, true, nil, true, false, time.Duration(0), errors.New("some error")).Times(1)
+				mockCtx.EXPECT().Prepare().Return(true, nil, true, false, time.Duration(0), errors.New("some error")).Times(1)
 				state, err := cfsm.prepare(nil)
 				require.NoError(err)
 				require.Equal(sPrepare, state)
@@ -168,7 +158,7 @@ func TestStateTransitionFunctions(t *testing.T) {
 			})
 			t.Run("success-to-mint", func(t *testing.T) {
 				mockEndorsement := NewMockEndorsement(ctrl)
-				mockCtx.EXPECT().Prepare().Return(true, true, mockEndorsement, true, false, time.Duration(0), nil).Times(1)
+				mockCtx.EXPECT().Prepare().Return(true, mockEndorsement, true, false, time.Duration(0), nil).Times(1)
 				mockCtx.EXPECT().Broadcast(gomock.Any()).Return().Times(1)
 				state, err := cfsm.prepare(nil)
 				require.NoError(err)

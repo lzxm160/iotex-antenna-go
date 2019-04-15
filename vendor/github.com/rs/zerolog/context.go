@@ -2,7 +2,6 @@ package zerolog
 
 import (
 	"io/ioutil"
-	"math"
 	"net"
 	"time"
 )
@@ -348,43 +347,18 @@ func (c Context) Interface(key string, i interface{}) Context {
 	return c
 }
 
-type callerHook struct {
-	callerSkipFrameCount int
-}
-
-func newCallerHook(skipFrameCount int) callerHook {
-	return callerHook{callerSkipFrameCount: skipFrameCount}
-}
+type callerHook struct{}
 
 func (ch callerHook) Run(e *Event, level Level, msg string) {
-	switch ch.callerSkipFrameCount {
-	case useGlobalSkipFrameCount:
-		// Extra frames to skip (added by hook infra).
-		e.caller(CallerSkipFrameCount + contextCallerSkipFrameCount)
-	default:
-		// Extra frames to skip (added by hook infra).
-		e.caller(ch.callerSkipFrameCount + contextCallerSkipFrameCount)
-	}
+	// Extra frames to skip (added by hook infra).
+	e.caller(CallerSkipFrameCount + contextCallerSkipFrameCount)
 }
 
-// useGlobalSkipFrameCount acts as a flag to informat callerHook.Run
-// to use the global CallerSkipFrameCount.
-const useGlobalSkipFrameCount = math.MinInt32
-
-// ch is the default caller hook using the global CallerSkipFrameCount.
-var ch = newCallerHook(useGlobalSkipFrameCount)
+var ch = callerHook{}
 
 // Caller adds the file:line of the caller with the zerolog.CallerFieldName key.
 func (c Context) Caller() Context {
 	c.l = c.l.Hook(ch)
-	return c
-}
-
-// CallerWithSkipFrameCount adds the file:line of the caller with the zerolog.CallerFieldName key.
-// The specified skipFrameCount int will override the global CallerSkipFrameCount for this context's respective logger.
-// If set to -1 the global CallerSkipFrameCount will be used.
-func (c Context) CallerWithSkipFrameCount(skipFrameCount int) Context {
-	c.l = c.l.Hook(newCallerHook(skipFrameCount))
 	return c
 }
 

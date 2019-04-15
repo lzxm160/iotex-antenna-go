@@ -10,7 +10,6 @@ import (
 	pb "github.com/libp2p/go-libp2p-circuit/pb"
 
 	logging "github.com/ipfs/go-log"
-	pool "github.com/libp2p/go-buffer-pool"
 	host "github.com/libp2p/go-libp2p-host"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -28,7 +27,6 @@ const maxMessageSize = 4096
 var RelayAcceptTimeout = time.Minute
 var HopConnectTimeout = 10 * time.Second
 
-// Relay is the relay transport and service.
 type Relay struct {
 	host     host.Host
 	upgrader *tptu.Upgrader
@@ -49,22 +47,11 @@ type Relay struct {
 	lhLk     sync.Mutex
 }
 
-// RelayOpts are options for configuring the relay transport.
 type RelayOpt int
 
 var (
-	// OptActive configures the relay transport to actively establish
-	// outbound connections on behalf of clients. You probably don't want to
-	// enable this unless you know what you're doing.
-	OptActive = RelayOpt(0)
-	// OptHop configures the relay transport to accept requests to relay
-	// traffic on behalf of third-parties. Unless OptActive is specified,
-	// this will only relay traffic between peers already connected to this
-	// node.
-	OptHop = RelayOpt(1)
-	// OptDiscovery configures this relay transport to discover new relays
-	// by probing every new peer. You almost _certainly_ don't want to
-	// enable this.
+	OptActive    = RelayOpt(0)
+	OptHop       = RelayOpt(1)
 	OptDiscovery = RelayOpt(2)
 )
 
@@ -76,7 +63,6 @@ func (e RelayError) Error() string {
 	return fmt.Sprintf("error opening relay circuit: %s (%d)", pb.CircuitRelay_Status_name[int32(e.Code)], e.Code)
 }
 
-// NewRelay constructs a new relay.
 func NewRelay(ctx context.Context, h host.Host, upgrader *tptu.Upgrader, opts ...RelayOpt) (*Relay, error) {
 	r := &Relay{
 		upgrader: upgrader,
@@ -104,7 +90,7 @@ func NewRelay(ctx context.Context, h host.Host, upgrader *tptu.Upgrader, opts ..
 	h.SetStreamHandler(ProtoID, r.handleNewStream)
 
 	if r.discovery {
-		h.Network().Notify(r.notifiee())
+		h.Network().Notify(r.Notifiee())
 	}
 
 	return r, nil
@@ -300,23 +286,24 @@ func (r *Relay) handleHopStream(s inet.Stream, msg *pb.CircuitRelay) {
 	}
 
 	// open stream
-	ctx, cancel := context.WithTimeout(r.ctx, HopConnectTimeout)
-	defer cancel()
+	ctp := r.host.Network().ConnsToPeer(dst.ID)
 
-	if !r.active {
-		ctx = inet.WithNoDial(ctx, "relay hop")
-	} else if len(dst.Addrs) > 0 {
+	if len(ctp) == 0 && !r.active {
+		r.handleError(s, pb.CircuitRelay_HOP_NO_CONN_TO_DST)
+		return
+	}
+
+	if len(dst.Addrs) > 0 {
 		r.host.Peerstore().AddAddrs(dst.ID, dst.Addrs, pstore.TempAddrTTL)
 	}
+
+	ctx, cancel := context.WithTimeout(r.ctx, HopConnectTimeout)
+	defer cancel()
 
 	bs, err := r.host.NewStream(ctx, dst.ID, ProtoID)
 	if err != nil {
 		log.Debugf("error opening relay stream to %s: %s", dst.ID.Pretty(), err.Error())
-		if err == inet.ErrNoConn {
-			r.handleError(s, pb.CircuitRelay_HOP_NO_CONN_TO_DST)
-		} else {
-			r.handleError(s, pb.CircuitRelay_HOP_CANT_DIAL_DST)
-		}
+		r.handleError(s, pb.CircuitRelay_HOP_CANT_DIAL_DST)
 		return
 	}
 
@@ -376,10 +363,7 @@ func (r *Relay) handleHopStream(s inet.Stream, msg *pb.CircuitRelay) {
 	go func() {
 		defer r.rmLiveHop(src.ID, dst.ID)
 
-		buf := pool.Get(4096)
-		defer pool.Put(buf)
-
-		count, err := io.CopyBuffer(s, bs, buf)
+		count, err := io.Copy(s, bs)
 		if err != nil {
 			log.Debugf("relay copy error: %s", err)
 			// Reset both.
@@ -393,10 +377,7 @@ func (r *Relay) handleHopStream(s inet.Stream, msg *pb.CircuitRelay) {
 	}()
 
 	go func() {
-		buf := pool.Get(4096)
-		defer pool.Put(buf)
-
-		count, err := io.CopyBuffer(bs, s, buf)
+		count, err := io.Copy(bs, s)
 		if err != nil {
 			log.Debugf("relay copy error: %s", err)
 			// Reset both.

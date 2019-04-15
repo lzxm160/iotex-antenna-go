@@ -9,7 +9,7 @@ package validator
 import (
 	"errors"
 
-	"github.com/iotexproject/iotex-address/address"
+	"github.com/iotexproject/iotex-core/address"
 )
 
 // Errors

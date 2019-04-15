@@ -12,8 +12,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-core/action"
+	"github.com/iotexproject/iotex-core/address"
 	"github.com/iotexproject/iotex-core/blockchain"
 	"github.com/iotexproject/iotex-core/config"
 	"github.com/iotexproject/iotex-core/explorer/idl/explorer"
@@ -111,7 +111,7 @@ func (gs *GasStation) estimateGasForSmartContract(execution explorer.Execution) 
 	if err != nil {
 		return 0, err
 	}
-	_, receipt, err := gs.bc.ExecuteContractRead(callerAddr, sc)
+	receipt, err := gs.bc.ExecuteContractRead(callerAddr, sc)
 	if err != nil {
 		return 0, err
 	}

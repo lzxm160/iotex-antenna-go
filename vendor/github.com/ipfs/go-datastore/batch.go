@@ -1,5 +1,7 @@
 package datastore
 
+type verb int
+
 type op struct {
 	delete bool
 	value  []byte

@@ -570,7 +570,6 @@ func newTestConfig() (config.Config, error) {
 	cfg.API.Port = testutil.RandomPort()
 	cfg.Explorer.Enabled = true
 	cfg.Explorer.Port = 0
-	cfg.System.EnableExperimentalActions = true
 
 	sk, err := keypair.GenerateKey()
 	if err != nil {

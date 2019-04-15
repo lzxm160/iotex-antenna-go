@@ -37,8 +37,6 @@ type Scheme interface {
 	Calibrate(uint64)
 	ValidateBlockFooter(*block.Block) error
 	Metrics() (ConsensusMetrics, error)
-	Activate(bool)
-	Active() bool
 }
 
 // ConsensusMetrics contains consensus metrics to expose

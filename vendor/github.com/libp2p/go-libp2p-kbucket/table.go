@@ -125,9 +125,8 @@ func (rt *RoutingTable) Remove(p peer.ID) {
 	}
 
 	bucket := rt.Buckets[bucketID]
-	if bucket.Remove(p) {
-		rt.PeerRemoved(p)
-	}
+	bucket.Remove(p)
+	rt.PeerRemoved(p)
 }
 
 func (rt *RoutingTable) nextBucket() {

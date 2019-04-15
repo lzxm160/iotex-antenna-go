@@ -7,7 +7,6 @@
 package action
 
 import (
-	"fmt"
 	"math/big"
 
 	"github.com/spf13/cobra"
@@ -22,14 +21,14 @@ import (
 
 // actionDeployCmd represents the action deploy command
 var actionDeployCmd = &cobra.Command{
-	Use:   "deploy -s SIGNER -b BYTE_CODE -l GAS_LIMIT [-p GAS_PRICE]",
+	Use:   "deploy -l GAS_LIMIT -p GAS_PRICE -s SIGNER -b BYTE_CODE",
 	Short: "Deploy smart contract on IoTeX blockchain",
 	Args:  cobra.MaximumNArgs(0),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.SilenceUsage = true
 		output, err := deploy()
 		if err == nil {
-			fmt.Println(output)
+			println(output)
 		}
 		return err
 	},
@@ -48,17 +47,9 @@ func deploy() (string, error) {
 		}
 		nonce = accountMeta.PendingNonce
 	}
-	var gasPriceRau *big.Int
-	if len(gasPrice) == 0 {
-		gasPriceRau, err = GetGasPrice()
-		if err != nil {
-			return "", err
-		}
-	} else {
-		gasPriceRau, err = util.StringToRau(gasPrice, util.GasPriceDecimalNum)
-		if err != nil {
-			return "", err
-		}
+	gasPriceRau, err := util.StringToRau(gasPrice, util.GasPriceDecimalNum)
+	if err != nil {
+		return "", err
 	}
 	tx, err := action.NewExecution("", nonce, big.NewInt(0), gasLimit, gasPriceRau, bytecode)
 	if err != nil {

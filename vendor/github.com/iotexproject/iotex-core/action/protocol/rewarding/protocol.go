@@ -14,11 +14,11 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-core/action"
 	"github.com/iotexproject/iotex-core/action/protocol"
 	accountutil "github.com/iotexproject/iotex-core/action/protocol/account/util"
 	"github.com/iotexproject/iotex-core/action/protocol/rolldpos"
+	"github.com/iotexproject/iotex-core/address"
 	"github.com/iotexproject/iotex-core/pkg/hash"
 	"github.com/iotexproject/iotex-core/pkg/log"
 )
@@ -205,6 +205,7 @@ func (p *Protocol) createReceipt(
 ) *action.Receipt {
 	// TODO: need to review the fields
 	return &action.Receipt{
+		ReturnValue:     nil,
 		Status:          status,
 		BlockHeight:     blkHeight,
 		ActionHash:      actHash,
