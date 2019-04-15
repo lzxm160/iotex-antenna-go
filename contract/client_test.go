@@ -11,6 +11,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/iotexproject/iotex-core/address"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,8 +32,10 @@ func TestContract(t *testing.T) {
 	accountPrivateKey := "8c379a71721322d16912a88b1602c5596ca9e99a5f70777561c3029efa71a435"
 	accountAddress := "io1ns7y0pxmklk8ceattty6n7makpw76u770u5avy"
 	sct.SetOwner(accountAddress, accountPrivateKey)
+	addr, err := address.FromString("io1ns7y0pxmklk8ceattty6n7makpw76u770u5avy")
+	require.NoError(err)
 
-	hash, err := sct.Deploy([]byte("io1ns7y0pxmklk8ceattty6n7makpw76u770u5avy"))
+	hash, err := sct.Deploy(addr.Bytes())
 	require.NoError(err)
 	receipt, err := sct.CheckCallResult(hash)
 	require.NoError(err)
