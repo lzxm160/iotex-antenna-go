@@ -48,7 +48,9 @@ func TestServer_Deploy(t *testing.T) {
 	fmt.Println("contract:", sct.ContractAddress())
 
 	sct.SetExecutor(accountAddress, accountPrivateKey)
-	ret, err := sct.CallMethod("bar")
+	//ret, err := sct.CallMethod("bar")
+	ret, err := sct.CallMethod("0423a132")
 	require.NoError(err)
+
 	fmt.Println(ret)
 }
