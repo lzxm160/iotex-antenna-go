@@ -59,5 +59,5 @@ func TestContract(t *testing.T) {
 	ret, err = sct.CallMethod("getaddress")
 	require.NoError(err)
 	require.Equal("common.Address", reflect.TypeOf(ret).String())
-	require.Equal("foobar", ret.(string))
+	require.Equal(evmContractAddrHash.String(), ret.(common.Address).String())
 }
