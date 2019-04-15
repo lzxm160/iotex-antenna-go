@@ -217,13 +217,6 @@ func (r *sentReq) stateRequesting() reqStateFn {
 			go r.tryRequest()
 			r.lastReqQueued = true
 			return r.stateRequesting
-		case rpDeliveredInvalid:
-			// if it was the last sent request (set to nil by update) then start a new one
-			if !r.lastReqQueued && r.lastReqSentTo == nil {
-				go r.tryRequest()
-				r.lastReqQueued = true
-			}
-			return r.stateRequesting
 		case rpDeliveredValid:
 			r.stop(nil)
 			return r.stateStopped
@@ -249,11 +242,7 @@ func (r *sentReq) stateNoMorePeers() reqStateFn {
 			r.stop(nil)
 			return r.stateStopped
 		}
-		if r.waiting() {
-			return r.stateNoMorePeers
-		}
-		r.stop(light.ErrNoPeers)
-		return nil
+		return r.stateNoMorePeers
 	case <-r.stopCh:
 		return r.stateStopped
 	}

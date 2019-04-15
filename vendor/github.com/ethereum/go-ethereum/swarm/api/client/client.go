@@ -19,30 +19,23 @@ package client
 import (
 	"archive/tar"
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"mime"
 	"mime/multipart"
 	"net/http"
-	"net/http/httptrace"
 	"net/textproto"
-	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
 	"github.com/ethereum/go-ethereum/swarm/api"
-	"github.com/ethereum/go-ethereum/swarm/spancontext"
-	"github.com/ethereum/go-ethereum/swarm/storage/feed"
-	"github.com/pborman/uuid"
+	"github.com/ethereum/go-ethereum/swarm/storage/mru"
 )
 
 var (
@@ -130,16 +123,10 @@ func Open(path string) (*File, error) {
 		f.Close()
 		return nil, err
 	}
-
-	contentType, err := api.DetectContentType(f.Name(), f)
-	if err != nil {
-		return nil, err
-	}
-
 	return &File{
 		ReadCloser: f,
 		ManifestEntry: api.ManifestEntry{
-			ContentType: contentType,
+			ContentType: mime.TypeByExtension(filepath.Ext(path)),
 			Mode:        int64(stat.Mode()),
 			Size:        stat.Size(),
 			ModTime:     stat.ModTime(),
@@ -481,11 +468,6 @@ type UploadFn func(file *File) error
 // TarUpload uses the given Uploader to upload files to swarm as a tar stream,
 // returning the resulting manifest hash
 func (c *Client) TarUpload(hash string, uploader Uploader, defaultPath string, toEncrypt bool) (string, error) {
-	ctx, sp := spancontext.StartSpan(context.Background(), "api.client.tarupload")
-	defer sp.Finish()
-
-	var tn time.Time
-
 	reqR, reqW := io.Pipe()
 	defer reqR.Close()
 	addr := hash
@@ -501,12 +483,6 @@ func (c *Client) TarUpload(hash string, uploader Uploader, defaultPath string, t
 	if err != nil {
 		return "", err
 	}
-
-	trace := GetClientTrace("swarm api client - upload tar", "api.client.uploadtar", uuid.New()[:8], &tn)
-
-	req = req.WithContext(httptrace.WithClientTrace(ctx, trace))
-	transport := http.DefaultTransport
-
 	req.Header.Set("Content-Type", "application/x-tar")
 	if defaultPath != "" {
 		q := req.URL.Query()
@@ -547,8 +523,8 @@ func (c *Client) TarUpload(hash string, uploader Uploader, defaultPath string, t
 		}
 		reqW.CloseWithError(err)
 	}()
-	tn = time.Now()
-	res, err := transport.RoundTrip(req)
+
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -619,15 +595,13 @@ func (c *Client) MultipartUpload(hash string, uploader Uploader) (string, error)
 	return string(data), nil
 }
 
-// ErrNoFeedUpdatesFound is returned when Swarm cannot find updates of the given feed
-var ErrNoFeedUpdatesFound = errors.New("No updates found for this feed")
-
-// CreateFeedWithManifest creates a feed manifest, initializing it with the provided
-// data
-// Returns the resulting feed manifest address that you can use to include in an ENS Resolver (setContent)
-// or reference future updates (Client.UpdateFeed)
-func (c *Client) CreateFeedWithManifest(request *feed.Request) (string, error) {
-	responseStream, err := c.updateFeed(request, true)
+// CreateResource creates a Mutable Resource with the given name and frequency, initializing it with the provided
+// data. Data is interpreted as multihash or not depending on the multihash parameter.
+// startTime=0 means "now"
+// Returns the resulting Mutable Resource manifest address that you can use to include in an ENS Resolver (setContent)
+// or reference future updates (Client.UpdateResource)
+func (c *Client) CreateResource(request *mru.Request) (string, error) {
+	responseStream, err := c.updateResource(request)
 	if err != nil {
 		return "", err
 	}
@@ -645,26 +619,19 @@ func (c *Client) CreateFeedWithManifest(request *feed.Request) (string, error) {
 	return manifestAddress, nil
 }
 
-// UpdateFeed allows you to set a new version of your content
-func (c *Client) UpdateFeed(request *feed.Request) error {
-	_, err := c.updateFeed(request, false)
+// UpdateResource allows you to set a new version of your content
+func (c *Client) UpdateResource(request *mru.Request) error {
+	_, err := c.updateResource(request)
 	return err
 }
 
-func (c *Client) updateFeed(request *feed.Request, createManifest bool) (io.ReadCloser, error) {
-	URL, err := url.Parse(c.Gateway)
+func (c *Client) updateResource(request *mru.Request) (io.ReadCloser, error) {
+	body, err := request.MarshalJSON()
 	if err != nil {
 		return nil, err
 	}
-	URL.Path = "/bzz-feed:/"
-	values := URL.Query()
-	body := request.AppendValues(values)
-	if createManifest {
-		values.Set("manifest", "1")
-	}
-	URL.RawQuery = values.Encode()
 
-	req, err := http.NewRequest("POST", URL.String(), bytes.NewBuffer(body))
+	req, err := http.NewRequest("POST", c.Gateway+"/bzz-resource:/", bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
@@ -675,61 +642,28 @@ func (c *Client) updateFeed(request *feed.Request, createManifest bool) (io.Read
 	}
 
 	return res.Body, nil
+
 }
 
-// QueryFeed returns a byte stream with the raw content of the feed update
-// manifestAddressOrDomain is the address you obtained in CreateFeedWithManifest or an ENS domain whose Resolver
+// GetResource returns a byte stream with the raw content of the resource
+// manifestAddressOrDomain is the address you obtained in CreateResource or an ENS domain whose Resolver
 // points to that address
-func (c *Client) QueryFeed(query *feed.Query, manifestAddressOrDomain string) (io.ReadCloser, error) {
-	return c.queryFeed(query, manifestAddressOrDomain, false)
-}
+func (c *Client) GetResource(manifestAddressOrDomain string) (io.ReadCloser, error) {
 
-// queryFeed returns a byte stream with the raw content of the feed update
-// manifestAddressOrDomain is the address you obtained in CreateFeedWithManifest or an ENS domain whose Resolver
-// points to that address
-// meta set to true will instruct the node return feed metainformation instead
-func (c *Client) queryFeed(query *feed.Query, manifestAddressOrDomain string, meta bool) (io.ReadCloser, error) {
-	URL, err := url.Parse(c.Gateway)
+	res, err := http.Get(c.Gateway + "/bzz-resource:/" + manifestAddressOrDomain)
 	if err != nil {
 		return nil, err
 	}
-	URL.Path = "/bzz-feed:/" + manifestAddressOrDomain
-	values := URL.Query()
-	if query != nil {
-		query.AppendValues(values) //adds query parameters
-	}
-	if meta {
-		values.Set("meta", "1")
-	}
-	URL.RawQuery = values.Encode()
-	res, err := http.Get(URL.String())
-	if err != nil {
-		return nil, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		if res.StatusCode == http.StatusNotFound {
-			return nil, ErrNoFeedUpdatesFound
-		}
-		errorMessageBytes, err := ioutil.ReadAll(res.Body)
-		var errorMessage string
-		if err != nil {
-			errorMessage = "cannot retrieve error message: " + err.Error()
-		} else {
-			errorMessage = string(errorMessageBytes)
-		}
-		return nil, fmt.Errorf("Error retrieving feed updates: %s", errorMessage)
-	}
-
 	return res.Body, nil
+
 }
 
-// GetFeedRequest returns a structure that describes the referenced feed status
-// manifestAddressOrDomain is the address you obtained in CreateFeedWithManifest or an ENS domain whose Resolver
+// GetResourceMetadata returns a structure that describes the Mutable Resource
+// manifestAddressOrDomain is the address you obtained in CreateResource or an ENS domain whose Resolver
 // points to that address
-func (c *Client) GetFeedRequest(query *feed.Query, manifestAddressOrDomain string) (*feed.Request, error) {
+func (c *Client) GetResourceMetadata(manifestAddressOrDomain string) (*mru.Request, error) {
 
-	responseStream, err := c.queryFeed(query, manifestAddressOrDomain, true)
+	responseStream, err := c.GetResource(manifestAddressOrDomain + "/meta")
 	if err != nil {
 		return nil, err
 	}
@@ -740,63 +674,9 @@ func (c *Client) GetFeedRequest(query *feed.Query, manifestAddressOrDomain strin
 		return nil, err
 	}
 
-	var metadata feed.Request
+	var metadata mru.Request
 	if err := metadata.UnmarshalJSON(body); err != nil {
 		return nil, err
 	}
 	return &metadata, nil
-}
-
-func GetClientTrace(traceMsg, metricPrefix, ruid string, tn *time.Time) *httptrace.ClientTrace {
-	trace := &httptrace.ClientTrace{
-		GetConn: func(_ string) {
-			log.Trace(traceMsg+" - http get", "event", "GetConn", "ruid", ruid)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".getconn", nil).Update(time.Since(*tn))
-		},
-		GotConn: func(_ httptrace.GotConnInfo) {
-			log.Trace(traceMsg+" - http get", "event", "GotConn", "ruid", ruid)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".gotconn", nil).Update(time.Since(*tn))
-		},
-		PutIdleConn: func(err error) {
-			log.Trace(traceMsg+" - http get", "event", "PutIdleConn", "ruid", ruid, "err", err)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".putidle", nil).Update(time.Since(*tn))
-		},
-		GotFirstResponseByte: func() {
-			log.Trace(traceMsg+" - http get", "event", "GotFirstResponseByte", "ruid", ruid)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".firstbyte", nil).Update(time.Since(*tn))
-		},
-		Got100Continue: func() {
-			log.Trace(traceMsg, "event", "Got100Continue", "ruid", ruid)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".got100continue", nil).Update(time.Since(*tn))
-		},
-		DNSStart: func(_ httptrace.DNSStartInfo) {
-			log.Trace(traceMsg, "event", "DNSStart", "ruid", ruid)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".dnsstart", nil).Update(time.Since(*tn))
-		},
-		DNSDone: func(_ httptrace.DNSDoneInfo) {
-			log.Trace(traceMsg, "event", "DNSDone", "ruid", ruid)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".dnsdone", nil).Update(time.Since(*tn))
-		},
-		ConnectStart: func(network, addr string) {
-			log.Trace(traceMsg, "event", "ConnectStart", "ruid", ruid, "network", network, "addr", addr)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".connectstart", nil).Update(time.Since(*tn))
-		},
-		ConnectDone: func(network, addr string, err error) {
-			log.Trace(traceMsg, "event", "ConnectDone", "ruid", ruid, "network", network, "addr", addr, "err", err)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".connectdone", nil).Update(time.Since(*tn))
-		},
-		WroteHeaders: func() {
-			log.Trace(traceMsg, "event", "WroteHeaders(request)", "ruid", ruid)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".wroteheaders", nil).Update(time.Since(*tn))
-		},
-		Wait100Continue: func() {
-			log.Trace(traceMsg, "event", "Wait100Continue", "ruid", ruid)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".wait100continue", nil).Update(time.Since(*tn))
-		},
-		WroteRequest: func(_ httptrace.WroteRequestInfo) {
-			log.Trace(traceMsg, "event", "WroteRequest", "ruid", ruid)
-			metrics.GetOrRegisterResettingTimer(metricPrefix+".wroterequest", nil).Update(time.Since(*tn))
-		},
-	}
-	return trace
 }

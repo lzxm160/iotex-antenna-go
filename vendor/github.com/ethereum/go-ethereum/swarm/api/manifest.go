@@ -27,16 +27,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/swarm/storage/feed"
-
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/swarm/log"
 	"github.com/ethereum/go-ethereum/swarm/storage"
 )
 
 const (
-	ManifestType    = "application/bzz-manifest+json"
-	FeedContentType = "application/bzz-feed"
+	ManifestType        = "application/bzz-manifest+json"
+	ResourceContentType = "application/bzz-resource"
 
 	manifestSizeLimit = 5 * 1024 * 1024
 )
@@ -56,7 +54,6 @@ type ManifestEntry struct {
 	ModTime     time.Time    `json:"mod_time,omitempty"`
 	Status      int          `json:"status,omitempty"`
 	Access      *AccessEntry `json:"access,omitempty"`
-	Feed        *feed.Feed   `json:"feed,omitempty"`
 }
 
 // ManifestList represents the result of listing files in a manifest
@@ -80,13 +77,13 @@ func (a *API) NewManifest(ctx context.Context, toEncrypt bool) (storage.Address,
 	return addr, err
 }
 
-// Manifest hack for supporting Swarm feeds from the bzz: scheme
+// Manifest hack for supporting Mutable Resource Updates from the bzz: scheme
 // see swarm/api/api.go:API.Get() for more information
-func (a *API) NewFeedManifest(ctx context.Context, feed *feed.Feed) (storage.Address, error) {
+func (a *API) NewResourceManifest(ctx context.Context, resourceAddr string) (storage.Address, error) {
 	var manifest Manifest
 	entry := ManifestEntry{
-		Feed:        feed,
-		ContentType: FeedContentType,
+		Hash:        resourceAddr,
+		ContentType: ResourceContentType,
 	}
 	manifest.Entries = append(manifest.Entries, entry)
 	data, err := json.Marshal(&manifest)
@@ -557,6 +554,7 @@ func (mt *manifestTrie) findPrefixOf(path string, quitC chan bool) (entry *manif
 			if path != entry.Path {
 				return nil, 0
 			}
+			pos = epl
 		}
 	}
 	return nil, 0

@@ -21,6 +21,7 @@ package main
 
 import (
 	"crypto/ecdsa"
+	"fmt"
 	"io/ioutil"
 	"math/big"
 	"math/rand"
@@ -40,7 +41,7 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/node"
 	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/ethereum/go-ethereum/p2p/discover"
 	"github.com/ethereum/go-ethereum/params"
 )
 
@@ -61,11 +62,11 @@ func main() {
 
 	var (
 		nodes  []*node.Node
-		enodes []*enode.Node
+		enodes []string
 	)
 	for i := 0; i < 4; i++ {
 		// Start the node and wait until it's up
-		node, err := makeMiner(genesis)
+		node, err := makeMiner(genesis, enodes)
 		if err != nil {
 			panic(err)
 		}
@@ -75,12 +76,18 @@ func main() {
 			time.Sleep(250 * time.Millisecond)
 		}
 		// Connect the node to al the previous ones
-		for _, n := range enodes {
-			node.Server().AddPeer(n)
+		for _, enode := range enodes {
+			enode, err := discover.ParseNode(enode)
+			if err != nil {
+				panic(err)
+			}
+			node.Server().AddPeer(enode)
 		}
-		// Start tracking the node and it's enode
+		// Start tracking the node and it's enode url
 		nodes = append(nodes, node)
-		enodes = append(enodes, node.Server().Self())
+
+		enode := fmt.Sprintf("enode://%s@127.0.0.1:%d", node.Server().NodeInfo().ID, node.Server().NodeInfo().Ports.Listener)
+		enodes = append(enodes, enode)
 
 		// Inject the signer key and start sealing with it
 		store := node.AccountManager().Backends(keystore.KeyStoreType)[0].(*keystore.KeyStore)
@@ -148,7 +155,7 @@ func makeGenesis(faucets []*ecdsa.PrivateKey) *core.Genesis {
 	return genesis
 }
 
-func makeMiner(genesis *core.Genesis) (*node.Node, error) {
+func makeMiner(genesis *core.Genesis, nodes []string) (*node.Node, error) {
 	// Define the basic configurations for the Ethereum node
 	datadir, _ := ioutil.TempDir("", "")
 

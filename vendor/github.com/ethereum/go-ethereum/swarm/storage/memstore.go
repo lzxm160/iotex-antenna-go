@@ -57,7 +57,7 @@ func (m *MemStore) Get(_ context.Context, addr Address) (Chunk, error) {
 	if !ok {
 		return nil, ErrChunkNotFound
 	}
-	return c.(Chunk), nil
+	return c.(*chunk), nil
 }
 
 func (m *MemStore) Put(_ context.Context, c Chunk) error {

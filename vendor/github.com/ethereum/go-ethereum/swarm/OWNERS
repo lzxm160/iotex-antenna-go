@@ -7,6 +7,7 @@ swarm
 ├── fuse ────────────────── @jmozah, @holisticode
 ├── grafana_dashboards ──── @nonsense
 ├── metrics ─────────────── @nonsense, @holisticode
+├── multihash ───────────── @nolash
 ├── network ─────────────── ethersphere
 │   ├── bitvector ───────── @zelig, @janos, @gbalint
 │   ├── priorityqueue ───── @zelig, @janos, @gbalint
@@ -21,5 +22,5 @@ swarm
 ├── storage ─────────────── ethersphere
 │   ├── encryption ──────── @gbalint, @zelig, @nagydani
 │   ├── mock ────────────── @janos
-│   └── feed ────────────── @nolash, @jpeletier
+│   └── mru ─────────────── @nolash
 └── testutil ────────────── @lmars
