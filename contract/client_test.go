@@ -55,4 +55,9 @@ func TestContract(t *testing.T) {
 	require.NoError(err)
 	require.Equal("string", reflect.TypeOf(ret).String())
 	require.Equal("foobar", ret.(string))
+
+	ret, err = sct.CallMethod("getaddress")
+	require.NoError(err)
+	require.Equal("string", reflect.TypeOf(ret).String())
+	require.Equal("foobar", ret.(string))
 }
