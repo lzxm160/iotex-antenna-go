@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/iotexproject/iotex-core/action"
+
 	"github.com/iotexproject/iotex-core/testutil"
 
 	"github.com/stretchr/testify/require"
@@ -22,7 +24,7 @@ import (
 )
 
 const (
-	//export accountPrivateKey              = "9cdf22c5caa8a4d99eb674da27756b438c05c6b1e8995f4a0586745e2071b115"
+	//export accountPrivateKey              ="9cdf22c5caa8a4d99eb674da27756b438c05c6b1e8995f4a0586745e2071b115"
 	//export accountAddress                 = "io14gnqxf9dpkn05g337rl7eyt2nxasphf5m6n0rd"
 	//export accountBalance                 = "99994712164399999990848350"
 	//export accountNonce                   = "337529"
@@ -42,7 +44,7 @@ const (
 	//export epochDataHeight              = "1"
 	//export epochGravityChainStartHeight = "7502300"
 	//export readContractActionHash       = "28a4b4979cb9922e18c60a1c4238cbea3775f757fb947456342b90eca7e52e08"
-	//export senderPriKey = "8c379a71721322d16912a88b1602c5596ca9e99a5f70777561c3029efa71a435"
+	//export senderPriKey                 = "8c379a71721322d16912a88b1602c5596ca9e99a5f70777561c3029efa71a435"
 	host = "api.iotex.one:80"
 )
 
@@ -237,14 +239,17 @@ func TestServer_GetReceiptByAction(t *testing.T) {
 }
 
 func TestServer_ReadContract(t *testing.T) {
-	//require := require.New(t)
-	//svr, err := NewRPCMethod(host)
-	//require.NoError(err)
-	//readContractActionHash := os.Getenv("readContractActionHash")
-	//res, err := svr.GetActionsByHash(readContractActionHash, true)
-	//res2, err := svr.ReadContract(res.ActionInfo[0].Action., true)
-	//require.NoError(err)
-	//require.Equal("", res2.Data)
+	require := require.New(t)
+	svr, err := NewRPCMethod(host)
+	require.NoError(err)
+	readContractActionHash := os.Getenv("readContractActionHash")
+	res, err := svr.GetActionsByHash(readContractActionHash, true)
+	nselp := &action.SealedEnvelope{}
+	err = nselp.LoadProto(res.ActionInfo[0].Action)
+	require.NoError(err)
+	res2, err := svr.ReadContract(nselp.Proto(), true)
+	require.NoError(err)
+	require.Equal("", res2.Data)
 }
 
 func TestServer_SuggestGasPrice(t *testing.T) {
