@@ -28,34 +28,8 @@ func TestServer_Deploy(t *testing.T) {
 	//var evmContractAddrHash common.Address
 	//copy(evmContractAddrHash[:], addr.Bytes())
 	//fmt.Println(evmContractAddrHash.String())
-	bin := "608060405234801561001057600080fd5b5060b88061001f6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630423a132146044575b600080fd5b348015604f57600080fd5b50606c600480360381019080803590602001909291905050506082565b6040518082815260200191505060405180910390f35b60008190509190505600a165627a7a72305820fb1e8a2a27213a0bc96aa1e514039685d9e3bebb8a51a7132fb80632757aa91f0029"
-	abi := `[
-    {
-        "type": "function",
-        "name": "bar",
-        "constant": true,
-        "inputs": [
-            {
-                "name": "x",
-                "type": "uint256"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view"
-    },
-    {
-        "type": "constructor",
-        "inputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable"
-    }
-]`
+	bin := "6080604052348015600f57600080fd5b5060998061001e6000396000f300608060405260043610603e5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630423a13281146043575b600080fd5b348015604e57600080fd5b506058600435606a565b60408051918252519081900360200190f35b905600a165627a7a72305820fdc290d7b4e9de2ed3b68502db42e0755a574973a05ab70305662785f3c621aa0029"
+	abi := `[{"constant":true,"inputs":[{"name":"x","type":"uint256"}],"name":"bar","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]`
 
 	gasLimit := uint64(1000000)
 	gasPrice := big.NewInt(9000000000000)
