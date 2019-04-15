@@ -118,7 +118,7 @@ func (c *contract) CallMethod(method string, args ...[]byte) (interface{}, error
 	if err != nil {
 		return "", err
 	}
-	return c.decodeRet(method, ret), nil
+	return c.decodeRet(method, ret)
 }
 func (c *contract) decodeRet(method, data string) (interface{}, error) {
 	abi, err := abi.JSON(strings.NewReader(c.codeAbi))
