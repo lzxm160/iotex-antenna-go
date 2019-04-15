@@ -8,14 +8,15 @@ package contract
 
 import (
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"log"
 	"math/big"
+	"strings"
 	"time"
 
-	"github.com/cenkalti/backoff"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+
+	"github.com/cenkalti/backoff"
 	"github.com/pkg/errors"
 
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
@@ -100,9 +101,8 @@ func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
 	//		}
 	//	}
 	//}
-	var abiParam abi.ABI
-	fmt.Println(c.codeAbi)
-	err := json.Unmarshal([]byte(c.codeAbi), &abiParam)
+	reader := strings.NewReader(c.codeAbi)
+	abiParam, err := abi.JSON(reader)
 	if err != nil {
 		return nil, err
 	}
