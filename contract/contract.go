@@ -8,19 +8,21 @@ package contract
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"log"
 	"math/big"
 	"time"
 
 	"github.com/cenkalti/backoff"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/pkg/errors"
 
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
 	"github.com/iotexproject/iotex-core/action"
 	"github.com/iotexproject/iotex-core/pkg/hash"
 	"github.com/iotexproject/iotex-core/pkg/keypair"
 	"github.com/iotexproject/iotex-core/protogen/iotextypes"
-	"github.com/pkg/errors"
 )
 
 type (
@@ -46,14 +48,15 @@ type (
 		executorPk      string // private key of executor
 		rpc             *rpcmethod.RPCMethod
 		codeBin         string   // code of the smart contract
+		codeAbi         string   // abi of smart contract
 		gasLimit        uint64   //gas limit
 		gasPrice        *big.Int //gas price
 	}
 )
 
 // NewContract creates a new contract
-func NewContract(endpoint, bin string, gasLimit uint64, gasPrice *big.Int) (Contract, error) {
-	ret := &contract{endpoint: endpoint, codeBin: bin, gasLimit: gasLimit, gasPrice: gasPrice}
+func NewContract(endpoint, bin, abi string, gasLimit uint64, gasPrice *big.Int) (Contract, error) {
+	ret := &contract{endpoint: endpoint, codeBin: bin, codeAbi: abi, gasLimit: gasLimit, gasPrice: gasPrice}
 	rpcmethod, err := rpcmethod.NewRPCMethod(endpoint)
 	if err != nil {
 		return nil, err
@@ -87,17 +90,22 @@ func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
 	if len(data) != 4 {
 		return nil, errors.Errorf("invalid method id format, length = %d", len(data))
 	}
-	for _, arg := range args {
-		if arg != nil {
-			if len(arg) < 32 {
-				value := hash.BytesToHash256(arg)
-				data = append(data, value[:]...)
-			} else {
-				data = append(data, arg...)
-			}
-		}
+	//for _, arg := range args {
+	//	if arg != nil {
+	//		if len(arg) < 32 {
+	//			value := hash.BytesToHash256(arg)
+	//			data = append(data, value[:]...)
+	//		} else {
+	//			data = append(data, arg...)
+	//		}
+	//	}
+	//}
+	var abiParam abi.ABI
+	err = json.Unmarshal([]byte(c.codeAbi), &abiParam)
+	if err != nil {
+		return nil, err
 	}
-	return data, nil
+	return abiParam.Pack(method, args)
 }
 func (c *contract) CallMethod(method string, args ...[]byte) (string, error) {
 	data, err := c.method(method, args...)

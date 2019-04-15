@@ -28,10 +28,37 @@ func TestServer_Deploy(t *testing.T) {
 	//var evmContractAddrHash common.Address
 	//copy(evmContractAddrHash[:], addr.Bytes())
 	//fmt.Println(evmContractAddrHash.String())
-	bin := "6080604052348015600f57600080fd5b5060a18061001e6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063febb0f7e146044575b600080fd5b348015604f57600080fd5b506056606c565b6040518082815260200191505060405180910390f35b600060649050905600a165627a7a72305820631492f34cc1852dd0cfbfaa0631b86e9c06d7ba577caf330b4535651fd1408a0029"
+	bin := "608060405234801561001057600080fd5b5060b88061001f6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630423a132146044575b600080fd5b348015604f57600080fd5b50606c600480360381019080803590602001909291905050506082565b6040518082815260200191505060405180910390f35b60008190509190505600a165627a7a72305820fb1e8a2a27213a0bc96aa1e514039685d9e3bebb8a51a7132fb80632757aa91f0029"
+	abi := `[
+	{
+		"constant": true,
+		"inputs": [
+	{
+		"name": "x",
+		"type": "uint256"
+	}
+],
+	"name": "bar",
+	"outputs": [
+	{
+	"name": "",
+	"type": "uint256"
+	}
+	],
+	"payable": false,
+	"stateMutability": "view",
+	"type": "function"
+	},
+	{
+	"inputs": [],
+	"payable": false,
+	"stateMutability": "nonpayable",
+	"type": "constructor"
+	}
+	]"`
 	gasLimit := uint64(1000000)
 	gasPrice := big.NewInt(9000000000000)
-	sct, err := NewContract(host, bin, gasLimit, gasPrice)
+	sct, err := NewContract(host, bin, abi, gasLimit, gasPrice)
 	require.NoError(err)
 	accountPrivateKey := "8c379a71721322d16912a88b1602c5596ca9e99a5f70777561c3029efa71a435"
 	accountAddress := "io1ns7y0pxmklk8ceattty6n7makpw76u770u5avy"
@@ -43,7 +70,7 @@ func TestServer_Deploy(t *testing.T) {
 	fmt.Println("receipt contract:", receipt.ContractAddress)
 	sct.SetContractAddress(receipt.ContractAddress)
 	fmt.Println("contract:", sct.ContractAddress())
-	ret, err := sct.CallMethod("febb0f7e")
+	ret, err := sct.CallMethod("bar")
 	require.NoError(err)
 	fmt.Println(ret)
 }
