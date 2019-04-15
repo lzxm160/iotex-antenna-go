@@ -179,7 +179,7 @@ func (c *contract) CheckCallResult(h string) (*iotextypes.Receipt, error) {
 	err := backoff.Retry(func() error {
 		var err error
 		rec, err = c.checkCallResult(h)
-		log.Printf("Hash: %s times: %d", h, num)
+		log.Printf("Hash: %s times: %d , %s\n", h, num, err.Error())
 		num--
 		return err
 	}, backoff.WithMaxRetries(backoff.NewConstantBackOff(time.Millisecond*500), uint64(num)))
