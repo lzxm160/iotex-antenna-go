@@ -30,6 +30,7 @@ type (
 	Contract interface {
 		Deploy(...[]byte) (string, error)
 		CallMethod(string, ...interface{}) (interface{}, error)
+		ExecMethod(string, ...interface{}) (string, error)
 		SendToChain([]byte, bool) (string, error)
 		CheckCallResult(string) (*iotextypes.Receipt, error)
 		ContractAddress() string
@@ -135,7 +136,7 @@ func (c *contract) decodeRet(method, data string) (interface{}, error) {
 	}
 	return out, err
 }
-func (c *contract) ExecMethod(method string, args ...[]byte) (string, error) {
+func (c *contract) ExecMethod(method string, args ...interface{}) (string, error) {
 	data, err := c.encodeParams(method, args...)
 	if err != nil {
 		return "", err
