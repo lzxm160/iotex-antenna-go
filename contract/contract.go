@@ -10,7 +10,10 @@ import (
 	"encoding/hex"
 	"log"
 	"math/big"
+	"strings"
 	"time"
+
+	"github.com/ethereum/go-ethereum/accounts/abi"
 
 	"github.com/cenkalti/backoff"
 	"github.com/pkg/errors"
@@ -26,7 +29,7 @@ type (
 	// Contract is contract interface
 	Contract interface {
 		Deploy(...[]byte) (string, error)
-		CallMethod(string, ...[]byte) (string, error)
+		CallMethod(string, ...[]byte) (interface{}, error)
 		SendToChain([]byte, bool) (string, error)
 		CheckCallResult(string) (*iotextypes.Receipt, error)
 		ContractAddress() string
@@ -79,7 +82,7 @@ func (c *contract) Deploy(args ...[]byte) (string, error) {
 	// deploy send to empty address
 	return c.SetContractAddress("").SendToChain(data, false)
 }
-func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
+func (c *contract) encodeParams(method string, args ...[]byte) ([]byte, error) {
 	data, err := hex.DecodeString(method)
 	if err != nil {
 		return nil, err
@@ -106,15 +109,32 @@ func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
 	//return abiParam.Pack(method, args)
 	return data, err
 }
-func (c *contract) CallMethod(method string, args ...[]byte) (string, error) {
-	data, err := c.method(method, args...)
+func (c *contract) CallMethod(method string, args ...[]byte) (interface{}, error) {
+	data, err := c.encodeParams(method, args...)
 	if err != nil {
 		return "", err
 	}
-	return c.SendToChain(data, true)
+	ret, err := c.SendToChain(data, true)
+	if err != nil {
+		return "", err
+	}
+	return c.decodeRet(method, ret), nil
+}
+func (c *contract) decodeRet(method, data string) (interface{}, error) {
+	abi, err := abi.JSON(strings.NewReader(c.codeAbi))
+	if err != nil {
+		return nil, err
+	}
+	encb, err := hex.DecodeString(data)
+	if err != nil {
+		return nil, err
+	}
+	var out interface{}
+	err = abi.Unpack(out, "method", encb)
+	return out, err
 }
 func (c *contract) ExecMethod(method string, args ...[]byte) (string, error) {
-	data, err := c.method(method, args...)
+	data, err := c.encodeParams(method, args...)
 	if err != nil {
 		return "", err
 	}
