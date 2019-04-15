@@ -7,7 +7,6 @@
 package contract
 
 import (
-	"fmt"
 	"math/big"
 	"reflect"
 	"testing"
@@ -29,8 +28,8 @@ func TestServer_Deploy(t *testing.T) {
 	//var evmContractAddrHash common.Address
 	//copy(evmContractAddrHash[:], addr.Bytes())
 	//fmt.Println(evmContractAddrHash.String())
-	bin := "6080604052348015600f57600080fd5b5060998061001e6000396000f300608060405260043610603e5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630423a13281146043575b600080fd5b348015604e57600080fd5b506058600435606a565b60408051918252519081900360200190f35b905600a165627a7a72305820fdc290d7b4e9de2ed3b68502db42e0755a574973a05ab70305662785f3c621aa0029"
-	abi := `[{"constant":true,"inputs":[{"name":"x","type":"uint256"}],"name":"bar","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]`
+	bin := "608060405234801561001057600080fd5b50610177806100206000396000f30060806040526004361061004b5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630423a1328114610050578063bfe43b4c1461007a575b600080fd5b34801561005c57600080fd5b50610068600435610148565b60408051918252519081900360200190f35b34801561008657600080fd5b506040805160206004803580820135601f81018490048402850184019095528484526100d39436949293602493928401919081908401838280828437509497506101489650505050505050565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561010d5781810151838201526020016100f5565b50505050905090810190601f16801561013a5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b905600a165627a7a72305820528569d402fc6b27038b283a0d119270ba29d17ef484052f3a3021c33db1e06a0029"
+	abi := `[{"constant":true,"inputs":[{"name":"x","type":"uint256"}],"name":"bar","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"y","type":"string"}],"name":"barstring","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]`
 
 	gasLimit := uint64(1000000)
 	gasPrice := big.NewInt(9000000000000)
@@ -44,14 +43,16 @@ func TestServer_Deploy(t *testing.T) {
 	require.NoError(err)
 	receipt, err := sct.CheckCallResult(hash)
 	require.NoError(err)
-	fmt.Println("receipt contract:", receipt.ContractAddress)
 	sct.SetContractAddress(receipt.ContractAddress)
-	fmt.Println("contract:", sct.ContractAddress())
-
 	sct.SetExecutor(accountAddress, accountPrivateKey)
-	//ret, err := sct.CallMethod("bar")
+
 	ret, err := sct.CallMethod("bar", big.NewInt(10))
 	require.NoError(err)
 	require.Equal("*big.Int", reflect.TypeOf(ret).String())
 	require.Equal(0, ret.(*big.Int).Cmp(big.NewInt(10)))
+
+	ret, err = sct.CallMethod("barstring", "foobar")
+	require.NoError(err)
+	require.Equal("string", reflect.TypeOf(ret).String())
+	require.Equal("foobar", ret.(string))
 }

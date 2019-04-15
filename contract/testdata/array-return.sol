@@ -6,4 +6,7 @@ contract B {
     function bar(uint x) constant returns(uint) {
         return x;
     }
+    function barstring(string y)returns(string){
+        return y;
+    }
 }
