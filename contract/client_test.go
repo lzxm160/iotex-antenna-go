@@ -50,8 +50,7 @@ func TestServer_Deploy(t *testing.T) {
 
 	sct.SetExecutor(accountAddress, accountPrivateKey)
 	//ret, err := sct.CallMethod("bar")
-	arg := 10
-	ret, err := sct.CallMethod("bar", interface{}(&arg))
+	ret, err := sct.CallMethod("bar", big.NewInt(2))
 	require.NoError(err)
 	require.Equal("*big.Int", reflect.TypeOf(ret).String())
 	require.Equal(0, ret.(*big.Int).Cmp(big.NewInt(10)))
