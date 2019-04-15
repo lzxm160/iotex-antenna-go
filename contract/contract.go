@@ -8,6 +8,7 @@ package contract
 
 import (
 	"encoding/hex"
+	"fmt"
 	"log"
 	"math/big"
 	"strings"
@@ -100,6 +101,7 @@ func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
 	//	}
 	//}
 	reader := strings.NewReader(c.codeAbi)
+	fmt.Println("abiiiiiii:", c.codeAbi)
 	abiParam, err := abi.JSON(reader)
 	if err != nil {
 		return nil, err
