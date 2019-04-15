@@ -101,6 +101,7 @@ func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
 	//	}
 	//}
 	var abiParam abi.ABI
+	fmt.Println(c.codeAbi)
 	err = json.Unmarshal([]byte(c.codeAbi), &abiParam)
 	if err != nil {
 		return nil, err
