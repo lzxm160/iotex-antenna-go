@@ -55,7 +55,7 @@ func TestServer_Deploy(t *testing.T) {
 	"stateMutability": "nonpayable",
 	"type": "constructor"
 	}
-	]"`
+	]`
 	gasLimit := uint64(1000000)
 	gasPrice := big.NewInt(9000000000000)
 	sct, err := NewContract(host, bin, abi, gasLimit, gasPrice)
