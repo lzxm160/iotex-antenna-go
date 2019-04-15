@@ -133,6 +133,10 @@ func (c *contract) decodeRet(method, data string) (interface{}, error) {
 	}
 	var out interface{}
 	err = abi.Unpack(out, "method", encb)
+	if err != nil {
+		fmt.Println("there:", err)
+		return nil, err
+	}
 	return out, err
 }
 func (c *contract) ExecMethod(method string, args ...[]byte) (string, error) {
