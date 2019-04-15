@@ -129,7 +129,8 @@ func (c *contract) decodeRet(method, data string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	var out interface{}
+	//var out interface{}
+	var out map[string]interface{}
 	err = abi.Unpack(&out, "bar", encb)
 	if err != nil {
 		return nil, err
