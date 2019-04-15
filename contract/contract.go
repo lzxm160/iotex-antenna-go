@@ -29,7 +29,7 @@ type (
 	// Contract is contract interface
 	Contract interface {
 		Deploy(...[]byte) (string, error)
-		CallMethod(string, ...[]byte) (interface{}, error)
+		CallMethod(string, ...interface{}) (interface{}, error)
 		SendToChain([]byte, bool) (string, error)
 		CheckCallResult(string) (*iotextypes.Receipt, error)
 		ContractAddress() string
@@ -82,34 +82,33 @@ func (c *contract) Deploy(args ...[]byte) (string, error) {
 	// deploy send to empty address
 	return c.SetContractAddress("").SendToChain(data, false)
 }
-func (c *contract) encodeParams(method string, args ...[]byte) ([]byte, error) {
-	data, err := hex.DecodeString(method)
-	if err != nil {
-		return nil, err
-	}
-	if len(data) != 4 {
-		return nil, errors.Errorf("invalid method id format, length = %d", len(data))
-	}
-	for _, arg := range args {
-		if arg != nil {
-			if len(arg) < 32 {
-				value := hash.BytesToHash256(arg)
-				data = append(data, value[:]...)
-			} else {
-				data = append(data, arg...)
-			}
-		}
-	}
-	//reader := strings.NewReader(c.codeAbi)
-	//fmt.Println("abiiiiiii:", c.codeAbi)
-	//abiParam, err := abi.JSON(reader)
+func (c *contract) encodeParams(method string, args ...interface{}) ([]byte, error) {
+	//data, err := hex.DecodeString(method)
 	//if err != nil {
 	//	return nil, err
 	//}
-	//return abiParam.Pack(method, args)
-	return data, err
+	//if len(data) != 4 {
+	//	return nil, errors.Errorf("invalid method id format, length = %d", len(data))
+	//}
+	//for _, arg := range args {
+	//	if arg != nil {
+	//		if len(arg) < 32 {
+	//			value := hash.BytesToHash256(arg)
+	//			data = append(data, value[:]...)
+	//		} else {
+	//			data = append(data, arg...)
+	//		}
+	//	}
+	//}
+	reader := strings.NewReader(c.codeAbi)
+	abiParam, err := abi.JSON(reader)
+	if err != nil {
+		return nil, err
+	}
+	return abiParam.Pack(method, args...)
+	//return data, err
 }
-func (c *contract) CallMethod(method string, args ...[]byte) (interface{}, error) {
+func (c *contract) CallMethod(method string, args ...interface{}) (interface{}, error) {
 	data, err := c.encodeParams(method, args...)
 	if err != nil {
 		return "", err
