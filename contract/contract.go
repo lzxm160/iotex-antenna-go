@@ -83,13 +83,13 @@ func (c *contract) Deploy(args ...[]byte) (string, error) {
 	return c.SetContractAddress("").SendToChain(data, false)
 }
 func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
-	data, err := hex.DecodeString(method)
-	if err != nil {
-		return nil, err
-	}
-	if len(data) != 4 {
-		return nil, errors.Errorf("invalid method id format, length = %d", len(data))
-	}
+	//data, err := hex.DecodeString(method)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//if len(data) != 4 {
+	//	return nil, errors.Errorf("invalid method id format, length = %d", len(data))
+	//}
 	//for _, arg := range args {
 	//	if arg != nil {
 	//		if len(arg) < 32 {
