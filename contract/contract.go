@@ -84,23 +84,6 @@ func (c *contract) Deploy(args ...[]byte) (string, error) {
 	return c.SetContractAddress("").SendToChain(data, false)
 }
 func (c *contract) encodeParams(method string, args ...interface{}) ([]byte, error) {
-	//data, err := hex.DecodeString(method)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//if len(data) != 4 {
-	//	return nil, errors.Errorf("invalid method id format, length = %d", len(data))
-	//}
-	//for _, arg := range args {
-	//	if arg != nil {
-	//		if len(arg) < 32 {
-	//			value := hash.BytesToHash256(arg)
-	//			data = append(data, value[:]...)
-	//		} else {
-	//			data = append(data, arg...)
-	//		}
-	//	}
-	//}
 	reader := strings.NewReader(c.codeAbi)
 	abiParam, err := abi.JSON(reader)
 	if err != nil {
@@ -130,7 +113,7 @@ func (c *contract) decodeRet(method, data string) (interface{}, error) {
 		return nil, err
 	}
 	var out interface{}
-	err = abi.Unpack(&out, "bar", encb)
+	err = abi.Unpack(&out, method, encb)
 	if err != nil {
 		return nil, err
 	}
