@@ -15,6 +15,7 @@ import (
 
 	"github.com/iotexproject/iotex-core/address"
 	"github.com/iotexproject/iotex-core/pkg/hash"
+	"github.com/iotexproject/iotex-core/pkg/util/byteutil"
 	"github.com/iotexproject/iotex-core/protogen/iotextypes"
 )
 
@@ -31,9 +32,11 @@ var (
 
 // Candidate indicates the structure of a candidate
 type Candidate struct {
-	Address       string
-	Votes         *big.Int
-	RewardAddress string
+	Address          string
+	Votes            *big.Int
+	RewardAddress    string
+	CreationHeight   uint64
+	LastUpdateHeight uint64
 }
 
 // Equal compares two candidate instances
@@ -46,7 +49,9 @@ func (c *Candidate) Equal(d *Candidate) bool {
 	}
 	return strings.Compare(c.Address, d.Address) == 0 &&
 		c.RewardAddress == d.RewardAddress &&
-		c.Votes.Cmp(d.Votes) == 0
+		c.Votes.Cmp(d.Votes) == 0 &&
+		c.CreationHeight == d.CreationHeight &&
+		c.LastUpdateHeight == d.LastUpdateHeight
 }
 
 // CandidateList indicates the list of Candidates which is sortable
@@ -103,9 +108,11 @@ func (l *CandidateList) LoadProto(candList *iotextypes.CandidateList) error {
 // candidateToPb converts a candidate to protobuf's candidate message
 func candidateToPb(cand *Candidate) *iotextypes.Candidate {
 	candidatePb := &iotextypes.Candidate{
-		Address:       cand.Address,
-		Votes:         cand.Votes.Bytes(),
-		RewardAddress: cand.RewardAddress,
+		Address:          cand.Address,
+		Votes:            cand.Votes.Bytes(),
+		RewardAddress:    cand.RewardAddress,
+		CreationHeight:   cand.CreationHeight,
+		LastUpdateHeight: cand.LastUpdateHeight,
 	}
 	if cand.Votes != nil && len(cand.Votes.Bytes()) > 0 {
 		candidatePb.Votes = cand.Votes.Bytes()
@@ -119,9 +126,11 @@ func pbToCandidate(candPb *iotextypes.Candidate) (*Candidate, error) {
 		return nil, errors.Wrap(ErrCandidatePb, "protobuf's candidate message cannot be nil")
 	}
 	candidate := &Candidate{
-		Address:       candPb.Address,
-		Votes:         big.NewInt(0).SetBytes(candPb.Votes),
-		RewardAddress: candPb.RewardAddress,
+		Address:          candPb.Address,
+		Votes:            big.NewInt(0).SetBytes(candPb.Votes),
+		RewardAddress:    candPb.RewardAddress,
+		CreationHeight:   candPb.CreationHeight,
+		LastUpdateHeight: candPb.LastUpdateHeight,
 	}
 	return candidate, nil
 }
@@ -146,7 +155,7 @@ func CandidatesToMap(candidates CandidateList) (map[hash.Hash160]*Candidate, err
 		if err != nil {
 			return nil, errors.Wrap(err, "cannot get the hash of the address")
 		}
-		pkHash := hash.BytesToHash160(addr.Bytes())
+		pkHash := byteutil.BytesTo20B(addr.Bytes())
 		candidateMap[pkHash] = candidate
 	}
 	return candidateMap, nil

@@ -6,18 +6,14 @@
 
 package testutil
 
-import (
-	"time"
+import "github.com/facebookgo/clock"
 
-	"github.com/facebookgo/clock"
-)
-
-// TimestampNow returns current time from new clock
-func TimestampNow() time.Time {
+// TimestampNow get now timestamp from new clock
+func TimestampNow() int64 {
 	return TimestampNowFromClock(clock.New())
 }
 
-// TimestampNowFromClock get now time from specific clock
-func TimestampNowFromClock(c clock.Clock) time.Time {
-	return c.Now()
+// TimestampNowFromClock get now timestamp from specific clock
+func TimestampNowFromClock(c clock.Clock) int64 {
+	return c.Now().Unix()
 }

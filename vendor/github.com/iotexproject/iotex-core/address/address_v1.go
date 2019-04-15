@@ -39,8 +39,10 @@ func (v *v1) FromBytes(bytes []byte) (*AddrV1, error) {
 	if len(bytes) != v.AddressLength {
 		return nil, errors.Wrapf(ErrInvalidAddr, "invalid address length in bytes: %d", len(bytes))
 	}
+	var payload hash.Hash160
+	copy(payload[:], bytes)
 	return &AddrV1{
-		payload: hash.BytesToHash160(bytes),
+		payload: payload,
 	}, nil
 }
 

@@ -18,7 +18,8 @@ import (
 )
 
 var (
-	depositToRewardingFundBaseGas = uint64(10000)
+	depositToRewardingFundBaseGas    = uint64(10000)
+	depositToRewardingFundGasPerByte = uint64(100)
 )
 
 // DepositToRewardingFund is the action to deposit to the rewarding fund

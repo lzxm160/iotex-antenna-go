@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"os"
 	"sync"
+	"syscall"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -75,7 +76,7 @@ func InitGlobal(cfg GlobalConfig, opts ...zap.Option) error {
 		if err != nil {
 			return err
 		}
-		if err := redirectStderr(stderrF); err != nil {
+		if err := syscall.Dup2(int(stderrF.Fd()), 2); err != nil {
 			return err
 		}
 	}
@@ -96,6 +97,6 @@ func InitGlobal(cfg GlobalConfig, opts ...zap.Option) error {
 // RegisterLevelConfigMux registers log's level config http mux.
 func RegisterLevelConfigMux(root *http.ServeMux) {
 	_globalCfgMu.Lock()
-	root.Handle("/logging/", http.StripPrefix("/logging", _globalMux))
+	root.Handle("/log/", http.StripPrefix("/log", _globalMux))
 	_globalCfgMu.Unlock()
 }

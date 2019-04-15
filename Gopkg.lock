@@ -10,6 +10,14 @@
   revision = "306aecffea325e97f513b3ff0cf7895a5310651d"
 
 [[projects]]
+  digest = "1:166438587ed45ac211dab8a3ecebf4fa0c186d0db63430fb9127bbc2e5fcdc67"
+  name = "github.com/cenkalti/backoff"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "1e4cf3da559842a91afcb6ea6141451e6c30c618"
+  version = "v2.1.1"
+
+[[projects]]
   digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
@@ -18,9 +26,10 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:93e12a5541258740498cab5686cf2b63b442c5ae352d78be607219b5b7b8b2d4"
+  digest = "1:3cb3d8da301ce5fd93677fc156a458433f846f73ca2f29c3bb84d76d347c05e1"
   name = "github.com/ethereum/go-ethereum"
   packages = [
+    "accounts/abi",
     "common",
     "common/hexutil",
     "common/math",
@@ -32,6 +41,14 @@
   pruneopts = "UT"
   revision = "2bbee71fbe61def241832e800b4f0bd24d4beb89"
   source = "github.com/iotexproject/go-ethereum"
+
+[[projects]]
+  branch = "master"
+  digest = "1:5fe3f6ede1c208a2efd3b78fe4df0306aa9624edd39476143d14f0326e5a8d29"
+  name = "github.com/facebookgo/clock"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "600d898af40aa09a7a93ecb9265d87b0504b6f03"
 
 [[projects]]
   digest = "1:4c0989ca0bcd10799064318923b9bc2db6b4d6338dd75f3f2d86c3511aaaf5cf"
@@ -48,7 +65,7 @@
   version = "v1.2.0"
 
 [[projects]]
-  digest = "1:f7e9fabd667e2a9c66651dc9b4dee6cfc693ef8be7b7bd98401bbde3c890a179"
+  digest = "1:b4141c3740941f05d9c56f02a9d1eb66c8af71ac6e33174971259b5c16ba37c2"
   name = "github.com/iotexproject/iotex-core"
   packages = [
     "action",
@@ -60,10 +77,13 @@
     "pkg/keypair",
     "pkg/log",
     "pkg/util/byteutil",
+    "pkg/util/fileutil",
     "pkg/version",
     "protogen/iotexapi",
     "protogen/iotextypes",
     "state",
+    "test/testaddress",
+    "testutil",
   ]
   pruneopts = "UT"
   revision = "e556b3c883f941f4f489769c6623484b0f4acbaa"
@@ -85,9 +105,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:972c2427413d41a1e06ca4897e8528e5a1622894050e2f527b38ddf0f343f759"
+  digest = "1:5da8ce674952566deae4dbc23d07c85caafc6cfa815b0b3e03e41979cedb8750"
   name = "github.com/stretchr/testify"
-  packages = ["assert"]
+  packages = [
+    "assert",
+    "require",
+  ]
   pruneopts = "UT"
   revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
   version = "v1.3.0"
@@ -222,14 +245,21 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/cenkalti/backoff",
+    "github.com/ethereum/go-ethereum/accounts/abi",
     "github.com/ethereum/go-ethereum/crypto",
+    "github.com/golang/protobuf/proto",
     "github.com/iotexproject/iotex-core/action",
     "github.com/iotexproject/iotex-core/address",
     "github.com/iotexproject/iotex-core/pkg/hash",
     "github.com/iotexproject/iotex-core/pkg/keypair",
     "github.com/iotexproject/iotex-core/protogen/iotexapi",
     "github.com/iotexproject/iotex-core/protogen/iotextypes",
+    "github.com/iotexproject/iotex-core/test/testaddress",
+    "github.com/iotexproject/iotex-core/testutil",
+    "github.com/pkg/errors",
     "github.com/stretchr/testify/assert",
+    "github.com/stretchr/testify/require",
     "google.golang.org/grpc",
   ]
   solver-name = "gps-cdcl"

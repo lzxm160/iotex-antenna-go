@@ -4,10 +4,9 @@
 // permitted by law, all liability for your use of the code is disclaimed. This source code is governed by Apache
 // License 2.0 that can be found in the LICENSE file.
 
-package testutil
+package version
 
-// TestGasLimit represents the gas limit used for test actions
-const TestGasLimit uint64 = 20000
-
-// TestGasPrice represents the gas price for test actions
-const TestGasPrice int64 = 0
+const (
+	// ProtocolVersion defines Protocol version, starting from 1
+	ProtocolVersion = 0x01
+)
