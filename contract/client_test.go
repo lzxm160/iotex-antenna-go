@@ -26,7 +26,7 @@ const (
 
 func TestServer_Deploy(t *testing.T) {
 	require := require.New(t)
-	priKey, err := keypair.HexStringToPrivateKey("cfa6ef757dee2e50351620dca002d32b9c090cfda55fb81f37f1d26b273743f1")
+	priKey, err := keypair.HexStringToPrivateKey("4e1a9091301ca53ae505292911bf4c39f720288724226efc654f2593b56085bd")
 	require.NoError(err)
 	addr, err := address.FromBytes(priKey.PublicKey().Hash())
 	require.NoError(err)
