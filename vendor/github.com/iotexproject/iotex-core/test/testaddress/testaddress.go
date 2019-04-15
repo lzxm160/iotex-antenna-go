@@ -7,7 +7,7 @@
 package testaddress
 
 import (
-	"github.com/iotexproject/iotex-core/address"
+	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-core/pkg/keypair"
 )
 
@@ -40,10 +40,9 @@ func init() {
 	Addrinfo = make(map[string]address.Address)
 	Keyinfo = make(map[string]*Key)
 	for name, skStr := range testSKs {
-		priKey, _ := keypair.DecodePrivateKey(skStr)
-		pubKey := &priKey.PublicKey
-		pkHash := keypair.HashPubKey(pubKey)
-		Addrinfo[name], _ = address.FromBytes(pkHash[:])
+		priKey, _ := keypair.HexStringToPrivateKey(skStr)
+		pubKey := priKey.PublicKey()
+		Addrinfo[name], _ = address.FromBytes(pubKey.Hash())
 		Keyinfo[name] = &Key{PubKey: pubKey, PriKey: priKey}
 	}
 }
