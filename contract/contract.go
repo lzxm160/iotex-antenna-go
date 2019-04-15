@@ -58,21 +58,14 @@ type (
 // NewContract creates a new contract
 func NewContract(endpoint, bin, abi string, gasLimit uint64, gasPrice *big.Int) (Contract, error) {
 	ret := &contract{endpoint: endpoint, codeBin: bin, codeAbi: abi, gasLimit: gasLimit, gasPrice: gasPrice}
+	rpcmethod, err := rpcmethod.NewRPCMethod(ret.endpoint)
+	if err != nil {
+		return nil, err
+	}
+	ret.rpc = rpcmethod
 	return ret, nil
 }
-func (c *contract) connect() (err error) {
-	rpcmethod, err := rpcmethod.NewRPCMethod(c.endpoint)
-	if err != nil {
-		return err
-	}
-	c.rpc = rpcmethod
-	return nil
-}
 func (c *contract) Deploy(args ...[]byte) (string, error) {
-	err := c.connect()
-	if err != nil {
-		return "", err
-	}
 	data, err := hex.DecodeString(c.codeBin)
 	if err != nil {
 		return "", err
@@ -100,10 +93,6 @@ func (c *contract) encodeParams(method string, args ...interface{}) ([]byte, err
 	//return data, err
 }
 func (c *contract) CallMethod(method string, args ...interface{}) (interface{}, error) {
-	err := c.connect()
-	if err != nil {
-		return nil, err
-	}
 	data, err := c.encodeParams(method, args...)
 	if err != nil {
 		return nil, err
@@ -131,10 +120,6 @@ func (c *contract) decodeRet(method, data string) (interface{}, error) {
 	return out, err
 }
 func (c *contract) ExecMethod(method string, args ...interface{}) (string, error) {
-	err := c.connect()
-	if err != nil {
-		return "", err
-	}
 	data, err := c.encodeParams(method, args...)
 	if err != nil {
 		return "", err
@@ -143,7 +128,6 @@ func (c *contract) ExecMethod(method string, args ...interface{}) (string, error
 }
 
 func (c *contract) SendToChain(data []byte, readOnly bool) (string, error) {
-	defer c.rpc.Close()
 	if c.executorAddress == "" || c.executorPk == "" {
 		c.executorAddress = c.ownerAddress
 		c.executorPk = c.ownerPk
@@ -194,15 +178,10 @@ func (c *contract) SendToChain(data []byte, readOnly bool) (string, error) {
 }
 
 func (c *contract) CheckCallResult(h string) (*iotextypes.Receipt, error) {
-	err := c.connect()
-	if err != nil {
-		return nil, err
-	}
-	defer c.rpc.Close()
 	var rec *iotextypes.Receipt
 	// max retry 120 times with interval = 500ms
 	num := 120
-	err = backoff.Retry(func() error {
+	err := backoff.Retry(func() error {
 		var err error
 		rec, err = c.checkCallResult(h)
 		log.Printf("Hash: %s times: %d ", h, num)
