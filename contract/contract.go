@@ -102,15 +102,15 @@ func (c *contract) encodeParams(method string, args ...interface{}) ([]byte, err
 func (c *contract) CallMethod(method string, args ...interface{}) (interface{}, error) {
 	err := c.connect()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	data, err := c.encodeParams(method, args...)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	ret, err := c.SendToChain(data, true)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	return c.decodeRet(method, ret)
 }
@@ -194,10 +194,15 @@ func (c *contract) SendToChain(data []byte, readOnly bool) (string, error) {
 }
 
 func (c *contract) CheckCallResult(h string) (*iotextypes.Receipt, error) {
+	err := c.connect()
+	if err != nil {
+		return nil, err
+	}
+	defer c.rpc.Close()
 	var rec *iotextypes.Receipt
 	// max retry 120 times with interval = 500ms
 	num := 120
-	err := backoff.Retry(func() error {
+	err = backoff.Retry(func() error {
 		var err error
 		rec, err = c.checkCallResult(h)
 		log.Printf("Hash: %s times: %d ", h, num)
