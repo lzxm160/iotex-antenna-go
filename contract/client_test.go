@@ -11,6 +11,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/ethereum/go-ethereum/common"
+
 	"github.com/iotexproject/iotex-core/address"
 
 	"github.com/stretchr/testify/require"
@@ -34,8 +36,10 @@ func TestContract(t *testing.T) {
 	sct.SetOwner(accountAddress, accountPrivateKey)
 	addr, err := address.FromString("io1ns7y0pxmklk8ceattty6n7makpw76u770u5avy")
 	require.NoError(err)
+	var evmContractAddrHash common.Address
+	copy(evmContractAddrHash[:], addr.Bytes())
 
-	hash, err := sct.Deploy(addr.Bytes())
+	hash, err := sct.Deploy(evmContractAddrHash)
 	require.NoError(err)
 	receipt, err := sct.CheckCallResult(hash)
 	require.NoError(err)
