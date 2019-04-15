@@ -52,6 +52,6 @@ func TestServer_Deploy(t *testing.T) {
 	//ret, err := sct.CallMethod("bar")
 	ret, err := sct.CallMethod("0423a132", []byte{10})
 	require.NoError(err)
-	require.Equal("*big.Int", reflect.TypeOf(ret).Name())
+	require.Equal("*big.Int", reflect.TypeOf(ret).String())
 	require.Equal(0, ret.(*big.Int).Cmp(big.NewInt(10)))
 }
