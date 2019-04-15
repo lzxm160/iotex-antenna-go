@@ -12,11 +12,11 @@ import (
 	"math/big"
 	"strings"
 	"time"
-	"tokenxx-algorithm-c/accounts/abi"
 
 	"github.com/cenkalti/backoff"
 	"github.com/pkg/errors"
 
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
 	"github.com/iotexproject/iotex-core/action"
 	"github.com/iotexproject/iotex-core/pkg/hash"
