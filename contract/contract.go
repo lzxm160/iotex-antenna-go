@@ -73,7 +73,6 @@ func (c *contract) Deploy(args ...[]byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer c.rpc.Close()
 	data, err := hex.DecodeString(c.codeBin)
 	if err != nil {
 		return "", err
@@ -105,7 +104,6 @@ func (c *contract) CallMethod(method string, args ...interface{}) (interface{}, 
 	if err != nil {
 		return "", err
 	}
-	defer c.rpc.Close()
 	data, err := c.encodeParams(method, args...)
 	if err != nil {
 		return "", err
@@ -137,7 +135,6 @@ func (c *contract) ExecMethod(method string, args ...interface{}) (string, error
 	if err != nil {
 		return "", err
 	}
-	defer c.rpc.Close()
 	data, err := c.encodeParams(method, args...)
 	if err != nil {
 		return "", err
@@ -146,6 +143,7 @@ func (c *contract) ExecMethod(method string, args ...interface{}) (string, error
 }
 
 func (c *contract) SendToChain(data []byte, readOnly bool) (string, error) {
+	defer c.rpc.Close()
 	if c.executorAddress == "" || c.executorPk == "" {
 		c.executorAddress = c.ownerAddress
 		c.executorPk = c.ownerPk
