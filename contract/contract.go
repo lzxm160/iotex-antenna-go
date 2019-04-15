@@ -13,14 +13,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
-
 	"github.com/cenkalti/backoff"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/pkg/errors"
 
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
 	"github.com/iotexproject/iotex-core/action"
-	"github.com/iotexproject/iotex-core/pkg/hash"
 	"github.com/iotexproject/iotex-core/pkg/keypair"
 	"github.com/iotexproject/iotex-core/protogen/iotextypes"
 )
@@ -28,7 +26,7 @@ import (
 type (
 	// Contract is contract interface
 	Contract interface {
-		Deploy(...[]byte) (string, error)
+		Deploy(...interface{}) (string, error)
 		CallMethod(string, ...interface{}) (interface{}, error)
 		ExecMethod(string, ...interface{}) (string, error)
 		SendToChain([]byte, bool) (string, error)
@@ -65,21 +63,26 @@ func NewContract(endpoint, bin, abi string, gasLimit uint64, gasPrice *big.Int) 
 	ret.rpc = rpcmethod
 	return ret, nil
 }
-func (c *contract) Deploy(args ...[]byte) (string, error) {
+func (c *contract) Deploy(args ...interface{}) (string, error) {
 	data, err := hex.DecodeString(c.codeBin)
 	if err != nil {
 		return "", err
 	}
-	for _, arg := range args {
-		if arg != nil {
-			if len(arg) < 32 {
-				value := hash.BytesToHash256(arg)
-				data = append(data, value[:]...)
-			} else {
-				data = append(data, arg...)
-			}
-		}
+	//for _, arg := range args {
+	//	if arg != nil {
+	//		if len(arg) < 32 {
+	//			value := hash.BytesToHash256(arg)
+	//			data = append(data, value[:]...)
+	//		} else {
+	//			data = append(data, arg...)
+	//		}
+	//	}
+	//}
+	arg, err := c.encodeParams("", args...)
+	if err != nil {
+		return "", err
 	}
+	data = append(data, arg...)
 	// deploy send to empty address
 	return c.SetContractAddress("").SendToChain(data, false)
 }
