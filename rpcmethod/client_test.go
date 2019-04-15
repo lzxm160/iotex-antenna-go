@@ -245,11 +245,14 @@ func TestServer_ReadContract(t *testing.T) {
 	readContractActionHash := os.Getenv("readContractActionHash")
 	res, err := svr.GetActionsByHash(readContractActionHash, true)
 	nselp := &action.SealedEnvelope{}
-	err = nselp.LoadProto(res.ActionInfo[0].Action)
-	require.NoError(err)
-	res2, err := svr.ReadContract(nselp.Proto(), true)
-	require.NoError(err)
-	require.Equal("", res2.Data)
+	for _, actionInfo := range res.ActionInfo {
+		err = nselp.LoadProto(actionInfo.Action)
+		require.NoError(err)
+		res2, err := svr.ReadContract(nselp.Proto(), true)
+		require.NoError(err)
+		expectedReadContractActionHash := os.Getenv("expectedReadContractActionHash")
+		require.Equal(expectedReadContractActionHash, res2.Data)
+	}
 }
 
 func TestServer_SuggestGasPrice(t *testing.T) {
