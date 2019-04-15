@@ -8,14 +8,11 @@ package contract
 
 import (
 	"encoding/hex"
-	"fmt"
 	"log"
 	"math/big"
-	"strings"
 	"time"
 
 	"github.com/cenkalti/backoff"
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/pkg/errors"
 
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
@@ -83,31 +80,31 @@ func (c *contract) Deploy(args ...[]byte) (string, error) {
 	return c.SetContractAddress("").SendToChain(data, false)
 }
 func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
-	//data, err := hex.DecodeString(method)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//if len(data) != 4 {
-	//	return nil, errors.Errorf("invalid method id format, length = %d", len(data))
-	//}
-	//for _, arg := range args {
-	//	if arg != nil {
-	//		if len(arg) < 32 {
-	//			value := hash.BytesToHash256(arg)
-	//			data = append(data, value[:]...)
-	//		} else {
-	//			data = append(data, arg...)
-	//		}
-	//	}
-	//}
-	reader := strings.NewReader(c.codeAbi)
-	fmt.Println("abiiiiiii:", c.codeAbi)
-	abiParam, err := abi.JSON(reader)
+	data, err := hex.DecodeString(method)
 	if err != nil {
 		return nil, err
 	}
-	return abiParam.Pack(method, args)
-	//return data, err
+	if len(data) != 4 {
+		return nil, errors.Errorf("invalid method id format, length = %d", len(data))
+	}
+	for _, arg := range args {
+		if arg != nil {
+			if len(arg) < 32 {
+				value := hash.BytesToHash256(arg)
+				data = append(data, value[:]...)
+			} else {
+				data = append(data, arg...)
+			}
+		}
+	}
+	//reader := strings.NewReader(c.codeAbi)
+	//fmt.Println("abiiiiiii:", c.codeAbi)
+	//abiParam, err := abi.JSON(reader)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//return abiParam.Pack(method, args)
+	return data, err
 }
 func (c *contract) CallMethod(method string, args ...[]byte) (string, error) {
 	data, err := c.method(method, args...)
