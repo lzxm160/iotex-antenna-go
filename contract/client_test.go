@@ -29,7 +29,34 @@ func TestServer_Deploy(t *testing.T) {
 	//copy(evmContractAddrHash[:], addr.Bytes())
 	//fmt.Println(evmContractAddrHash.String())
 	bin := "608060405234801561001057600080fd5b5060b88061001f6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630423a132146044575b600080fd5b348015604f57600080fd5b50606c600480360381019080803590602001909291905050506082565b6040518082815260200191505060405180910390f35b60008190509190505600a165627a7a72305820fb1e8a2a27213a0bc96aa1e514039685d9e3bebb8a51a7132fb80632757aa91f0029"
-	abi := `[{"constant":true,"inputs":[{"name":"x","type":"uint256"}],"name":"bar","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]`
+	abi := `[
+    {
+        "type": "function",
+        "name": "bar",
+        "constant": true,
+        "inputs": [
+            {
+                "name": "x",
+                "type": "uint256"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view"
+    },
+    {
+        "type": "constructor",
+        "inputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable"
+    }
+]`
+
 	gasLimit := uint64(1000000)
 	gasPrice := big.NewInt(9000000000000)
 	sct, err := NewContract(host, bin, abi, gasLimit, gasPrice)
