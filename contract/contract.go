@@ -8,6 +8,7 @@ package contract
 
 import (
 	"encoding/hex"
+	"fmt"
 	"log"
 	"math/big"
 	"time"
@@ -156,6 +157,7 @@ func (c *contract) SendToChain(data []byte, readOnly bool) (string, error) {
 	if err != nil {
 		return hex, errors.Wrapf(err, "tx 0x%s failed to send to Blockchain", hex)
 	}
+	fmt.Println(hex)
 	return hex, nil
 }
 
