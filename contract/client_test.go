@@ -36,7 +36,8 @@ func TestServer_Deploy(t *testing.T) {
 	require.NoError(err)
 	accountPrivateKey := "8c379a71721322d16912a88b1602c5596ca9e99a5f70777561c3029efa71a435"
 	accountAddress := "io1ns7y0pxmklk8ceattty6n7makpw76u770u5avy"
-	sct.SetExecutor(accountAddress, accountPrivateKey)
+	sct.SetOwner(accountAddress, accountPrivateKey)
+
 	hash, err := sct.Deploy()
 	require.NoError(err)
 	receipt, err := sct.CheckCallResult(hash)
@@ -44,6 +45,8 @@ func TestServer_Deploy(t *testing.T) {
 	fmt.Println("receipt contract:", receipt.ContractAddress)
 	sct.SetContractAddress(receipt.ContractAddress)
 	fmt.Println("contract:", sct.ContractAddress())
+
+	sct.SetExecutor(accountAddress, accountPrivateKey)
 	ret, err := sct.CallMethod("bar")
 	require.NoError(err)
 	fmt.Println(ret)

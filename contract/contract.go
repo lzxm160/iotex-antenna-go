@@ -10,7 +10,9 @@ import (
 	"encoding/hex"
 	"log"
 	"math/big"
+	"strings"
 	"time"
+	"tokenxx-algorithm-c/accounts/abi"
 
 	"github.com/cenkalti/backoff"
 	"github.com/pkg/errors"
@@ -80,30 +82,30 @@ func (c *contract) Deploy(args ...[]byte) (string, error) {
 	return c.SetContractAddress("").SendToChain(data, false)
 }
 func (c *contract) method(method string, args ...[]byte) ([]byte, error) {
-	data, err := hex.DecodeString(method)
-	if err != nil {
-		return nil, err
-	}
-	if len(data) != 4 {
-		return nil, errors.Errorf("invalid method id format, length = %d", len(data))
-	}
-	for _, arg := range args {
-		if arg != nil {
-			if len(arg) < 32 {
-				value := hash.BytesToHash256(arg)
-				data = append(data, value[:]...)
-			} else {
-				data = append(data, arg...)
-			}
-		}
-	}
-	//reader := strings.NewReader(c.codeAbi)
-	//abiParam, err := abi.JSON(reader)
+	//data, err := hex.DecodeString(method)
 	//if err != nil {
 	//	return nil, err
 	//}
-	//return abiParam.Pack(method, args)
-	return data, err
+	//if len(data) != 4 {
+	//	return nil, errors.Errorf("invalid method id format, length = %d", len(data))
+	//}
+	//for _, arg := range args {
+	//	if arg != nil {
+	//		if len(arg) < 32 {
+	//			value := hash.BytesToHash256(arg)
+	//			data = append(data, value[:]...)
+	//		} else {
+	//			data = append(data, arg...)
+	//		}
+	//	}
+	//}
+	reader := strings.NewReader(c.codeAbi)
+	abiParam, err := abi.JSON(reader)
+	if err != nil {
+		return nil, err
+	}
+	return abiParam.Pack(method, args)
+	//return data, err
 }
 func (c *contract) CallMethod(method string, args ...[]byte) (string, error) {
 	data, err := c.method(method, args...)
@@ -121,6 +123,10 @@ func (c *contract) ExecMethod(method string, args ...[]byte) (string, error) {
 }
 
 func (c *contract) SendToChain(data []byte, readOnly bool) (string, error) {
+	if c.executorAddress == "" || c.executorPk == "" {
+		c.executorAddress = c.ownerAddress
+		c.executorPk = c.ownerPk
+	}
 	response, err := c.rpc.GetAccount(c.executorAddress)
 	if err != nil {
 		return "", err
