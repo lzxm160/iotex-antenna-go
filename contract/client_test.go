@@ -9,6 +9,7 @@ package contract
 import (
 	"fmt"
 	"math/big"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -51,6 +52,10 @@ func TestServer_Deploy(t *testing.T) {
 	//ret, err := sct.CallMethod("bar")
 	ret, err := sct.CallMethod("0423a132", []byte{10})
 	require.NoError(err)
-
-	fmt.Println(ret)
+	switch ret.(type) {
+	case *big.Int:
+		fmt.Println(ret)
+	default:
+		fmt.Println(reflect.TypeOf(ret).Name())
+	}
 }

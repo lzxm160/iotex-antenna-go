@@ -8,7 +8,6 @@ package contract
 
 import (
 	"encoding/hex"
-	"fmt"
 	"log"
 	"math/big"
 	"strings"
@@ -124,7 +123,6 @@ func (c *contract) CallMethod(method string, args ...[]byte) (interface{}, error
 func (c *contract) decodeRet(method, data string) (interface{}, error) {
 	abi, err := abi.JSON(strings.NewReader(c.codeAbi))
 	if err != nil {
-		fmt.Println("here:", err)
 		return nil, err
 	}
 	encb, err := hex.DecodeString(data)
@@ -134,7 +132,6 @@ func (c *contract) decodeRet(method, data string) (interface{}, error) {
 	var out interface{}
 	err = abi.Unpack(&out, "bar", encb)
 	if err != nil {
-		fmt.Println("there:", err)
 		return nil, err
 	}
 	return out, err
