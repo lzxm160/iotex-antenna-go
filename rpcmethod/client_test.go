@@ -7,7 +7,6 @@
 package rpcmethod
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -100,9 +99,8 @@ func TestServer_SendAction(t *testing.T) {
 	require.NoError(err)
 	testTransferPb := testTransfer.Proto()
 	request := &iotexapi.SendActionRequest{Action: testTransferPb}
-	res, err := rpc.SendAction(request)
+	_, err = rpc.SendAction(request)
 	require.NoError(err)
-	fmt.Println("res:", res)
 }
 
 func TestServer_GetAction(t *testing.T) {
