@@ -248,7 +248,7 @@ func TestServer_GetChainMeta(t *testing.T) {
 	chainMetaPb := res.ChainMeta
 	require.Equal(true, chainMetaPb.Height > 1)
 	require.Equal(true, chainMetaPb.NumActions > 1)
-	require.Equal(true, chainMetaPb.Tps > 0)
+	require.Equal(true, chainMetaPb.Tps >= 0)
 	require.Equal(true, chainMetaPb.Epoch.Num > 1)
 	require.Equal(true, chainMetaPb.Epoch.Height > 1)
 	require.Equal(true, chainMetaPb.Epoch.GravityChainStartHeight > 1)
