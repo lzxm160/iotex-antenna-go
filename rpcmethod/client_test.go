@@ -56,10 +56,10 @@ func TestServer_GetAccount(t *testing.T) {
 	require.NoError(err)
 	accountMeta := res.AccountMeta
 	require.Equal(accountAddress, accountMeta.Address)
-	require.Equal(accountBalance, accountMeta.Balance)
-	require.Equal(accountNonceInt, accountMeta.Nonce)
-	require.Equal(accountPendingNonceInt, accountMeta.PendingNonce)
-	require.Equal(accountNumActionsInt, accountMeta.NumActions)
+	require.NotEqual(accountBalance, accountMeta.Balance)
+	require.Equal(true, accountNonceInt < accountMeta.Nonce)
+	require.Equal(true, accountPendingNonceInt < accountMeta.PendingNonce)
+	require.Equal(true, accountNumActionsInt < accountMeta.NumActions)
 
 	// failure
 	_, err = svr.GetAccount(&iotexapi.GetAccountRequest{})
