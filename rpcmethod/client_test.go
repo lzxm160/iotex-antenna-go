@@ -306,6 +306,7 @@ func TestServer_ReadContract(t *testing.T) {
 	svr, err := NewRPCMethod(host)
 	require.NoError(err)
 	readContractActionHash := os.Getenv("readContractActionHash")
+	expectedReadContractActionHash := os.Getenv("expectedReadContractActionHash")
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByHash{
 			ByHash: &iotexapi.GetActionByHashRequest{
@@ -320,7 +321,7 @@ func TestServer_ReadContract(t *testing.T) {
 
 	res2, err := svr.ReadContract(request2)
 	require.NoError(err)
-	require.Equal("", res2.Data)
+	require.Equal(expectedReadContractActionHash, res2.Data)
 }
 
 func TestServer_SuggestGasPrice(t *testing.T) {
