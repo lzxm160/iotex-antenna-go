@@ -348,6 +348,7 @@
   input-imports = [
     "github.com/cenkalti/backoff",
     "github.com/ethereum/go-ethereum/accounts/abi",
+    "github.com/ethereum/go-ethereum/common",
     "github.com/ethereum/go-ethereum/crypto",
     "github.com/golang/protobuf/proto",
     "github.com/iotexproject/iotex-core/action",
