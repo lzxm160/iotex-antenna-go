@@ -8,7 +8,6 @@ package account
 
 import (
 	"crypto/ecdsa"
-	"fmt"
 
 	"github.com/iotexproject/iotex-core/address"
 
@@ -29,7 +28,6 @@ func (act Account) Sign(data []byte) ([]byte, error) {
 		return nil, err
 	}
 	h := hash.Hash256b(data)
-	fmt.Printf("h: %+x\n", h)
 	return crypto.Sign(h[:], priv.EcdsaPrivateKey())
 }
 
