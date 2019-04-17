@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export accountPrivateKey="9cdf22c5caa8a4d99eb674da27756b438c05c6b1e8995f4a0586745e2071b115"
 export accountAddress="io14gnqxf9dpkn05g337rl7eyt2nxasphf5m6n0rd"
 export accountBalance="99994712164399999990848350"
