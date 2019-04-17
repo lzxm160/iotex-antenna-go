@@ -8,6 +8,7 @@ package account
 
 import (
 	"github.com/ethereum/go-ethereum/crypto"
+
 	"github.com/iotexproject/iotex-core/pkg/keypair"
 )
 

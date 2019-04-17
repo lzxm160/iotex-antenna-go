@@ -11,11 +11,11 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/iotexproject/iotex-core/pkg/keypair"
-
 	"github.com/golang/protobuf/proto"
-	"github.com/iotexproject/iotex-core/action"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/iotexproject/iotex-core/action"
+	"github.com/iotexproject/iotex-core/pkg/keypair"
 )
 
 func TestAction_Envelope(t *testing.T) {
