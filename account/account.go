@@ -44,7 +44,7 @@ func privateToAccount(private *ecdsa.PrivateKey) (acc Account, err error) {
 	}
 	return Account{
 		Address:    addr.String(),
-		PublicKey:  pri.HexString(),
 		PrivateKey: pri.PublicKey().HexString(),
+		PublicKey:  pri.HexString(),
 	}, nil
 }
