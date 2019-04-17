@@ -18,7 +18,7 @@ func TestFromRau(t *testing.T) {
 	raw, ok := new(big.Int).SetString("12000000000000000000", 10)
 	require.True(ok)
 	convert := FromRau(raw)
-	require.Equal(12, convert)
+	require.Equal(int64(12), convert)
 }
 func TestToRau(t *testing.T) {
 	require := require.New(t)
