@@ -10,39 +10,41 @@ import (
 	"github.com/iotexproject/iotex-core/protogen/iotexapi"
 )
 
-type GetAccountResponse struct {
-	*iotexapi.GetAccountResponse
-}
-type GetActionsResponse struct {
-	*iotexapi.GetActionsResponse
-}
-type GetBlockMetasResponse struct {
-	*iotexapi.GetBlockMetasResponse
-}
-type GetChainMetaResponse struct {
-	*iotexapi.GetChainMetaResponse
-}
-type GetServerMetaResponse struct {
-	*iotexapi.GetServerMetaResponse
-}
-type SendActionResponse struct {
-	*iotexapi.SendActionResponse
-}
-type GetReceiptByActionResponse struct {
-	*iotexapi.GetReceiptByActionResponse
-}
-type ReadContractResponse struct {
-	*iotexapi.ReadContractResponse
-}
-type SuggestGasPriceResponse struct {
-	*iotexapi.SuggestGasPriceResponse
-}
-type EstimateGasForActionResponse struct {
-	*iotexapi.EstimateGasForActionResponse
-}
-type GetEpochMetaResponse struct {
-	*iotexapi.GetEpochMetaResponse
-}
-type ReadStateResponse struct {
-	*iotexapi.ReadStateResponse
-}
+type GetAccountResponse = iotexapi.GetAccountResponse
+
+type GetAccountRequest = iotexapi.GetAccountRequest
+
+//
+//type GetActionsResponse struct {
+//	*iotexapi.GetActionsResponse
+//}
+//type GetBlockMetasResponse struct {
+//	*iotexapi.GetBlockMetasResponse
+//}
+//type GetChainMetaResponse struct {
+//	*iotexapi.GetChainMetaResponse
+//}
+//type GetServerMetaResponse struct {
+//	*iotexapi.GetServerMetaResponse
+//}
+//type SendActionResponse struct {
+//	*iotexapi.SendActionResponse
+//}
+//type GetReceiptByActionResponse struct {
+//	*iotexapi.GetReceiptByActionResponse
+//}
+//type ReadContractResponse struct {
+//	*iotexapi.ReadContractResponse
+//}
+//type SuggestGasPriceResponse struct {
+//	*iotexapi.SuggestGasPriceResponse
+//}
+//type EstimateGasForActionResponse struct {
+//	*iotexapi.EstimateGasForActionResponse
+//}
+//type GetEpochMetaResponse struct {
+//	*iotexapi.GetEpochMetaResponse
+//}
+//type ReadStateResponse struct {
+//	*iotexapi.ReadStateResponse
+//}
