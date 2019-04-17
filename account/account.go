@@ -19,8 +19,8 @@ import (
 
 type Account struct {
 	Address    string
-	PublicKey  string
 	PrivateKey string
+	PublicKey  string
 }
 
 func (act Account) Sign(data []byte) ([]byte, error) {
