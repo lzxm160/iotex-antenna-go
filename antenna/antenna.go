@@ -6,27 +6,8 @@
 
 package antenna
 
-import (
-	"math/big"
+import "github.com/iotexproject/iotex-antenna-go/iotx"
 
-	"github.com/iotexproject/iotex-antenna-go/iotx"
-	"github.com/iotexproject/iotex-antenna-go/utils"
-)
-
-// Antenna
-type Antenna = iotx.Iotx
-
-// NewRPCMethod returns RPCMethod interacting with endpoint
-func NewRPCMethod(endpoint string) (*Antenna, error) {
-	return iotx.NewRPCMethod(endpoint)
-}
-
-// FromRau is a function to convert Rau to Iotx.
-func FromRau(rau *big.Int) int64 {
-	return utils.FromRau(rau)
-}
-
-// ToRau is a function to convert various units to Rau.
-func ToRau(iotxs int64) *big.Int {
-	return utils.ToRau(iotxs)
+type Antenna struct {
+	iotx.Iotx
 }

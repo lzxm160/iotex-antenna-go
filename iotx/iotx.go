@@ -6,14 +6,9 @@
 
 package iotx
 
-import (
-	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
-)
+import "github.com/iotexproject/iotex-antenna-go/rpcmethod"
 
 // RPCMethod provides simple interface tp invoke rpc method
-type Iotx = rpcmethod.RPCMethod
-
-// NewRPCMethod returns RPCMethod interacting with endpoint
-func NewRPCMethod(endpoint string) (*Iotx, error) {
-	return rpcmethod.NewRPCMethod(endpoint)
+type Iotx struct {
+	rpcmethod.RPCMethod
 }
