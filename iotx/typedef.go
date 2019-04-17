@@ -10,41 +10,45 @@ import (
 	"github.com/iotexproject/iotex-core/protogen/iotexapi"
 )
 
-type GetAccountResponse = iotexapi.GetAccountResponse
-
+// request
 type GetAccountRequest = iotexapi.GetAccountRequest
 
-//
-//type GetActionsResponse struct {
-//	*iotexapi.GetActionsResponse
-//}
-//type GetBlockMetasResponse struct {
-//	*iotexapi.GetBlockMetasResponse
-//}
-//type GetChainMetaResponse struct {
-//	*iotexapi.GetChainMetaResponse
-//}
-//type GetServerMetaResponse struct {
-//	*iotexapi.GetServerMetaResponse
-//}
-//type SendActionResponse struct {
-//	*iotexapi.SendActionResponse
-//}
-//type GetReceiptByActionResponse struct {
-//	*iotexapi.GetReceiptByActionResponse
-//}
-//type ReadContractResponse struct {
-//	*iotexapi.ReadContractResponse
-//}
-//type SuggestGasPriceResponse struct {
-//	*iotexapi.SuggestGasPriceResponse
-//}
-//type EstimateGasForActionResponse struct {
-//	*iotexapi.EstimateGasForActionResponse
-//}
-//type GetEpochMetaResponse struct {
-//	*iotexapi.GetEpochMetaResponse
-//}
-//type ReadStateResponse struct {
-//	*iotexapi.ReadStateResponse
-//}
+type GetActionsRequest = iotexapi.GetActionsRequest
+type GetActionsRequest_ByHash = iotexapi.GetActionsRequest_ByHash
+type GetActionByHashRequest = iotexapi.GetActionByHashRequest
+type GetActionsRequest_ByIndex = iotexapi.GetActionsRequest_ByIndex
+type GetActionsByIndexRequest = iotexapi.GetActionsByIndexRequest
+type SendActionRequest = iotexapi.SendActionRequest
+type GetActionsRequest_ByAddr = iotexapi.GetActionsRequest_ByAddr
+type GetActionsByAddressRequest = iotexapi.GetActionsByAddressRequest
+type GetActionsRequest_UnconfirmedByAddr = iotexapi.GetActionsRequest_UnconfirmedByAddr
+type GetUnconfirmedActionsByAddressRequest = iotexapi.GetUnconfirmedActionsByAddressRequest
+type GetActionsRequest_ByBlk = iotexapi.GetActionsRequest_ByBlk
+type GetActionsByBlockRequest = iotexapi.GetActionsByBlockRequest
+type GetBlockMetasRequest = iotexapi.GetBlockMetasRequest
+type GetBlockMetasRequest_ByIndex = iotexapi.GetBlockMetasRequest_ByIndex
+type GetBlockMetasByIndexRequest = iotexapi.GetBlockMetasByIndexRequest
+type GetBlockMetasRequest_ByHash = iotexapi.GetBlockMetasRequest_ByHash
+type GetBlockMetaByHashRequest = iotexapi.GetBlockMetaByHashRequest
+type GetChainMetaRequest = iotexapi.GetChainMetaRequest
+type GetServerMetaRequest = iotexapi.GetServerMetaRequest
+type ReadStateRequest = iotexapi.ReadStateRequest
+type GetReceiptByActionRequest = iotexapi.GetReceiptByActionRequest
+type ReadContractRequest = iotexapi.ReadContractRequest
+type SuggestGasPriceRequest = iotexapi.SuggestGasPriceRequest
+type EstimateGasForActionRequest = iotexapi.EstimateGasForActionRequest
+type GetEpochMetaRequest = iotexapi.GetEpochMetaRequest
+
+// response
+type GetAccountResponse = iotexapi.GetAccountResponse
+type GetActionsResponse = iotexapi.GetActionsResponse
+type GetBlockMetasResponse = iotexapi.GetBlockMetasResponse
+type GetChainMetaResponse = iotexapi.GetChainMetaResponse
+type GetServerMetaResponse = iotexapi.GetServerMetaResponse
+type SendActionResponse = iotexapi.SendActionResponse
+type GetReceiptByActionResponse = iotexapi.GetReceiptByActionResponse
+type ReadContractResponse = iotexapi.ReadContractResponse
+type SuggestGasPriceResponse = iotexapi.SuggestGasPriceResponse
+type EstimateGasForActionResponse = iotexapi.EstimateGasForActionResponse
+type GetEpochMetaResponse = iotexapi.GetEpochMetaResponse
+type ReadStateResponse = iotexapi.ReadStateResponse
