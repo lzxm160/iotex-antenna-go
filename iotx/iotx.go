@@ -32,8 +32,12 @@ func (r *Iotx) Close() {
 }
 
 // GetAccount gets the address detail of an address
-func (r *Iotx) GetAccount(in *iotexapi.GetAccountRequest) (*iotexapi.GetAccountResponse, error) {
-	return r.RPCMethod.GetAccount(in)
+func (r *Iotx) GetAccount(in *iotexapi.GetAccountRequest) (*GetAccountResponse, error) {
+	ret, err := r.RPCMethod.GetAccount(in)
+	if err != nil {
+		return nil, err
+	}
+	return &GetAccountResponse{ret}, nil
 }
 
 // GetActions gets action(s) by:
