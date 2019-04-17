@@ -15,7 +15,8 @@ import (
 
 func TestFromRau(t *testing.T) {
 	require := require.New(t)
-	raw := big.NewInt(12 * 1e18)
+	raw, ok := new(big.Int).SetString("12000000000000000000", 10)
+	require.True(ok)
 	convert := FromRau(raw)
 	require.Equal(12, convert)
 }
@@ -23,5 +24,7 @@ func TestToRau(t *testing.T) {
 	require := require.New(t)
 	raw := int64(10)
 	convert := ToRau(raw)
-	require.Equal(0, convert.Cmp(big.NewInt(10*1e18)))
+	expected, ok := new(big.Int).SetString("10000000000000000000", 10)
+	require.True(ok)
+	require.Equal(0, convert.Cmp(expected))
 }
