@@ -319,9 +319,8 @@ func TestServer_ReadContract(t *testing.T) {
 	require.NoError(err)
 	request2 := &iotexapi.ReadContractRequest{Action: res.ActionInfo[0].Action}
 
-	res2, err := svr.ReadContract(request2)
+	_, err = svr.ReadContract(request2)
 	require.Error(err)
-	require.Equal(expectedReadContractActionHash, res2.Data)
 }
 
 func TestServer_SuggestGasPrice(t *testing.T) {
