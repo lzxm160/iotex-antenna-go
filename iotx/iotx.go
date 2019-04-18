@@ -13,10 +13,36 @@ import (
 
 // RPCMethod provides simple interface tp invoke rpc method
 type Iotx struct {
-	rpcmethod.RPCMethod
-	accounts account.Account
+	Rpc      *rpcmethod.RPCMethod
+	Accounts account.Accounts
 }
 
-func NewIotx(host string) {
+func NewIotx(host string) (*Iotx, error) {
+	iotx := &Iotx{}
+	rpc, err := rpcmethod.NewRPCMethod(host)
+	if err != nil {
+		return nil, err
+	}
+	iotx.Rpc = rpc
+	iotx.Accounts = account.Accounts{}
+}
+func (iotx *Iotx) SendTransfer() {
 
 }
+
+//public sendTransfer(req: TransferRequest): Promise<string> {
+//const sender = this.accounts.getAccount(req.from);
+//if (!sender) {
+//throw new Error(`can not found account: ${req.from}`);
+//}
+//
+//const price = req.gasPrice ? toRau(String(req.gasPrice), "Qev") : undefined;
+//const payload = req.payload || "";
+//return new TransferMethod(this, sender, {
+//gasLimit: req.gasLimit,
+//gasPrice: price,
+//amount: req.value,
+//recipient: req.to,
+//payload: payload
+//}).execute();
+//}
