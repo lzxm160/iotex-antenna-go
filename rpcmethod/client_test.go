@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	host = "api.iotex.one:80"
+	host = "api.testnet.iotex.one:80"
 )
 
 var (
