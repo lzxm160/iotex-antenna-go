@@ -26,8 +26,8 @@ func NewIotx(host string) (*Iotx, error) {
 	iotx.Rpc = rpc
 	iotx.Accounts = account.Accounts{}
 }
-func (iotx *Iotx) SendTransfer() {
-
+func (this *Iotx) SendTransfer(request *rpcmethod.SendActionRequest) {
+	sender:=this.Accounts.
 }
 
 //public sendTransfer(req: TransferRequest): Promise<string> {
