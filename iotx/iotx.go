@@ -12,27 +12,24 @@ import (
 	"math/big"
 	"strconv"
 
-	"github.com/iotexproject/iotex-core/testutil"
-
 	"github.com/iotexproject/iotex-antenna-go/account"
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
 	"github.com/iotexproject/iotex-core/pkg/keypair"
+	"github.com/iotexproject/iotex-core/testutil"
 )
 
-// RPCMethod provides simple interface tp invoke rpc method
+// Iotx
 type Iotx struct {
-	Rpc      *rpcmethod.RPCMethod
+	*rpcmethod.RPCMethod
 	Accounts account.Accounts
 }
 
 func NewIotx(host string) (*Iotx, error) {
-	iotx := &Iotx{}
 	rpc, err := rpcmethod.NewRPCMethod(host)
 	if err != nil {
 		return nil, err
 	}
-	iotx.Rpc = rpc
-	iotx.Accounts = account.Accounts{}
+	iotx := &Iotx{rpc, account.Accounts{}}
 	return iotx, nil
 }
 func (this *Iotx) SendTransfer(request *TransferRequest) error {
@@ -46,7 +43,7 @@ func (this *Iotx) SendTransfer(request *TransferRequest) error {
 	}
 	// get account nonce
 	accountReq := &rpcmethod.GetAccountRequest{Address: request.From}
-	res, err := this.Rpc.GetAccount(accountReq)
+	res, err := this.GetAccount(accountReq)
 	if err != nil {
 		return err
 	}
@@ -60,15 +57,16 @@ func (this *Iotx) SendTransfer(request *TransferRequest) error {
 	if !ok {
 		return errors.New(fmt.Sprintf("gasPrice:%s error", request.GasPrice))
 	}
-	testTransfer, err := testutil.SignedTransfer(request.To,
+	Transfer, err := testutil.SignedTransfer(request.To,
 		priKey, nonce, amount, []byte(request.Payload), gasLimit,
 		gasPrice)
 
-	testTransferPb := testTransfer.Proto()
-	finalAction := &rpcmethod.SendActionRequest{Action: testTransferPb}
-	_, err = this.Rpc.SendAction(finalAction)
+	TransferPb := Transfer.Proto()
+	finalAction := &rpcmethod.SendActionRequest{Action: TransferPb}
+	_, err = this.SendAction(finalAction)
 	return err
 }
 func (this *Iotx) DeployContract(request *ContractRequest) error {
+	// TODO
 	return nil
 }

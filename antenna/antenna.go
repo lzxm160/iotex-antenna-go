@@ -6,7 +6,10 @@
 
 package antenna
 
-import "github.com/iotexproject/iotex-antenna-go/iotx"
+import (
+	"github.com/iotexproject/iotex-antenna-go/iotx"
+	"github.com/iotexproject/iotex-antenna-go/utils"
+)
 
 type Antenna struct {
 	Iotx *iotx.Iotx
@@ -20,4 +23,10 @@ func NewAntenna(host string) (*Antenna, error) {
 	antenna := &Antenna{}
 	antenna.Iotx = iotx
 	return antenna, nil
+}
+func FromRau(rau, unit string) string {
+	return utils.FromRau(rau, unit)
+}
+func ToRau(num, unit string) string {
+	return utils.ToRau(num, unit)
 }
