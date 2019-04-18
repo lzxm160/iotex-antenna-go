@@ -306,7 +306,6 @@ func TestServer_ReadContract(t *testing.T) {
 	svr, err := NewRPCMethod(host)
 	require.NoError(err)
 	readContractActionHash := os.Getenv("readContractActionHash")
-	expectedReadContractActionHash := os.Getenv("expectedReadContractActionHash")
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByHash{
 			ByHash: &iotexapi.GetActionByHashRequest{
