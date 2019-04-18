@@ -25,6 +25,6 @@ func TestToRau(t *testing.T) {
 	convert := ToRau("1", "Iotx")
 	require.Equal("1000000000000000000", convert)
 
-	convert = ToRau("1", "Gau")
+	convert = ToRau("1", "GRau")
 	require.Equal("1000000000", convert)
 }
