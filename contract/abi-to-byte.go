@@ -6,6 +6,12 @@
 
 package contract
 
+import (
+	"encoding/hex"
+
+	"github.com/ethereum/go-ethereum/crypto"
+)
+
 //
 //export function getAbiFunctions(abi: Array<any>): AbiByFunc {
 //  const abiFunctions = ({} as any) as AbiByFunc;
@@ -40,6 +46,10 @@ package contract
 //  return keccak256.slice(0, 8);
 //}
 //
+func GetFuncHash(fun string) string {
+	return hex.EncodeToString(crypto.Keccak256([]byte(fun))[:4])
+}
+
 //export function encodeArguments(
 //  args: Array<EthAbiDecodeParametersType>,
 //  userInput: UserInput
