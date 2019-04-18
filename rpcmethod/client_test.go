@@ -320,7 +320,7 @@ func TestServer_ReadContract(t *testing.T) {
 	request2 := &iotexapi.ReadContractRequest{Action: res.ActionInfo[0].Action}
 
 	res2, err := svr.ReadContract(request2)
-	require.NoError(err)
+	require.Error(err)
 	require.Equal(expectedReadContractActionHash, res2.Data)
 }
 
