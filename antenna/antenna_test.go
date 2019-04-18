@@ -11,9 +11,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 )
-const{
-	host="api.testnet.iotex.one:80"
-}
+
+const (
+	host = "api.testnet.iotex.one:80"
+)
+
 func TestServer_GetAccount(t *testing.T) {
 	require := require.New(t)
 	_, err := NewAntenna(host)
