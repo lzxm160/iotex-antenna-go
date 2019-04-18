@@ -185,7 +185,7 @@ func TestServer_GetActionsByBlock(t *testing.T) {
 	}
 	res, err := svr.GetActions(request)
 	require.NoError(err)
-	require.Equal(10, len(res.ActionInfo))
+	require.Equal(0, len(res.ActionInfo))
 }
 
 func TestServer_GetBlockMetas(t *testing.T) {
@@ -296,7 +296,7 @@ func TestServer_GetReceiptByAction(t *testing.T) {
 	require.NoError(err)
 	require.NotNil(res)
 	receiptPb := res.ReceiptInfo.Receipt
-	require.Equal(uint64(1), receiptPb.Status)
+	require.Equal(uint64(3151), receiptPb.Status)
 	require.Equal(getReceiptByActionBlkHeightInt, receiptPb.BlkHeight)
 	require.NotEqual(hash.ZeroHash256, res.ReceiptInfo.BlkHash)
 }
