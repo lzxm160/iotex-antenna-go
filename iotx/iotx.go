@@ -6,9 +6,17 @@
 
 package iotx
 
-import "github.com/iotexproject/iotex-antenna-go/rpcmethod"
+import (
+	"github.com/iotexproject/iotex-antenna-go/account"
+	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
+)
 
 // RPCMethod provides simple interface tp invoke rpc method
 type Iotx struct {
 	rpcmethod.RPCMethod
+	accounts account.Account
+}
+
+func NewIotx(host string) {
+
 }
