@@ -7,7 +7,6 @@
 package utils
 
 import (
-	"math/big"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -15,16 +14,11 @@ import (
 
 func TestFromRau(t *testing.T) {
 	require := require.New(t)
-	raw, ok := new(big.Int).SetString("12000000000000000000", 10)
-	require.True(ok)
-	convert := FromRau(raw)
-	require.Equal(int64(12), convert)
+	convert := FromRau("1000", "Jin")
+	require.Equal(int64(1), convert)
 }
 func TestToRau(t *testing.T) {
 	require := require.New(t)
-	raw := int64(10)
-	convert := ToRau(raw)
-	expected, ok := new(big.Int).SetString("10000000000000000000", 10)
-	require.True(ok)
-	require.Equal(0, convert.Cmp(expected))
+	convert := ToRau("1", "Iotx")
+	require.Equal("10000000000000000000", convert)
 }
