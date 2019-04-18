@@ -9,9 +9,15 @@ package antenna
 import "github.com/iotexproject/iotex-antenna-go/iotx"
 
 type Antenna struct {
-	iotx iotx.Iotx
+	Iotx *iotx.Iotx
 }
 
-func NewAntenna(host string) {
-	iotx = iotx.Iotx{}
+func NewAntenna(host string) (*Antenna, error) {
+	iotx, err := iotx.NewIotx(host)
+	if err != nil {
+		return nil, err
+	}
+	antenna := &Antenna{}
+	antenna.Iotx = iotx
+	return antenna, nil
 }

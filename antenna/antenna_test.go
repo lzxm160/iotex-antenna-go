@@ -4,12 +4,16 @@
 // permitted by law, all liability for your use of the code is disclaimed. This source code is governed by Apache
 // License 2.0 that can be found in the LICENSE file.
 
-package iotx
+package antenna
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestServer_GetAccount(t *testing.T) {
-
+	require := require.New(t)
+	_, err := NewAntenna("api.iotex.one:80")
+	require.NoError(err)
 }

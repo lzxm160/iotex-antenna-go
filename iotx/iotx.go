@@ -69,3 +69,6 @@ func (this *Iotx) SendTransfer(request *TransferRequest) error {
 	_, err = this.Rpc.SendAction(finalAction)
 	return err
 }
+func (this *Iotx) DeployContract(request *ContractRequest) error {
+	return nil
+}

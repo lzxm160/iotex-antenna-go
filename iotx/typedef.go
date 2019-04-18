@@ -14,3 +14,11 @@ type TransferRequest struct {
 	GasLimit string
 	GasPrice string
 }
+type ContractRequest struct {
+	From   string
+	Amount string
+	// contract bytecode
+	Data     []byte
+	GasLimit string
+	GasPrice string
+}
