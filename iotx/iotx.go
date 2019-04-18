@@ -12,12 +12,11 @@ import (
 	"math/big"
 	"strconv"
 
-	"github.com/iotexproject/iotex-core/pkg/keypair"
-
 	"github.com/iotexproject/iotex-core/testutil"
 
 	"github.com/iotexproject/iotex-antenna-go/account"
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
+	"github.com/iotexproject/iotex-core/pkg/keypair"
 )
 
 // RPCMethod provides simple interface tp invoke rpc method
@@ -34,6 +33,7 @@ func NewIotx(host string) (*Iotx, error) {
 	}
 	iotx.Rpc = rpc
 	iotx.Accounts = account.Accounts{}
+	return iotx, nil
 }
 func (this *Iotx) SendTransfer(request *TransferRequest) error {
 	accountPrivateKey, exist := this.Accounts.GetAccount(request.From)
