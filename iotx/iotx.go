@@ -12,6 +12,12 @@ import (
 	"math/big"
 	"strconv"
 
+	"github.com/iotexproject/iotex-core/pkg/hash"
+
+	"github.com/iotexproject/iotex-core/action"
+
+	"github.com/iotexproject/iotex-antenna-go/contract"
+
 	"github.com/iotexproject/iotex-antenna-go/account"
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
 	"github.com/iotexproject/iotex-core/pkg/keypair"
@@ -66,7 +72,42 @@ func (this *Iotx) SendTransfer(request *TransferRequest) error {
 	_, err = this.SendAction(finalAction)
 	return err
 }
-func (this *Iotx) DeployContract(request *ContractRequest) error {
-	// TODO
-	return nil
+func (this *Iotx) DeployContract(req *ContractRequest) (hash hash.Hash256, err error) {
+	senderPriKey, ok := this.Accounts.GetAccount(req.From)
+	if !ok {
+		err = errors.New("account does not exist")
+		return
+	}
+	contract, err := contract.NewContract("", "", contract.Options{req.Data}, req.GasLimit, req.GasPrice)
+	if err != nil {
+		return
+	}
+	exec, err := contract.Deploy()
+	if err != nil {
+		return
+	}
+	// get account nonce
+	accountReq := &rpcmethod.GetAccountRequest{Address: req.From}
+	res, err := this.GetAccount(accountReq)
+	if err != nil {
+		return
+	}
+	nonce := res.AccountMeta.Nonce
+	priKey, err := keypair.HexStringToPrivateKey(senderPriKey)
+	if err != nil {
+		return
+	}
+	bd := &action.EnvelopeBuilder{}
+	elp := bd.SetNonce(nonce).
+		SetGasPrice(exec.GasPrice()).
+		SetGasLimit(exec.GasLimit()).
+		SetAction(exec).Build()
+	selp, err := action.Sign(elp, priKey)
+	if err != nil {
+		return
+	}
+	request := &rpcmethod.SendActionRequest{Action: selp.Proto()}
+	_, err = this.SendAction(request)
+	return selp.Hash(), nil
+
 }

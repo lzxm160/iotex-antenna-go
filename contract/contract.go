@@ -6,55 +6,56 @@
 
 package contract
 
-//// @ts-ignore
-//import solc from "solc";
-//import { Execution } from "../action/types";
-//
-//export type Options = {
-//  // The byte code of the contract. Used when the contract gets deployed
-//  data: Buffer;
-//};
-//
-//export class Contract {
-//  // The json interface for the contract to instantiate
-//  // tslint:disable-next-line: no-any
-//  private readonly jsonInterface?: Array<any> | undefined;
-//
-//  // This address is necessary for executions and call requests
-//  private readonly address?: string;
-//
-//  // The options of the contract.
-//  private readonly options?: Options;
-//
-//  // tslint:disable-next-line: no-any
-//  constructor(jsonInterface?: Array<any>, address?: string, options?: Options) {
-//    this.jsonInterface = jsonInterface;
-//    this.address = address;
-//    this.options = options;
-//  }
-//
-//  // tslint:disable-next-line: no-any
-//  public getABI(): Array<any> | undefined {
-//    return this.jsonInterface;
-//  }
-//
-//  public getAddress(): string | undefined {
-//    return this.address;
-//  }
-//
-//  public deploy(): Execution {
-//    if (!this.options) {
-//      throw new Error("must set contract byte code");
-//    }
-//    return {
-//      contract: "",
-//      amount: "0",
-//      data: this.options.data
-//    };
-//  }
-//
-//  // tslint:disable-next-line: no-any
-//  public static compile(name: string, contract: string): any {
-//    return solc.compile(contract, 1)[name];
-//  }
-//}
+import (
+	"errors"
+	"math/big"
+	"strconv"
+
+	"github.com/iotexproject/iotex-core/action"
+)
+
+type Options struct {
+	// The byte code of the contract. Used when the contract gets deployed
+	data []byte
+}
+
+func (op *Options) Length() int {
+	return len(op.data)
+}
+func (op *Options) Data() []byte {
+	return op.data
+}
+
+type Contract struct {
+	// contract abi
+	abi string
+	// deploy and call from this address
+	address string
+	// contract bin
+	options  Options
+	gasLimit uint64
+	gasPrice *big.Int
+}
+
+func NewContract(abi, addr string, options Options, gasLimit, gasPrice string) (*Contract, error) {
+	limit, err := strconv.ParseUint(gasLimit, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	price, ok := new(big.Int).SetString(gasPrice, 10)
+	if !ok {
+		return nil, errors.New("gas price convert err")
+	}
+
+	return &Contract{abi, addr, options, limit, price}, nil
+}
+func (c *Contract) ABI() string {
+	return c.abi
+}
+func (c *Contract) Address() string {
+	return c.address
+}
+func (c *Contract) Deploy() (*action.Execution, error) {
+	execution, err := action.NewExecution("", 0, big.NewInt(0), c.gasLimit, c.gasPrice, c.options.Data())
+	return execution, err
+}
