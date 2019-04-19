@@ -102,7 +102,7 @@ func (this *Iotx) DeployContract(req *ContractRequest, args ...interface{}) (has
 	if err != nil {
 		return
 	}
-	nonce := res.PendingNonce
+	nonce := res.AccountMeta.PendingNonce
 	fmt.Println("deploy:", nonce)
 	priKey, err := keypair.HexStringToPrivateKey(senderPriKey)
 	if err != nil {
