@@ -18,7 +18,9 @@ type ContractRequest struct {
 	From   string
 	Amount string
 	// contract bytecode
-	Data     []byte
+	Data     string
+	Abi      string
 	GasLimit string
 	GasPrice string
+	Args     []interface{}
 }

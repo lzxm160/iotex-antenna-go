@@ -7,36 +7,64 @@
 package contract
 
 import (
+	"encoding/hex"
 	"math/big"
+	"strings"
+
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/crypto"
 
 	"github.com/iotexproject/iotex-core/action"
 )
 
 type CustomOptions struct {
-	address  string
-	abi      string
-	data     string
-	from     string
-	gasPrice *big.Int
-	gasLimit uint64
+	Address  string
+	Abi      string
+	Data     string
+	From     string
+	GasPrice *big.Int
+	GasLimit uint64
 }
 type contractOptions struct {
 	CustomOptions
 }
 type Contract struct {
-	options CustomOptions
+	options contractOptions
 }
 
 func NewContract(options CustomOptions) *Contract {
-	return &Contract{options}
+	return &Contract{contractOptions{options}}
 }
 func (c *Contract) ABI() string {
-	return c.options.abi
+	return c.options.Abi
 }
 func (c *Contract) Address() string {
-	return c.options.address
+	return c.options.Address
 }
-func (c *Contract) Deploy() (*action.Execution, error) {
-	execution, err := action.NewExecution("", 0, big.NewInt(0), c.gasLimit, c.gasPrice, c.options.Data())
+func (c *Contract) Deploy(args ...interface{}) (*action.Execution, error) {
+	data, err := hex.DecodeString(c.options.Data)
+	if err != nil {
+		return nil, err
+	}
+	arg, err := c.EncodeArguments("", args...)
+	if err != nil {
+		return nil, err
+	}
+	data = append(data, arg...)
+
+	execution, err := action.NewExecution("", 0, big.NewInt(0), c.options.GasLimit, c.options.GasPrice, data)
 	return execution, err
+}
+
+func (c *Contract) EncodeArguments(method string, args ...interface{}) ([]byte, error) {
+	reader := strings.NewReader(c.options.Abi)
+	abiParam, err := abi.JSON(reader)
+	if err != nil {
+		return nil, err
+	}
+	return abiParam.Pack(method, args...)
+}
+
+func GetFuncHash(fun string) string {
+	return hex.EncodeToString(crypto.Keccak256([]byte(fun))[:4])
 }

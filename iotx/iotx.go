@@ -12,14 +12,11 @@ import (
 	"math/big"
 	"strconv"
 
-	"github.com/iotexproject/iotex-core/pkg/hash"
-
-	"github.com/iotexproject/iotex-core/action"
-
-	"github.com/iotexproject/iotex-antenna-go/contract"
-
 	"github.com/iotexproject/iotex-antenna-go/account"
+	"github.com/iotexproject/iotex-antenna-go/contract"
 	"github.com/iotexproject/iotex-antenna-go/rpcmethod"
+	"github.com/iotexproject/iotex-core/action"
+	"github.com/iotexproject/iotex-core/pkg/hash"
 	"github.com/iotexproject/iotex-core/pkg/keypair"
 	"github.com/iotexproject/iotex-core/testutil"
 )
@@ -78,11 +75,24 @@ func (this *Iotx) DeployContract(req *ContractRequest) (hash hash.Hash256, err e
 		err = errors.New("account does not exist")
 		return
 	}
-	contract, err := contract.NewContract("", "", contract.Options{req.Data}, req.GasLimit, req.GasPrice)
+	conOptions := contract.CustomOptions{}
+	conOptions.From = req.From
+	conOptions.Data = req.Data
+	conOptions.Abi = req.Abi
+	limit, err := strconv.ParseUint(req.GasLimit, 10, 64)
 	if err != nil {
 		return
 	}
-	exec, err := contract.Deploy()
+	price, ok := new(big.Int).SetString(req.GasPrice, 10)
+	if !ok {
+		err = errors.New("gas price convert err")
+		return
+	}
+	conOptions.GasLimit = limit
+	conOptions.GasPrice = price
+	contract := contract.NewContract(conOptions)
+
+	exec, err := contract.Deploy(req.Args)
 	if err != nil {
 		return
 	}
@@ -109,5 +119,4 @@ func (this *Iotx) DeployContract(req *ContractRequest) (hash hash.Hash256, err e
 	request := &rpcmethod.SendActionRequest{Action: selp.Proto()}
 	_, err = this.SendAction(request)
 	return selp.Hash(), nil
-
 }
