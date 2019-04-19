@@ -11,10 +11,8 @@ import (
 	"math/big"
 	"strings"
 
-	ethereum "github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/crypto"
-	geth "github.com/ethereum/go-ethereum/mobile"
 	"github.com/iotexproject/iotex-core/action"
 )
 
@@ -26,31 +24,32 @@ type CustomOptions struct {
 	GasPrice *big.Int
 	GasLimit uint64
 }
-type FilterLogsHandler interface {
-	OnFilterLogs(log *geth.Log)
-	OnError(failure string)
-}
-type filterLogsHandler struct {
-}
 
-func (f *filterLogsHandler) OnFilterLogs(log *geth.Log) {
+//type FilterLogsHandler interface {
+//	OnFilterLogs(log *geth.Log)
+//	OnError(failure string)
+//}
+//type filterLogsHandler struct {
+//}
+//
+//func (f *filterLogsHandler) OnFilterLogs(log *geth.Log) {
+//
+//}
+//func (f *filterLogsHandler) OnError(failure string) {
+//
+//}
 
-}
-func (f *filterLogsHandler) OnError(failure string) {
-
-}
-
-type Events struct {
-	//	ethereum.FilterQuery{
-	//	Addresses: addresses,
-	//	FromBlock: big.NewInt(1),
-	//	ToBlock:   big.NewInt(2),
-	//	Topics:    [][]common.Hash{},
-	//}
-	Name     string
-	Filter   ethereum.FilterQuery
-	CallBack filterLogsHandler
-}
+//type Events struct {
+//	//	ethereum.FilterQuery{
+//	//	Addresses: addresses,
+//	//	FromBlock: big.NewInt(1),
+//	//	ToBlock:   big.NewInt(2),
+//	//	Topics:    [][]common.Hash{},
+//	//}
+//	Name     string
+//	Filter   ethereum.FilterQuery
+//	CallBack filterLogsHandler
+//}
 type contractOptions struct {
 	CustomOptions
 }
