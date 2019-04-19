@@ -8,7 +8,6 @@ package contract
 
 import (
 	"encoding/hex"
-	"fmt"
 	"math/big"
 	"strings"
 
@@ -47,12 +46,10 @@ func (c *Contract) Deploy(args ...interface{}) (*action.Execution, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(50)
 	arg, err := c.EncodeArguments("", args...)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(55)
 	data = append(data, arg...)
 
 	execution, err := action.NewExecution("", 0, big.NewInt(0), c.options.GasLimit, c.options.GasPrice, data)
