@@ -92,7 +92,7 @@ func (this *Iotx) DeployContract(req *ContractRequest) (hash hash.Hash256, err e
 	conOptions.GasPrice = price
 	contract := contract.NewContract(conOptions)
 
-	exec, err := contract.Deploy(req.Args)
+	exec, err := contract.Deploy(req.Args...)
 	if err != nil {
 		return
 	}
