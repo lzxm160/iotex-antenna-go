@@ -69,7 +69,7 @@ func (this *Iotx) SendTransfer(request *TransferRequest) error {
 	_, err = this.SendAction(finalAction)
 	return err
 }
-func (this *Iotx) DeployContract(req *ContractRequest) (hash hash.Hash256, err error) {
+func (this *Iotx) DeployContract(req *ContractRequest, args ...interface{}) (hash hash.Hash256, err error) {
 	senderPriKey, ok := this.Accounts.GetAccount(req.From)
 	if !ok {
 		err = errors.New("account does not exist")
@@ -91,7 +91,7 @@ func (this *Iotx) DeployContract(req *ContractRequest) (hash hash.Hash256, err e
 	conOptions.GasLimit = limit
 	conOptions.GasPrice = price
 	contract := contract.NewContract(conOptions)
-	exec, err := contract.Deploy(req.Args...)
+	exec, err := contract.Deploy(args...)
 	if err != nil {
 		return
 	}

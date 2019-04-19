@@ -22,5 +22,4 @@ type ContractRequest struct {
 	Abi      string
 	GasLimit string
 	GasPrice string
-	Args     []interface{}
 }
