@@ -9,7 +9,8 @@ package iotx
 import (
 	"fmt"
 	"testing"
-	"tokenxx-algorithm-c/common"
+
+	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/iotexproject/iotex-address/address"
 	"github.com/stretchr/testify/require"
