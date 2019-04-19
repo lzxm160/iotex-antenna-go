@@ -91,12 +91,10 @@ func (this *Iotx) DeployContract(req *ContractRequest) (hash hash.Hash256, err e
 	conOptions.GasLimit = limit
 	conOptions.GasPrice = price
 	contract := contract.NewContract(conOptions)
-	fmt.Println("94")
 	exec, err := contract.Deploy(req.Args...)
 	if err != nil {
 		return
 	}
-	fmt.Println("99")
 	// get account nonce
 	accountReq := &rpcmethod.GetAccountRequest{Address: req.From}
 	res, err := this.GetAccount(accountReq)
