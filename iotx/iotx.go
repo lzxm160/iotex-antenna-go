@@ -51,6 +51,7 @@ func (this *Iotx) SendTransfer(request *TransferRequest) error {
 		return err
 	}
 	nonce := res.AccountMeta.Nonce + 1
+	fmt.Println("transfer:", nonce)
 	amount, ok := new(big.Int).SetString(request.Value, 10)
 	if !ok {
 		return errors.New(fmt.Sprintf("amount:%s error", request.Value))
@@ -102,6 +103,7 @@ func (this *Iotx) DeployContract(req *ContractRequest, args ...interface{}) (has
 		return
 	}
 	nonce := res.AccountMeta.Nonce + 1
+	fmt.Println("deploy:", nonce)
 	priKey, err := keypair.HexStringToPrivateKey(senderPriKey)
 	if err != nil {
 		return
