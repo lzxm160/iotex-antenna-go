@@ -77,7 +77,7 @@ lint:
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
-	$(ECHO_V)rm -rf ./bin/$(BUILD_TARGET_SERVER)
+	$(ECHO_V)rm -rf ./$(BUILD_TARGET_SERVER)
 	$(ECHO_V)rm -rf $(COV_REPORT) $(COV_HTML) $(LINT_LOG)
 	$(ECHO_V)find . -name $(COV_OUT) -delete
 	$(ECHO_V)find . -name $(TESTBED_COV_OUT) -delete
