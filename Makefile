@@ -64,8 +64,15 @@ all: build test clean
 	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
 
 .PHONY: test
-test: dev-deps fmt lint test-html
-	$(GOTEST) -short -race ./...
+test: fmt lint
+    set -e
+    for d in $(go list ./...|grep -v vendor); do
+      $(GOTEST) -short -v -coverprofile=profile.out -covermode=count "$d"
+      if [ -f profile.out ]; then
+        cat profile.out >> coverage.txt
+        rm profile.out
+      fi
+    done
 
 .PHONY: fmt
 fmt:
@@ -74,40 +81,6 @@ fmt:
 .PHONY: lint
 lint:
 	go list ./... | grep -v /vendor/ | xargs $(GOLINT)
-
-.PHONY: lint-rich
-lint-rich:
-	$(ECHO_V)rm -rf $(LINT_LOG)
-	@echo "Running golangcli lint..."
-	$(ECHO_V)golangci-lint run $(VERBOSITY_FLAG)--enable-all | tee -a $(LINT_LOG)
-
-.PHONY: test-rich
-test-rich:
-	@echo "Running test cases..."
-	$(ECHO_V)rm -f $(COV_REPORT)
-	$(ECHO_V)touch $(COV_OUT)
-	$(ECHO_V)RICHGO_FORCE_COLOR=1 overalls \
-		-project=$(ROOT_PKG) \
-		-go-binary=richgo \
-		-ignore $(TEST_IGNORE) \
-		$(DEBUG_FLAG) -- \
-		$(VERBOSITY_FLAG) -short | \
-		grep -v -e "Test args" -e "Processing"
-
-.PHONY: test-html
-test-html: test-rich
-	@echo "Generating test report html..."
-	$(ECHO_V)gocov convert $(COV_REPORT) | gocov-html > $(COV_HTML)
-	$(ECHO_V)open $(COV_HTML)
-
-.PHONY: dev-deps
-dev-deps:
-	@echo "Installing dev dependencies..."
-	$(ECHO_V)go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
-	$(ECHO_V)go get -u github.com/kyoh86/richgo
-	$(ECHO_V)go get -u github.com/axw/gocov/gocov
-	$(ECHO_V)go get -u gopkg.in/matm/v1/gocov-html
-	$(ECHO_V)go get -u github.com/go-playground/overalls
 
 .PHONY: clean
 clean:
