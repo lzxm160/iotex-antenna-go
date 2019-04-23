@@ -14,7 +14,7 @@ GOINSTALL=$(GOCMD) install
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
-BUILD_TARGET_SERVER=antenna
+BUILD_TARGET_SERVER=Antenna
 
 # Pkgs
 ALL_PKGS := $(shell go list ./... )
