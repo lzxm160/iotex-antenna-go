@@ -18,12 +18,14 @@ import (
 	"github.com/iotexproject/iotex-core/action"
 )
 
-// Contract
+// Contract is contract interface
 type Contract interface {
 	ABI() string
 	Address() string
 	Deploy(args ...interface{}) (*action.Execution, error)
 }
+
+// ContractOptions is for contract
 type ContractOptions struct {
 	Address  string
 	Abi      string
@@ -39,6 +41,7 @@ type contract struct {
 	options *contractOptions
 }
 
+// NewContract return new contract
 func NewContract(options *ContractOptions) (Contract, error) {
 	err := validate(options)
 	if err != nil {
