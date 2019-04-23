@@ -66,12 +66,12 @@ build:
 
 .PHONY: test
 test: lint
-    go list ./... | grep -v /vendor/ | xargs $(GOTEST)
+	go list ./... | grep -v /vendor/ | xargs $(GOTEST)
 
 .PHONY: lint
 lint:
 	@echo "Installing golint..."
-    go get golang.org/x/lint/golint
+	go get golang.org/x/lint/golint
 	go list ./... | grep -v /vendor/ | xargs $(GOLINT)
 
 .PHONY: clean
