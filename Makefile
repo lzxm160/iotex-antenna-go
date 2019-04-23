@@ -66,17 +66,11 @@ build:
 
 .PHONY: test
 test: lint
-    set -e
-    for d in $(go list ./...|grep -v vendor); do
-      $(GOTEST) -short -v -coverprofile=profile.out -covermode=count "$d"
-      if [ -f profile.out ]; then
-        cat profile.out >> coverage.txt
-        rm profile.out
-      fi
-    done
+    go list ./... | grep -v /vendor/ | xargs $(GOTEST)
 
 .PHONY: lint
 lint:
+	@echo "Installing golint..."
     go get golang.org/x/lint/golint
 	go list ./... | grep -v /vendor/ | xargs $(GOLINT)
 
