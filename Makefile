@@ -10,15 +10,13 @@
 GOCMD=go
 GOLINT=golint
 GOBUILD=$(GOCMD) build
-GOINSTALL=$(GOCMD) install
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
-GOGET=$(GOCMD) get
 BUILD_TARGET_SERVER=antenna-go
 
 # Pkgs
 ALL_PKGS := $(shell go list ./... )
-PKGS := $(shell go list ./... | grep -v /test/ )
+PKGS := $(shell go list ./... | grep -v /vendor/ )
 ROOT_PKG := "github.com/iotexproject/iotex-antenna-go"
 
 # Docker parameters
@@ -42,13 +40,6 @@ PackageFlags += -X '$(VersionImportPath).GitStatus=$(GIT_STATUS)'
 PackageFlags += -X '$(VersionImportPath).GoVersion=$(GO_VERSION)'
 PackageFlags += -X '$(VersionImportPath).BuildTime=$(BUILD_TIME)'
 PackageFlags += -s -w
-
-TEST_IGNORE= ".git,vendor"
-COV_OUT := profile.coverprofile
-COV_REPORT := overalls.coverprofile
-COV_HTML := coverage.html
-
-LINT_LOG := lint.log
 
 V ?= 0
 ifeq ($(V),0)
@@ -78,7 +69,4 @@ lint:
 clean:
 	@echo "Cleaning..."
 	$(ECHO_V)rm -rf ./$(BUILD_TARGET_SERVER)
-	$(ECHO_V)rm -rf $(COV_REPORT) $(COV_HTML) $(LINT_LOG)
-	$(ECHO_V)find . -name $(COV_OUT) -delete
-	$(ECHO_V)find . -name $(TESTBED_COV_OUT) -delete
 	$(ECHO_V)$(GOCLEAN) -i $(PKGS)
