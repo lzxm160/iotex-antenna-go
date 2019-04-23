@@ -61,6 +61,7 @@ endif
 all: build test clean
 
 .PHONY: build
+build:
 	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
 
 .PHONY: test
