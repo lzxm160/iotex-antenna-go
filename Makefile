@@ -8,7 +8,7 @@
 
 # Go parameters
 GOCMD=go
-GOLINT=golint
+GOLINT=golint -set_exit_status
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
