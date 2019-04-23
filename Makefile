@@ -63,6 +63,10 @@ all: build test clean
 .PHONY: build
 	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
 
+.PHONY: test
+test: dev-deps fmt lint test-html
+	$(GOTEST) -short -race ./...
+
 .PHONY: fmt
 fmt:
 	$(GOCMD) fmt ./...
@@ -76,10 +80,6 @@ lint-rich:
 	$(ECHO_V)rm -rf $(LINT_LOG)
 	@echo "Running golangcli lint..."
 	$(ECHO_V)golangci-lint run $(VERBOSITY_FLAG)--enable-all | tee -a $(LINT_LOG)
-
-.PHONY: test
-test: fmt
-	$(GOTEST) -short -race ./...
 
 .PHONY: test-rich
 test-rich:
