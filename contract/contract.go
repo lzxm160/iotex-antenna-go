@@ -18,6 +18,7 @@ import (
 	"github.com/iotexproject/iotex-core/action"
 )
 
+// Contract
 type Contract interface {
 	ABI() string
 	Address() string
