@@ -25,8 +25,8 @@ type Contract interface {
 	Deploy(args ...interface{}) (*action.Execution, error)
 }
 
-// ContractOptions for contract
-type ContractOptions struct {
+// Options for contract
+type Options struct {
 	Address  string
 	Abi      string
 	Data     string
@@ -35,14 +35,14 @@ type ContractOptions struct {
 	GasLimit uint64
 }
 type contractOptions struct {
-	*ContractOptions
+	*Options
 }
 type contract struct {
 	options *contractOptions
 }
 
 // NewContract return new contract
-func NewContract(options *ContractOptions) (Contract, error) {
+func NewContract(options *Options) (Contract, error) {
 	err := validate(options)
 	if err != nil {
 		return nil, err
