@@ -14,7 +14,7 @@ GOINSTALL=$(GOCMD) install
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
-BUILD_TARGET_SERVER=Antenna
+BUILD_TARGET_SERVER=antenna-go
 
 # Pkgs
 ALL_PKGS := $(shell go list ./... )
@@ -62,7 +62,7 @@ all: build test clean
 
 .PHONY: build
 build:
-	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
+	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v .
 
 .PHONY: test
 test: lint
