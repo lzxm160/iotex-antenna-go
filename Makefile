@@ -58,10 +58,9 @@ else
 	DEBUG_FLAG = -debug
 endif
 
-all: clean build test
+all: build test clean
 
 .PHONY: build
-build: ioctl
 	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
 
 .PHONY: fmt
@@ -109,7 +108,7 @@ dev-deps:
 	$(ECHO_V)go get -u github.com/axw/gocov/gocov
 	$(ECHO_V)go get -u gopkg.in/matm/v1/gocov-html
 	$(ECHO_V)go get -u github.com/go-playground/overalls
-	
+
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
