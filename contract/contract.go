@@ -25,7 +25,7 @@ type Contract interface {
 	Deploy(args ...interface{}) (*action.Execution, error)
 }
 
-// ContractOptions is for contract
+// ContractOptions for contract
 type ContractOptions struct {
 	Address  string
 	Abi      string
@@ -83,6 +83,7 @@ func (c *contract) encodeArguments(method string, args ...interface{}) ([]byte, 
 	return abiParam.Pack(method, args...)
 }
 
+// GetFuncHash return func's hash
 func GetFuncHash(fun string) string {
 	return hex.EncodeToString(crypto.Keccak256([]byte(fun))[:4])
 }
