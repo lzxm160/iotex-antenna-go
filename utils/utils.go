@@ -30,6 +30,7 @@ func FromRau(rau, unit string) string {
 	return convert(rau, unit, "div")
 }
 
+// ToRau convert iotex to rau
 func ToRau(num, unit string) string {
 	return convert(num, unit, "mul")
 }
