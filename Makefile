@@ -64,7 +64,8 @@ all: build test clean
 	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
 
 .PHONY: test
-test: fmt lint
+test: lint
+    set -e
     for d in $(go list ./...|grep -v vendor); do
       $(GOTEST) -short -v -coverprofile=profile.out -covermode=count "$d"
       if [ -f profile.out ]; then
@@ -72,10 +73,6 @@ test: fmt lint
         rm profile.out
       fi
     done
-
-.PHONY: fmt
-fmt:
-	$(GOCMD) fmt ./...
 
 .PHONY: lint
 lint:
