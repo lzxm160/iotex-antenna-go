@@ -34,7 +34,8 @@ jobs:
           paths:
               - ~/go/src/github.com/iotexproject/iotex-antenna-go/vendor
       - run: go get golang.org/x/lint/golint
-      - run: golint -set_exit_status $(go list ./... | grep -v /vendor/ | grep -v /rpcmethod/)
+      - run: golint -set_exit_status $(go list ./... | grep -v /vendor/)
+      - run: go vet $(go list ./... | grep -v /vendor/)
       - run: 
           name: go test
           command: |

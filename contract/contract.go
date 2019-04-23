@@ -88,7 +88,7 @@ func GetFuncHash(fun string) string {
 	return hex.EncodeToString(crypto.Keccak256([]byte(fun))[:4])
 }
 
-func validate(options *ContractOptions) error {
+func validate(options *Options) error {
 	if options.Abi == "" || options.Data == "" || options.From == "" {
 		return errors.New("some params is empty")
 	}
