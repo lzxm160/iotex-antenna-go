@@ -16,14 +16,14 @@ type GetAccountRequest = iotexapi.GetAccountRequest
 // GetActionsRequest is alias
 type GetActionsRequest = iotexapi.GetActionsRequest
 
-// GetActionsRequest_ByHash is alias
-type GetActionsRequest_ByHash = iotexapi.GetActionsRequest_ByHash
+// GetActionsRequestByHash is alias
+type GetActionsRequestByHash = iotexapi.GetActionsRequest_ByHash
 
 // GetActionByHashRequest is alias
 type GetActionByHashRequest = iotexapi.GetActionByHashRequest
 
-// GetActionsRequest_ByIndex is alias
-type GetActionsRequest_ByIndex = iotexapi.GetActionsRequest_ByIndex
+// GetActionsRequestByIndex is alias
+type GetActionsRequestByIndex = iotexapi.GetActionsRequest_ByIndex
 
 // GetActionsByIndexRequest is alias
 type GetActionsByIndexRequest = iotexapi.GetActionsByIndexRequest
@@ -31,20 +31,20 @@ type GetActionsByIndexRequest = iotexapi.GetActionsByIndexRequest
 // SendActionRequest is alias
 type SendActionRequest = iotexapi.SendActionRequest
 
-// GetActionsRequest_ByAddr is alias
-type GetActionsRequest_ByAddr = iotexapi.GetActionsRequest_ByAddr
+// GetActionsRequestByAddr is alias
+type GetActionsRequestByAddr = iotexapi.GetActionsRequest_ByAddr
 
 // GetActionsByAddressRequest is alias
 type GetActionsByAddressRequest = iotexapi.GetActionsByAddressRequest
 
-// GetActionsRequest_UnconfirmedByAddr is alias
-type GetActionsRequest_UnconfirmedByAddr = iotexapi.GetActionsRequest_UnconfirmedByAddr
+// GetActionsRequestUnconfirmedByAddr is alias
+type GetActionsRequestUnconfirmedByAddr = iotexapi.GetActionsRequest_UnconfirmedByAddr
 
 // GetUnconfirmedActionsByAddressRequest is alias
 type GetUnconfirmedActionsByAddressRequest = iotexapi.GetUnconfirmedActionsByAddressRequest
 
-// GetActionsRequest_ByBlk is alias
-type GetActionsRequest_ByBlk = iotexapi.GetActionsRequest_ByBlk
+// GetActionsRequestByBlk is alias
+type GetActionsRequestByBlk = iotexapi.GetActionsRequest_ByBlk
 
 // GetActionsByBlockRequest is alias
 type GetActionsByBlockRequest = iotexapi.GetActionsByBlockRequest
@@ -52,14 +52,14 @@ type GetActionsByBlockRequest = iotexapi.GetActionsByBlockRequest
 // GetBlockMetasRequest is alias
 type GetBlockMetasRequest = iotexapi.GetBlockMetasRequest
 
-// GetBlockMetasRequest_ByIndex is alias
-type GetBlockMetasRequest_ByIndex = iotexapi.GetBlockMetasRequest_ByIndex
+// GetBlockMetasRequestByIndex is alias
+type GetBlockMetasRequestByIndex = iotexapi.GetBlockMetasRequest_ByIndex
 
 // GetBlockMetasByIndexRequest is alias
 type GetBlockMetasByIndexRequest = iotexapi.GetBlockMetasByIndexRequest
 
-// GetBlockMetasRequest_ByHash is alias
-type GetBlockMetasRequest_ByHash = iotexapi.GetBlockMetasRequest_ByHash
+// GetBlockMetasRequestByHash is alias
+type GetBlockMetasRequestByHash = iotexapi.GetBlockMetasRequest_ByHash
 
 // GetBlockMetaByHashRequest is alias
 type GetBlockMetaByHashRequest = iotexapi.GetBlockMetaByHashRequest
