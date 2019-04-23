@@ -49,7 +49,7 @@ else
 	DEBUG_FLAG = -debug
 endif
 
-all: build test clean
+all: test build clean
 
 .PHONY: build
 build:
