@@ -65,7 +65,7 @@ all: build test clean
 
 .PHONY: test
 test: fmt lint
-    set -e
+    set -e;
     for d in $(go list ./...|grep -v vendor); do
       $(GOTEST) -short -v -coverprofile=profile.out -covermode=count "$d"
       if [ -f profile.out ]; then
@@ -80,6 +80,7 @@ fmt:
 
 .PHONY: lint
 lint:
+    go get golang.org/x/lint/golint
 	go list ./... | grep -v /vendor/ | xargs $(GOLINT)
 
 .PHONY: clean
