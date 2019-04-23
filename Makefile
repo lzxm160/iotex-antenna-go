@@ -65,7 +65,6 @@ all: build test clean
 
 .PHONY: test
 test: fmt lint
-    set -e;
     for d in $(go list ./...|grep -v vendor); do
       $(GOTEST) -short -v -coverprofile=profile.out -covermode=count "$d"
       if [ -f profile.out ]; then
