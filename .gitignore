@@ -36,5 +36,4 @@ lint.log
 .editorconfig
 coverage.txt
 
-vendor/
 .vscode
