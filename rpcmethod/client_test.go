@@ -7,7 +7,6 @@
 package rpcmethod
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -267,7 +266,6 @@ func TestServer_ReadState(t *testing.T) {
 	require.NotNil(out)
 	val, ok := big.NewInt(0).SetString(string(out.Data), 10)
 	require.True(ok)
-	fmt.Println(val.Text(10))
 	expected, ok := new(big.Int).SetString("39860707937452088904761", 10)
 	require.True(ok)
 	require.Equal(1, val.Cmp(expected))
@@ -318,7 +316,7 @@ func TestServer_ReadContract(t *testing.T) {
 
 func TestServer_SuggestGasPrice(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 	res, err := svr.SuggestGasPrice(&iotexapi.SuggestGasPriceRequest{})
 	require.NoError(err)
