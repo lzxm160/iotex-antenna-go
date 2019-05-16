@@ -7,7 +7,6 @@
 package rpcmethod
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -236,26 +235,21 @@ func TestServer_GetChainMeta(t *testing.T) {
 	res, err := svr.GetChainMeta(&iotexapi.GetChainMetaRequest{})
 	require.NoError(err)
 	chainMetaPb := res.ChainMeta
-	fmt.Println(chainMetaPb)
-	require.Equal(true, chainMetaPb.Height > 1)
-	require.Equal(true, chainMetaPb.NumActions > 1)
+	require.Equal(true, chainMetaPb.Height > 208646)
+	require.Equal(true, chainMetaPb.NumActions > 211443)
 	require.Equal(true, chainMetaPb.Tps >= 0)
-	require.Equal(true, chainMetaPb.Epoch.Num > 1)
-	require.Equal(true, chainMetaPb.Epoch.Height > 1)
-	require.Equal(true, chainMetaPb.Epoch.GravityChainStartHeight > 1)
+	require.Equal(true, chainMetaPb.Epoch.Num >= 580)
+	require.Equal(true, chainMetaPb.Epoch.Height >= 208441)
+	require.Equal(true, chainMetaPb.Epoch.GravityChainStartHeight >= 7769900)
 }
 
 func TestServer_GetServerMeta(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 	res, err := svr.GetServerMeta(&iotexapi.GetServerMetaRequest{})
 	require.NoError(err)
-	getServerMetaPackageCommitID := os.Getenv("getServerMetaPackageCommitID")
-	if getServerMetaPackageCommitID == "" {
-		t.Skip("skipping test; some params not set")
-	}
-	require.Equal(getServerMetaPackageCommitID, res.GetServerMeta().PackageCommitID)
+	require.Equal("", res.GetServerMeta().PackageCommitID)
 }
 
 func TestServer_ReadState(t *testing.T) {
