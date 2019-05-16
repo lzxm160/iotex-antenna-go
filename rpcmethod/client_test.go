@@ -29,7 +29,7 @@ var (
 
 const (
 	testnet = "api.testnet.iotex.one:80"
-	mainnet = "api.iotex.one:80"
+	mainnet = "api.iotex.one:443"
 )
 
 func TestServer_GetAccount(t *testing.T) {
@@ -49,7 +49,7 @@ func TestServer_GetAccount(t *testing.T) {
 
 func TestServer_GetActions(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(mainnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 
 	request := &iotexapi.GetActionsRequest{
