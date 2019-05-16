@@ -29,7 +29,7 @@ var (
 
 const (
 	testnet = "api.testnet.iotex.one:80"
-	mainnet = "api.iotex.one:443"
+	mainnet = "api.iotex.one:80"
 )
 
 func TestServer_GetAccount(t *testing.T) {
