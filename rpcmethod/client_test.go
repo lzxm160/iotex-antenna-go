@@ -100,7 +100,7 @@ func TestServer_GetAction(t *testing.T) {
 	require.NoError(err)
 	actionHash := "93de5923763c4ea79a01be023b49000838b1a4c22bdceed99dc23eeea8c9c757"
 	actionActionInfoLen := "1"
-	actionActionNonce := "10"
+	actionActionNonce := "27"
 
 	actionActionInfoLenInt, err := strconv.ParseInt(actionActionInfoLen, 10, 64)
 	require.NoError(err)
