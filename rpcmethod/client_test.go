@@ -178,12 +178,12 @@ func TestServer_GetActionsByBlock(t *testing.T) {
 	}
 	res, err := svr.GetActions(request)
 	require.NoError(err)
-	require.Equal(0, len(res.ActionInfo))
+	require.Equal(1, len(res.ActionInfo))
 }
 
 func TestServer_GetBlockMetas(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 
 	request := &iotexapi.GetBlockMetasRequest{
