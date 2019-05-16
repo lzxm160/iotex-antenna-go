@@ -267,7 +267,7 @@ func TestServer_ReadState(t *testing.T) {
 	val, ok := big.NewInt(0).SetString(string(out.Data), 10)
 	require.True(ok)
 	fmt.Println(val)
-	expected, ok := new(big.Int).SetString("0", 10)
+	expected, ok := new(big.Int).SetString("39860707937452088904761", 10)
 	require.True(ok)
 	require.Equal(0, val.Cmp(expected))
 }
