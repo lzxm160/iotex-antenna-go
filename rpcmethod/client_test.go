@@ -270,7 +270,7 @@ func TestServer_ReadState(t *testing.T) {
 	fmt.Println(val.Text(10))
 	expected, ok := new(big.Int).SetString("39860707937452088904761", 10)
 	require.True(ok)
-	require.Equal(0, val.Cmp(expected))
+	require.Equal(1, val.Cmp(expected))
 }
 
 func TestServer_GetReceiptByAction(t *testing.T) {
@@ -282,7 +282,7 @@ func TestServer_GetReceiptByAction(t *testing.T) {
 	require.NoError(err)
 	require.NotNil(res)
 	receiptPb := res.ReceiptInfo.Receipt
-	require.Equal(uint64(3151), receiptPb.Status)
+	require.Equal(uint64(1), receiptPb.Status)
 	require.Equal(56664, receiptPb.BlkHeight)
 	require.NotEqual(hash.ZeroHash256, res.ReceiptInfo.BlkHash)
 }
