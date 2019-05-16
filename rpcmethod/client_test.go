@@ -7,6 +7,7 @@
 package rpcmethod
 
 import (
+	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -266,6 +267,7 @@ func TestServer_ReadState(t *testing.T) {
 	require.NotNil(out)
 	val, ok := big.NewInt(0).SetString(string(out.Data), 10)
 	require.True(ok)
+	fmt.Println(val.Text(10))
 	expected, ok := new(big.Int).SetString("39860707937452088904761", 10)
 	require.True(ok)
 	require.Equal(0, val.Cmp(expected))
@@ -273,7 +275,7 @@ func TestServer_ReadState(t *testing.T) {
 
 func TestServer_GetReceiptByAction(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 	request := &iotexapi.GetReceiptByActionRequest{ActionHash: mainnetReceiptHash}
 	res, err := svr.GetReceiptByAction(request)
@@ -281,7 +283,7 @@ func TestServer_GetReceiptByAction(t *testing.T) {
 	require.NotNil(res)
 	receiptPb := res.ReceiptInfo.Receipt
 	require.Equal(uint64(3151), receiptPb.Status)
-	require.Equal(10, receiptPb.BlkHeight)
+	require.Equal(56664, receiptPb.BlkHeight)
 	require.NotEqual(hash.ZeroHash256, res.ReceiptInfo.BlkHash)
 }
 
