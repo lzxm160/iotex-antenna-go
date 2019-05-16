@@ -164,7 +164,7 @@ func TestServer_GetUnconfirmedActionsByAddress(t *testing.T) {
 
 func TestServer_GetActionsByBlock(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 
 	request := &iotexapi.GetActionsRequest{
