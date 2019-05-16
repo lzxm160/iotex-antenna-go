@@ -23,8 +23,9 @@ import (
 )
 
 var (
-	Address    = "io15jcpv957y5rn3zkyvd22cerfxcw4wc86hghyhn"
-	PrivateKey = "0806c458b262edd333a191e92f561aff338211ee3e18ab315a074a2d82aa343f"
+	Address        = "io15jcpv957y5rn3zkyvd22cerfxcw4wc86hghyhn"
+	PrivateKey     = "0806c458b262edd333a191e92f561aff338211ee3e18ab315a074a2d82aa343f"
+	mainnetAddress = "io1066kus4vlyvk0ljql39fzwqw0k22h7j8wmef3n"
 )
 
 const (
@@ -125,12 +126,11 @@ func TestServer_GetActionsByAddress(t *testing.T) {
 	require := require.New(t)
 	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
-	accountAddress := "io1066kus4vlyvk0ljql39fzwqw0k22h7j8wmef3n"
 	getActionsByAddressActionHash := "633cf62ab47611476423d7416bb74395be9c9b602062074ac36744ddd31fd122"
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByAddr{
 			ByAddr: &iotexapi.GetActionsByAddressRequest{
-				Address: accountAddress,
+				Address: mainnetAddress,
 				Start:   1,
 				Count:   1,
 			},
@@ -146,15 +146,11 @@ func TestServer_GetUnconfirmedActionsByAddress(t *testing.T) {
 	require := require.New(t)
 	svr, err := NewRPCMethod(testnet)
 	require.NoError(err)
-	accountAddress := os.Getenv("accountAddress")
-	if accountAddress == "" {
-		t.Skip("skipping test; some params not set")
-	}
 
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_UnconfirmedByAddr{
 			UnconfirmedByAddr: &iotexapi.GetUnconfirmedActionsByAddressRequest{
-				Address: accountAddress,
+				Address: mainnetAddress,
 				Start:   1,
 				Count:   10,
 			},
