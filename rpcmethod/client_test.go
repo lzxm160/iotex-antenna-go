@@ -354,7 +354,7 @@ func TestServer_GetEpochMeta(t *testing.T) {
 	res, err := svr.GetEpochMeta(&iotexapi.GetEpochMetaRequest{EpochNumber: 1})
 	require.NoError(err)
 	require.Equal(uint64(1), res.EpochData.Num)
-	require.Equal(1, res.EpochData.Height)
+	require.Equal(uint64(1), res.EpochData.Height)
 	require.Equal(1, res.EpochData.GravityChainStartHeight)
 	require.Equal(360, int(res.TotalBlocks))
 	require.Equal(24, len(res.BlockProducersInfo))
