@@ -283,7 +283,7 @@ func TestServer_GetReceiptByAction(t *testing.T) {
 	require.NotNil(res)
 	receiptPb := res.ReceiptInfo.Receipt
 	require.Equal(uint64(1), receiptPb.Status)
-	require.Equal(56664, receiptPb.BlkHeight)
+	require.Equal(uint64(56664), receiptPb.BlkHeight)
 	require.NotEqual(hash.ZeroHash256, res.ReceiptInfo.BlkHash)
 }
 
