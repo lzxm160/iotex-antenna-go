@@ -126,7 +126,7 @@ func TestServer_GetActionsByAddress(t *testing.T) {
 	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 	accountAddress := "io1066kus4vlyvk0ljql39fzwqw0k22h7j8wmef3n"
-	getActionsByAddressActionHash := "111"
+	getActionsByAddressActionHash := "633cf62ab47611476423d7416bb74395be9c9b602062074ac36744ddd31fd122"
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByAddr{
 			ByAddr: &iotexapi.GetActionsByAddressRequest{
