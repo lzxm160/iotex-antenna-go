@@ -254,24 +254,18 @@ func TestServer_GetServerMeta(t *testing.T) {
 
 func TestServer_ReadState(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
-	accountAddress := os.Getenv("accountAddress")
-	accountAddressUnclaimedBalance := os.Getenv("accountAddressUnclaimedBalance")
-	if accountAddress == "" || accountAddressUnclaimedBalance == "" {
-		t.Skip("skipping test; some params not set")
-	}
-
 	out, err := svr.ReadState(&iotexapi.ReadStateRequest{
 		ProtocolID: []byte("rewarding"),
 		MethodName: []byte("UnclaimedBalance"),
-		Arguments:  [][]byte{[]byte(accountAddress)},
+		Arguments:  [][]byte{[]byte(mainnetAddress)},
 	})
 	require.NoError(err)
 	require.NotNil(out)
 	val, ok := big.NewInt(0).SetString(string(out.Data), 10)
 	require.True(ok)
-	expected, ok := new(big.Int).SetString(accountAddressUnclaimedBalance, 10)
+	expected, ok := new(big.Int).SetString("0", 10)
 	require.True(ok)
 	require.Equal(0, val.Cmp(expected))
 }
