@@ -357,5 +357,5 @@ func TestServer_GetEpochMeta(t *testing.T) {
 	require.Equal(uint64(1), res.EpochData.Height)
 	require.Equal(uint64(0x743088), res.EpochData.GravityChainStartHeight)
 	require.Equal(360, int(res.TotalBlocks))
-	require.Equal(24, len(res.BlockProducersInfo))
+	require.Equal(36, len(res.BlockProducersInfo))
 }
