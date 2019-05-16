@@ -223,7 +223,7 @@ func TestServer_GetBlockMeta(t *testing.T) {
 	require.NoError(err)
 	require.Equal(1, len(res.BlkMetas))
 	blkPb := res.BlkMetas[0]
-	require.Equal(1, blkPb.NumActions)
+	require.Equal(int64(2), blkPb.NumActions)
 	require.Equal(2, blkPb.TransferAmount)
 }
 
