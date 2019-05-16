@@ -7,6 +7,7 @@
 package rpcmethod
 
 import (
+	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -229,12 +230,13 @@ func TestServer_GetBlockMeta(t *testing.T) {
 
 func TestServer_GetChainMeta(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 
 	res, err := svr.GetChainMeta(&iotexapi.GetChainMetaRequest{})
 	require.NoError(err)
 	chainMetaPb := res.ChainMeta
+	fmt.Println(chainMetaPb)
 	require.Equal(true, chainMetaPb.Height > 1)
 	require.Equal(true, chainMetaPb.NumActions > 1)
 	require.Equal(true, chainMetaPb.Tps >= 0)
