@@ -249,7 +249,7 @@ func TestServer_GetServerMeta(t *testing.T) {
 	require.NoError(err)
 	res, err := svr.GetServerMeta(&iotexapi.GetServerMetaRequest{})
 	require.NoError(err)
-	require.Equal("", res.GetServerMeta().PackageCommitID)
+	require.Equal("0810e5166d12c7ae06110cf6429f332c59585056", res.GetServerMeta().PackageCommitID)
 }
 
 func TestServer_ReadState(t *testing.T) {
