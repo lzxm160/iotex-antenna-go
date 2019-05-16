@@ -209,20 +209,13 @@ func TestServer_GetBlockMetas(t *testing.T) {
 
 func TestServer_GetBlockMeta(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
-	blk60801Hash := os.Getenv("blk60801Hash")
-	blk60801HashNumActions := os.Getenv("blk60801HashNumActions")
-	blk60801HashTransferAmount := os.Getenv("blk60801HashTransferAmount")
-	if blk60801Hash == "" || blk60801HashNumActions == "" || blk60801HashTransferAmount == "" {
-		t.Skip("skipping test; some params not set")
-	}
 
-	blk60801HashNumActionsInt, err := strconv.ParseInt(blk60801HashNumActions, 10, 64)
 	request := &iotexapi.GetBlockMetasRequest{
 		Lookup: &iotexapi.GetBlockMetasRequest_ByHash{
 			ByHash: &iotexapi.GetBlockMetaByHashRequest{
-				BlkHash: blk60801Hash,
+				BlkHash: mainnetBlockHash,
 			},
 		},
 	}
@@ -230,8 +223,8 @@ func TestServer_GetBlockMeta(t *testing.T) {
 	require.NoError(err)
 	require.Equal(1, len(res.BlkMetas))
 	blkPb := res.BlkMetas[0]
-	require.Equal(blk60801HashNumActionsInt, blkPb.NumActions)
-	require.Equal(blk60801HashTransferAmount, blkPb.TransferAmount)
+	require.Equal(1, blkPb.NumActions)
+	require.Equal(2, blkPb.TransferAmount)
 }
 
 func TestServer_GetChainMeta(t *testing.T) {
