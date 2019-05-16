@@ -7,6 +7,7 @@
 package rpcmethod
 
 import (
+	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -265,6 +266,7 @@ func TestServer_ReadState(t *testing.T) {
 	require.NotNil(out)
 	val, ok := big.NewInt(0).SetString(string(out.Data), 10)
 	require.True(ok)
+	fmt.Println(val)
 	expected, ok := new(big.Int).SetString("0", 10)
 	require.True(ok)
 	require.Equal(0, val.Cmp(expected))
