@@ -123,13 +123,10 @@ func TestServer_GetAction(t *testing.T) {
 
 func TestServer_GetActionsByAddress(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
-	accountAddress := os.Getenv("accountAddress")
-	getActionsByAddressActionHash := os.Getenv("getActionsByAddressActionHash")
-	if accountAddress == "" || getActionsByAddressActionHash == "" {
-		t.Skip("skipping test; some params not set")
-	}
+	accountAddress := "io1066kus4vlyvk0ljql39fzwqw0k22h7j8wmef3n"
+	getActionsByAddressActionHash := "111"
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByAddr{
 			ByAddr: &iotexapi.GetActionsByAddressRequest{
