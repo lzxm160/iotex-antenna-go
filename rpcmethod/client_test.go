@@ -350,20 +350,12 @@ func TestServer_GetEpochMeta(t *testing.T) {
 	require := require.New(t)
 	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
-	epochDataHeight := os.Getenv("epochDataHeight")
-	epochGravityChainStartHeight := os.Getenv("epochGravityChainStartHeight")
-	if epochDataHeight == "" || epochGravityChainStartHeight == "" {
-		t.Skip("skipping test; some params not set")
-	}
-
-	epochDataHeightInt, err := strconv.ParseUint(epochDataHeight, 10, 64)
-	epochGravityChainStartHeightInt, err := strconv.ParseUint(epochGravityChainStartHeight, 10, 64)
 
 	res, err := svr.GetEpochMeta(&iotexapi.GetEpochMetaRequest{EpochNumber: 1})
 	require.NoError(err)
 	require.Equal(uint64(1), res.EpochData.Num)
-	require.Equal(epochDataHeightInt, res.EpochData.Height)
-	require.Equal(epochGravityChainStartHeightInt, res.EpochData.GravityChainStartHeight)
+	require.Equal(1, res.EpochData.Height)
+	require.Equal(1, res.EpochData.GravityChainStartHeight)
 	require.Equal(360, int(res.TotalBlocks))
 	require.Equal(24, len(res.BlockProducersInfo))
 }
