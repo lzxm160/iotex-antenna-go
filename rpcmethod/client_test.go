@@ -49,7 +49,7 @@ func TestServer_GetAccount(t *testing.T) {
 
 func TestServer_GetActions(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCMethod(mainnet)
 	require.NoError(err)
 
 	request := &iotexapi.GetActionsRequest{
