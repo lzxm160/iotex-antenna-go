@@ -96,14 +96,11 @@ func TestServer_SendAction(t *testing.T) {
 
 func TestServer_GetAction(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
-	actionHash := os.Getenv("actionHash")
-	actionActionInfoLen := os.Getenv("actionActionInfoLen")
-	actionActionNonce := os.Getenv("actionActionNonce")
-	if actionHash == "" || actionActionInfoLen == "" || actionActionNonce == "" {
-		t.Skip("skipping test; some params not set")
-	}
+	actionHash := "93de5923763c4ea79a01be023b49000838b1a4c22bdceed99dc23eeea8c9c757"
+	actionActionInfoLen := "10"
+	actionActionNonce := "10"
 
 	actionActionInfoLenInt, err := strconv.ParseInt(actionActionInfoLen, 10, 64)
 	require.NoError(err)
