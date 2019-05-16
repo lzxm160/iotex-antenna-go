@@ -23,9 +23,10 @@ import (
 )
 
 var (
-	Address        = "io15jcpv957y5rn3zkyvd22cerfxcw4wc86hghyhn"
-	PrivateKey     = "0806c458b262edd333a191e92f561aff338211ee3e18ab315a074a2d82aa343f"
-	mainnetAddress = "io1066kus4vlyvk0ljql39fzwqw0k22h7j8wmef3n"
+	Address          = "io15jcpv957y5rn3zkyvd22cerfxcw4wc86hghyhn"
+	PrivateKey       = "0806c458b262edd333a191e92f561aff338211ee3e18ab315a074a2d82aa343f"
+	mainnetAddress   = "io1066kus4vlyvk0ljql39fzwqw0k22h7j8wmef3n"
+	mainnetBlockHash = "89bbf8b1d3cbfb6020a1074a11c5430ef77eb220c00143dbd6f76d1cab94a1c2"
 )
 
 const (
@@ -165,15 +166,11 @@ func TestServer_GetActionsByBlock(t *testing.T) {
 	require := require.New(t)
 	svr, err := NewRPCMethod(testnet)
 	require.NoError(err)
-	blk60801Hash := os.Getenv("blk60801Hash")
-	if blk60801Hash == "" {
-		t.Skip("skipping test; some params not set")
-	}
 
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByBlk{
 			ByBlk: &iotexapi.GetActionsByBlockRequest{
-				BlkHash: blk60801Hash,
+				BlkHash: mainnetBlockHash,
 				Start:   1,
 				Count:   10,
 			},
