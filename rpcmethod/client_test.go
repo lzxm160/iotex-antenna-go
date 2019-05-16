@@ -325,7 +325,7 @@ func TestServer_SuggestGasPrice(t *testing.T) {
 
 func TestServer_EstimateGasForAction(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 
 	act, err := account.NewAccountFromPrivateKey(PrivateKey)
@@ -348,7 +348,7 @@ func TestServer_EstimateGasForAction(t *testing.T) {
 
 func TestServer_GetEpochMeta(t *testing.T) {
 	require := require.New(t)
-	svr, err := NewRPCMethod(testnet)
+	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 	epochDataHeight := os.Getenv("epochDataHeight")
 	epochGravityChainStartHeight := os.Getenv("epochGravityChainStartHeight")
