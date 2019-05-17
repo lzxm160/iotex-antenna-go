@@ -138,7 +138,7 @@ func TestServer_GetActionsByAddress(t *testing.T) {
 	require.Equal(actionHash, act.ActHash)
 	require.Equal(1, len(res.ActionInfo))
 	require.Equal(uint64(2), act.Action.GetCore().GetNonce())
-	require.Equal("5000000000000000000", act.Action.GetCore().GetTransfer().Amount)
+	require.Equal("40000000000000000000000", act.Action.GetCore().GetExecution().Amount)
 }
 
 func TestServer_GetUnconfirmedActionsByAddress(t *testing.T) {
