@@ -7,6 +7,7 @@
 package rpcmethod
 
 import (
+	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -212,19 +213,21 @@ func TestServer_GetBlockMetas(t *testing.T) {
 		Lookup: &iotexapi.GetBlockMetasRequest_ByIndex{
 			ByIndex: &iotexapi.GetBlockMetasByIndexRequest{
 				Start: 10,
-				Count: 10,
+				Count: 1,
 			},
 		},
 	}
 	res, err := svr.GetBlockMetas(request)
 	require.NoError(err)
-	require.Equal(10, len(res.GetBlkMetas()))
+	require.Equal(1, len(res.GetBlkMetas()))
+	require.Equal(uint64(1), res.Total)
 	var prevBlkPb *iotextypes.BlockMeta
 	for _, blkPb := range res.BlkMetas {
 		if prevBlkPb != nil {
 			require.True(blkPb.Height > prevBlkPb.Height)
 		}
 		prevBlkPb = blkPb
+		fmt.Println(blkPb)
 	}
 
 }
