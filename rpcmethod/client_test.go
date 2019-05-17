@@ -12,6 +12,7 @@ import (
 	"os"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/iotexproject/go-pkgs/hash"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
@@ -284,6 +285,12 @@ func TestServer_GetServerMeta(t *testing.T) {
 	meta := res.GetServerMeta()
 	require.NotEqual("", meta.PackageCommitID)
 	fmt.Println(meta)
+	require.Equal("clean", meta.GitStatus)
+	ti, err := time.Parse("2019-04-30-UTC/22:09:38", meta.BuildTime)
+	require.NoError(err)
+	expected, err := time.Parse("2019-04-30-UTC/22:09:38", "2019-04-30-UTC/22:09:37")
+	require.NoError(err)
+	require.True(ti.After(expected))
 }
 
 func TestServer_ReadState(t *testing.T) {
