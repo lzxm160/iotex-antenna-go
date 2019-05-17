@@ -7,6 +7,7 @@
 package rpcmethod
 
 import (
+	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -138,7 +139,11 @@ func TestServer_GetActionsByAddress(t *testing.T) {
 	require.Equal(actionHash, act.ActHash)
 	require.Equal(1, len(res.ActionInfo))
 	require.Equal(uint64(2), act.Action.GetCore().GetNonce())
+	actionCore := act.Action.GetCore().GetAction()
+	_, ok := actionCore.(*iotextypes.ActionCore_Execution)
+	require.True(ok)
 	require.Equal("40000000000000000000000", act.Action.GetCore().GetExecution().Amount)
+	fmt.Println(act.Action.GetCore().GetExecution().Contract)
 }
 
 func TestServer_GetUnconfirmedActionsByAddress(t *testing.T) {
