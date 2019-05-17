@@ -7,7 +7,6 @@
 package rpcmethod
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -15,8 +14,6 @@ import (
 	"time"
 
 	"github.com/iotexproject/go-pkgs/hash"
-	"github.com/iotexproject/iotex-core/pkg/util/byteutil"
-	"github.com/iotexproject/iotex-core/state"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
 	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 	"github.com/stretchr/testify/require"
@@ -299,24 +296,14 @@ func TestServer_ReadState(t *testing.T) {
 	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 	out, err := svr.ReadState(&iotexapi.ReadStateRequest{
-		ProtocolID: []byte("poll"),
-		MethodName: []byte("ActiveBlockProducersByEpoch"),
-		Arguments:  [][]byte{byteutil.Uint64ToBytes(390)},
+		ProtocolID: []byte("rewarding"),
+		MethodName: []byte("TotalBalance"),
 	})
 	require.NoError(err)
 	require.NotNil(out)
-	fmt.Println(out)
-	var ABPs state.CandidateList
-	require.NoError(ABPs.Deserialize(out.Data))
-	require.True(len(ABPs) > 0)
-
-	//out, err = svr.ReadState(&iotexapi.ReadStateRequest{
-	//	ProtocolID: []byte(poll.ProtocolID),
-	//	MethodName: []byte("GravityChainHeight"),
-	//	Arguments:  [][]byte{},
-	//})
-	//require.NoError(err)
-	//require.NotNil(out)
+	val, ok := big.NewInt(0).SetString(string(out.Data), 10)
+	require.True(ok)
+	require.Equal(1, val.Cmp(big.NewInt(0)))
 }
 
 func TestServer_GetReceiptByAction(t *testing.T) {
