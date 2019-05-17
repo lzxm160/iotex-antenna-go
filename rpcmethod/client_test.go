@@ -7,6 +7,7 @@
 package rpcmethod
 
 import (
+	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -102,13 +103,7 @@ func TestServer_GetAction(t *testing.T) {
 	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 	actionHash := "93de5923763c4ea79a01be023b49000838b1a4c22bdceed99dc23eeea8c9c757"
-	actionActionInfoLen := "1"
-	actionActionNonce := "27"
 
-	actionActionInfoLenInt, err := strconv.ParseInt(actionActionInfoLen, 10, 64)
-	require.NoError(err)
-	actionActionNonceInt, err := strconv.ParseUint(actionActionNonce, 10, 64)
-	require.NoError(err)
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByHash{
 			ByHash: &iotexapi.GetActionByHashRequest{
@@ -119,9 +114,10 @@ func TestServer_GetAction(t *testing.T) {
 	}
 	res, err := svr.GetActions(request)
 	require.NoError(err)
-	require.Equal(int(actionActionInfoLenInt), len(res.ActionInfo))
+	require.Equal(1, len(res.ActionInfo))
 	act := res.ActionInfo[0]
-	require.Equal(actionActionNonceInt, act.Action.GetCore().GetNonce())
+	require.Equal(27, act.Action.GetCore().GetNonce())
+	fmt.Println(act)
 }
 
 func TestServer_GetActionsByAddress(t *testing.T) {
