@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/iotexproject/go-pkgs/hash"
-	"github.com/iotexproject/iotex-core/pkg/util/byteutil"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
 	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 	"github.com/stretchr/testify/require"
@@ -300,11 +299,11 @@ func TestServer_ReadState(t *testing.T) {
 	out, err := svr.ReadState(&iotexapi.ReadStateRequest{
 		ProtocolID: []byte("poll"),
 		MethodName: []byte("ActiveBlockProducersByEpoch"),
-		Arguments:  [][]byte{byteutil.Uint64ToBytes(390)},
+		Arguments:  [][]byte{[]byte("8601000000000000")},
 	})
-	fmt.Printf("%x\n", byteutil.Uint64ToBytes(390))
 	require.NoError(err)
 	require.NotNil(out)
+	fmt.Println(out)
 	//var ABPs state.CandidateList
 	//require.NoError(ABPs.Deserialize(out.Data))
 	//require.True(len(ABPs) > 0)
