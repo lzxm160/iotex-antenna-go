@@ -173,7 +173,7 @@ func TestServer_GetActionsByBlock(t *testing.T) {
 		Lookup: &iotexapi.GetActionsRequest_ByBlk{
 			ByBlk: &iotexapi.GetActionsByBlockRequest{
 				BlkHash: mainnetBlockHash,
-				Start:   1,
+				Start:   0,
 				Count:   10,
 			},
 		},
