@@ -212,7 +212,7 @@ func TestServer_GetBlockMetas(t *testing.T) {
 	request := &iotexapi.GetBlockMetasRequest{
 		Lookup: &iotexapi.GetBlockMetasRequest_ByIndex{
 			ByIndex: &iotexapi.GetBlockMetasByIndexRequest{
-				Start: 10,
+				Start: 214612,
 				Count: 1,
 			},
 		},
@@ -220,7 +220,7 @@ func TestServer_GetBlockMetas(t *testing.T) {
 	res, err := svr.GetBlockMetas(request)
 	require.NoError(err)
 	require.Equal(1, len(res.GetBlkMetas()))
-	require.Equal(uint64(1), res.Total)
+	require.Equal(uint64(0), res.Total)
 	var prevBlkPb *iotextypes.BlockMeta
 	for _, blkPb := range res.BlkMetas {
 		if prevBlkPb != nil {
