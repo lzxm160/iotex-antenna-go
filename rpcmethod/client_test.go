@@ -102,7 +102,6 @@ func TestServer_GetAction(t *testing.T) {
 	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 	actionHash := "93de5923763c4ea79a01be023b49000838b1a4c22bdceed99dc23eeea8c9c757"
-
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByHash{
 			ByHash: &iotexapi.GetActionByHashRequest{
@@ -123,7 +122,7 @@ func TestServer_GetActionsByAddress(t *testing.T) {
 	require := require.New(t)
 	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
-	getActionsByAddressActionHash := "633cf62ab47611476423d7416bb74395be9c9b602062074ac36744ddd31fd122"
+	actionHash := "633cf62ab47611476423d7416bb74395be9c9b602062074ac36744ddd31fd122"
 	request := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByAddr{
 			ByAddr: &iotexapi.GetActionsByAddressRequest{
@@ -135,8 +134,11 @@ func TestServer_GetActionsByAddress(t *testing.T) {
 	}
 	res, err := svr.GetActions(request)
 	require.NoError(err)
-	require.Equal(getActionsByAddressActionHash, res.ActionInfo[0].ActHash)
+	act := res.ActionInfo[0]
+	require.Equal(actionHash, act.ActHash)
 	require.Equal(1, len(res.ActionInfo))
+	require.Equal(uint64(27), act.Action.GetCore().GetNonce())
+	require.Equal("5000000000000000000", act.Action.GetCore().GetTransfer().Amount)
 }
 
 func TestServer_GetUnconfirmedActionsByAddress(t *testing.T) {
