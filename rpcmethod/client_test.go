@@ -190,7 +190,7 @@ func TestServer_GetActionsByBlock(t *testing.T) {
 	_, ok := actionCore.(*iotextypes.ActionCore_GrantReward)
 	require.True(ok)
 	require.Equal(iotextypes.RewardType_BlockReward, act.Action.GetCore().GetGrantReward().GetType())
-	require.Equal("io154mvzs09vkgn0hw6gg3ayzw5w39jzp47f8py9v", act.Action.GetCore().GetExecution().Contract)
+	require.Equal(uint64(56664), act.Action.GetCore().GetGrantReward().GetHeight())
 }
 
 func TestServer_GetBlockMetas(t *testing.T) {
