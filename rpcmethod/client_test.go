@@ -7,7 +7,6 @@
 package rpcmethod
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -328,8 +327,9 @@ func TestServer_GetReceiptByAction(t *testing.T) {
 	require.Equal(uint64(1), receiptPb.Status)
 	require.Equal(uint64(56664), receiptPb.BlkHeight)
 	require.NotEqual(hash.ZeroHash256, res.ReceiptInfo.BlkHash)
-	//require.Equal(98239,res.ReceiptInfo.)
-	fmt.Println(res)
+	require.Equal(uint64(98239), res.ReceiptInfo.Receipt.GasConsumed)
+	require.Equal("io1pcg2ja9krrhujpazswgz77ss46xgt88afqlk6y", res.ReceiptInfo.Receipt.ContractAddress)
+	require.Equal(1, len(res.ReceiptInfo.Receipt.Logs))
 }
 
 func TestServer_ReadContract(t *testing.T) {
