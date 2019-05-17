@@ -7,7 +7,6 @@
 package rpcmethod
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -143,7 +142,7 @@ func TestServer_GetActionsByAddress(t *testing.T) {
 	_, ok := actionCore.(*iotextypes.ActionCore_Execution)
 	require.True(ok)
 	require.Equal("40000000000000000000000", act.Action.GetCore().GetExecution().Amount)
-	fmt.Println(act.Action.GetCore().GetExecution().Contract)
+	require.Equal("io1pcg2ja9krrhujpazswgz77ss46xgt88afqlk6y", act.Action.GetCore().GetExecution().Contract)
 }
 
 func TestServer_GetUnconfirmedActionsByAddress(t *testing.T) {
@@ -179,9 +178,19 @@ func TestServer_GetActionsByBlock(t *testing.T) {
 			},
 		},
 	}
+	actionHash1 := "66f837de6459e045c66f42f69204678c56e7fb752109f3ba8aef63d38cb4529a"
+	//actionHash2 := "246b9b47f390a6faee9d725d9637b00b7ec56fa7cdffe3d39aeaad277edbb8f4"
 	res, err := svr.GetActions(request)
 	require.NoError(err)
 	require.Equal(1, len(res.ActionInfo))
+	act := res.ActionInfo[0]
+	require.Equal(actionHash1, act.ActHash)
+	require.Equal(uint64(0), act.Action.GetCore().GetNonce())
+	actionCore := act.Action.GetCore().GetAction()
+	_, ok := actionCore.(*iotextypes.ActionCore_GrantReward)
+	require.True(ok)
+	require.Equal(iotextypes.RewardType_BlockReward, act.Action.GetCore().GetGrantReward().GetType())
+	require.Equal("io154mvzs09vkgn0hw6gg3ayzw5w39jzp47f8py9v", act.Action.GetCore().GetExecution().Contract)
 }
 
 func TestServer_GetBlockMetas(t *testing.T) {
