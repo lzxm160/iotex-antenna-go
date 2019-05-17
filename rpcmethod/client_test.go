@@ -7,7 +7,6 @@
 package rpcmethod
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -117,7 +116,7 @@ func TestServer_GetAction(t *testing.T) {
 	require.Equal(1, len(res.ActionInfo))
 	act := res.ActionInfo[0]
 	require.Equal(uint64(27), act.Action.GetCore().GetNonce())
-	fmt.Println(act)
+	require.Equal("5000000000000000000", act.Action.GetCore().GetTransfer().Amount)
 }
 
 func TestServer_GetActionsByAddress(t *testing.T) {
