@@ -7,6 +7,7 @@
 package rpcmethod
 
 import (
+	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -280,7 +281,9 @@ func TestServer_GetServerMeta(t *testing.T) {
 	require.NoError(err)
 	res, err := svr.GetServerMeta(&iotexapi.GetServerMetaRequest{})
 	require.NoError(err)
-	require.Equal("0810e5166d12c7ae06110cf6429f332c59585056", res.GetServerMeta().PackageCommitID)
+	meta := res.GetServerMeta()
+	require.NotEqual("", meta.PackageCommitID)
+	fmt.Println(meta)
 }
 
 func TestServer_ReadState(t *testing.T) {
