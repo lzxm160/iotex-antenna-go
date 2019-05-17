@@ -286,9 +286,9 @@ func TestServer_GetServerMeta(t *testing.T) {
 	require.NotEqual("", meta.PackageCommitID)
 	fmt.Println(meta)
 	require.Equal("clean", meta.GitStatus)
-	ti, err := time.Parse("2006-04-30", meta.BuildTime[:10])
+	ti, err := time.Parse("2006-01-02-UTC/22:09:38", meta.BuildTime)
 	require.NoError(err)
-	expected, err := time.Parse("2006-04-30", "2019-04-29")
+	expected, err := time.Parse("2006-01-02", "2019-04-29")
 	require.NoError(err)
 	require.True(ti.After(expected))
 }
