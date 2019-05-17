@@ -183,7 +183,7 @@ func TestServer_GetActionsByBlock(t *testing.T) {
 	require.Equal(2, len(res.ActionInfo))
 
 	actionHash1 := "246b9b47f390a6faee9d725d9637b00b7ec56fa7cdffe3d39aeaad277edbb8f4"
-	act := res.ActionInfo[1]
+	act := res.ActionInfo[0]
 	require.Equal(actionHash1, act.ActHash)
 	require.Equal(uint64(1), act.Action.GetCore().GetNonce())
 	actionCore := act.Action.GetCore().GetAction()
@@ -193,7 +193,7 @@ func TestServer_GetActionsByBlock(t *testing.T) {
 	require.Equal("io1pcg2ja9krrhujpazswgz77ss46xgt88afqlk6y", act.Action.GetCore().GetExecution().Contract)
 
 	actionHash2 := "66f837de6459e045c66f42f69204678c56e7fb752109f3ba8aef63d38cb4529a"
-	act = res.ActionInfo[0]
+	act = res.ActionInfo[1]
 	require.Equal(actionHash2, act.ActHash)
 	require.Equal(uint64(0), act.Action.GetCore().GetNonce())
 	actionCore = act.Action.GetCore().GetAction()
