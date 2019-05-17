@@ -7,7 +7,6 @@
 package rpcmethod
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -15,6 +14,9 @@ import (
 	"time"
 
 	"github.com/iotexproject/go-pkgs/hash"
+	"github.com/iotexproject/iotex-core/action/protocol/poll"
+	"github.com/iotexproject/iotex-core/pkg/util/byteutil"
+	"github.com/iotexproject/iotex-core/state"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
 	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 	"github.com/stretchr/testify/require"
@@ -284,7 +286,6 @@ func TestServer_GetServerMeta(t *testing.T) {
 	require.NoError(err)
 	meta := res.GetServerMeta()
 	require.NotEqual("", meta.PackageCommitID)
-	fmt.Println(meta)
 	require.Equal("clean", meta.GitStatus)
 	ti, err := time.Parse("2006-01-02-UTC/15:04:05", meta.BuildTime)
 	require.NoError(err)
@@ -298,17 +299,23 @@ func TestServer_ReadState(t *testing.T) {
 	svr, err := NewRPCWithTLSEnabled(mainnet)
 	require.NoError(err)
 	out, err := svr.ReadState(&iotexapi.ReadStateRequest{
-		ProtocolID: []byte("rewarding"),
-		MethodName: []byte("UnclaimedBalance"),
-		Arguments:  [][]byte{[]byte(mainnetAddress)},
+		ProtocolID: []byte(poll.ProtocolID),
+		MethodName: []byte("ActiveBlockProducersByEpoch"),
+		Arguments:  [][]byte{byteutil.Uint64ToBytes(10)},
 	})
 	require.NoError(err)
 	require.NotNil(out)
-	val, ok := big.NewInt(0).SetString(string(out.Data), 10)
-	require.True(ok)
-	expected, ok := new(big.Int).SetString("39860707937452088904761", 10)
-	require.True(ok)
-	require.Equal(1, val.Cmp(expected))
+	var ABPs state.CandidateList
+	require.NoError(ABPs.Deserialize(out.Data))
+	require.True(len(ABPs) > 0)
+
+	out, err = svr.ReadState(&iotexapi.ReadStateRequest{
+		ProtocolID: []byte(poll.ProtocolID),
+		MethodName: []byte("GravityChainHeight"),
+		Arguments:  [][]byte{},
+	})
+	require.NoError(err)
+	require.NotNil(out)
 }
 
 func TestServer_GetReceiptByAction(t *testing.T) {
