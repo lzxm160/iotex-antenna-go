@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/iotexproject/go-pkgs/hash"
-	"github.com/iotexproject/iotex-core/state"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
 	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 	"github.com/stretchr/testify/require"
@@ -304,9 +303,9 @@ func TestServer_ReadState(t *testing.T) {
 	})
 	require.NoError(err)
 	require.NotNil(out)
-	var ABPs state.CandidateList
-	require.NoError(ABPs.Deserialize(out.Data))
-	require.True(len(ABPs) > 0)
+	//var ABPs state.CandidateList
+	//require.NoError(ABPs.Deserialize(out.Data))
+	//require.True(len(ABPs) > 0)
 
 	//out, err = svr.ReadState(&iotexapi.ReadStateRequest{
 	//	ProtocolID: []byte(poll.ProtocolID),
