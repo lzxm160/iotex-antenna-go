@@ -116,7 +116,7 @@ func TestServer_GetAction(t *testing.T) {
 	require.NoError(err)
 	require.Equal(1, len(res.ActionInfo))
 	act := res.ActionInfo[0]
-	require.Equal(27, act.Action.GetCore().GetNonce())
+	require.Equal(uint64(27), act.Action.GetCore().GetNonce())
 	fmt.Println(act)
 }
 
