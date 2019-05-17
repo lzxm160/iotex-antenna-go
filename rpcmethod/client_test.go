@@ -137,7 +137,7 @@ func TestServer_GetActionsByAddress(t *testing.T) {
 	act := res.ActionInfo[0]
 	require.Equal(actionHash, act.ActHash)
 	require.Equal(1, len(res.ActionInfo))
-	require.Equal(uint64(27), act.Action.GetCore().GetNonce())
+	require.Equal(uint64(2), act.Action.GetCore().GetNonce())
 	require.Equal("5000000000000000000", act.Action.GetCore().GetTransfer().Amount)
 }
 
