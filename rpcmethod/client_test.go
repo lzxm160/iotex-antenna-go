@@ -7,7 +7,6 @@
 package rpcmethod
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -227,7 +226,14 @@ func TestServer_GetBlockMetas(t *testing.T) {
 			require.True(blkPb.Height > prevBlkPb.Height)
 		}
 		prevBlkPb = blkPb
-		fmt.Println(blkPb)
+		require.Equal("b85279d7321c856ed3942824db5d35297d473250e23166bd52b2b8c7fb2751b6", blkPb.Hash)
+		require.Equal(uint64(214612), blkPb.Height)
+		require.Equal(int64(1), blkPb.NumActions)
+		require.Equal("0", blkPb.TransferAmount)
+		require.Equal("io1ztqalgh0zl9309a48k7wjwyump6agq24cf4zdq", blkPb.ProducerAddress)
+		require.Equal("ce0d705691005544bec96e288687c423558456109ddecb42e29a7330da1c07d7", blkPb.TxRoot)
+		require.Equal("93fd9a3d594776cc512061af60b88acce2cd657a1f843abc9680c7fa0f3188e7", blkPb.ReceiptRoot)
+		require.Equal("4cd3222168049d58a0b7c44c3a90614d37858b1ed5f3b6af561bf243becd293e", blkPb.DeltaStateDigest)
 	}
 
 }
