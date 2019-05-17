@@ -189,7 +189,7 @@ func TestServer_GetActionsByBlock(t *testing.T) {
 	actionCore := act.Action.GetCore().GetAction()
 	_, ok := actionCore.(*iotextypes.ActionCore_Execution)
 	require.True(ok)
-	require.Equal("10200000000000000000000", act.Action.GetCore().GetExecution().Amount)
+	require.Equal("1020000000000000000000", act.Action.GetCore().GetExecution().Amount)
 	require.Equal("io1pcg2ja9krrhujpazswgz77ss46xgt88afqlk6y", act.Action.GetCore().GetExecution().Contract)
 
 	actionHash2 := "66f837de6459e045c66f42f69204678c56e7fb752109f3ba8aef63d38cb4529a"
