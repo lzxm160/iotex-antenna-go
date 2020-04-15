@@ -74,3 +74,107 @@ func NewStakeCreate(candidateName string, amount string, duration uint32, autoSt
 	}
 	return tx
 }
+
+func NewStakeUnstake(bucketIndex uint64, payload []byte) interface{} {
+	tx := &iotextypes.StakeReclaim{
+		BucketIndex: bucketIndex,
+	}
+	if len(payload) > 0 {
+		tx.Payload = make([]byte, len(payload))
+		copy(tx.Payload, payload)
+	}
+	return tx
+}
+
+func NewStakeWithdraw(bucketIndex uint64, payload []byte) interface{} {
+	tx := &iotextypes.StakeReclaim{
+		BucketIndex: bucketIndex,
+	}
+	if len(payload) > 0 {
+		tx.Payload = make([]byte, len(payload))
+		copy(tx.Payload, payload)
+	}
+	return tx
+}
+
+func NewStakeAddDeposit(index uint64, amount string, payload []byte) interface{} {
+	tx := &iotextypes.StakeAddDeposit{
+		BucketIndex: index,
+		Amount:      amount,
+	}
+	if len(payload) > 0 {
+		tx.Payload = make([]byte, len(payload))
+		copy(tx.Payload, payload)
+	}
+	return tx
+}
+
+func NewStakeChangeCandidate(candName string, bucketIndex uint64, payload []byte) interface{} {
+	tx := &iotextypes.StakeChangeCandidate{
+		CandidateName: candName,
+		BucketIndex:   bucketIndex,
+	}
+	if len(payload) > 0 {
+		tx.Payload = make([]byte, len(payload))
+		copy(tx.Payload, payload)
+	}
+	return tx
+}
+
+func NewStakeTransfer(voterAddress string, bucketIndex uint64, payload []byte) interface{} {
+	tx := &iotextypes.StakeTransferOwnership{
+		VoterAddress: voterAddress,
+		BucketIndex:  bucketIndex,
+	}
+	if len(payload) > 0 {
+		tx.Payload = make([]byte, len(payload))
+		copy(tx.Payload, payload)
+	}
+	return tx
+}
+
+func NewStakeRestake(index uint64, duration uint32, autoStake bool, payload []byte) interface{} {
+	tx := &iotextypes.StakeRestake{
+		BucketIndex:    index,
+		StakedDuration: duration,
+		AutoStake:      autoStake,
+	}
+	if len(payload) > 0 {
+		tx.Payload = make([]byte, len(payload))
+		copy(tx.Payload, payload)
+	}
+	return tx
+}
+
+func NewCandidateRegister(
+	name, operatorAddrStr, rewardAddrStr, ownerAddrStr, amountStr string,
+	duration uint32,
+	autoStake bool,
+	payload []byte,
+) interface{} {
+	basic := &iotextypes.CandidateBasicInfo{
+		Name:            name,
+		OperatorAddress: operatorAddrStr,
+		RewardAddress:   rewardAddrStr,
+	}
+	tx := &iotextypes.CandidateRegister{
+		Candidate:      basic,
+		StakedAmount:   amountStr,
+		StakedDuration: duration,
+		AutoStake:      autoStake,
+		OwnerAddress:   ownerAddrStr,
+	}
+	if len(payload) > 0 {
+		tx.Payload = make([]byte, len(payload))
+		copy(tx.Payload, payload)
+	}
+	return tx
+}
+
+func NewCandidateUpdate(name, operatorAddrStr, rewardAddrStr string) interface{} {
+	return &iotextypes.CandidateBasicInfo{
+		Name:            name,
+		OperatorAddress: operatorAddrStr,
+		RewardAddress:   rewardAddrStr,
+	}
+}
