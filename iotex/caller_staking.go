@@ -56,7 +56,7 @@ func (c *createStakeCaller) API() iotexapi.APIServiceClient {
 }
 
 func (c *createStakeCaller) Call(ctx context.Context, opts ...grpc.CallOption) (hash.Hash256, error) {
-	tx := iotextypes.StakeCreate{
+	tx := &iotextypes.StakeCreate{
 		CandidateName:  c.candidateName,
 		StakedDuration: c.duration,
 		AutoStake:      c.autoStake,
