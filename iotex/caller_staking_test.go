@@ -46,4 +46,10 @@ func TestStake(t *testing.T) {
 	//receipt, err = c.GetReceipt(hash).Call(context.Background())
 	//require.NoError(err)
 	//require.Equal(iotextypes.ReceiptStatus_Success, receipt.ReceiptInfo.Receipt.Status)
+
+	// StakeUnstake
+	sc = NewStakeUnstake(1, []byte("payload"))
+	hash, err = c.StakingCaller(sc).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(1000000).Call(context.Background())
+	require.Error(err)
+	require.NotEmpty(hash)
 }

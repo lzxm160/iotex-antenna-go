@@ -10,16 +10,16 @@ import (
 	"context"
 	"math/big"
 
-	"github.com/iotexproject/iotex-proto/golang/iotextypes"
+	"google.golang.org/grpc"
 
 	"github.com/iotexproject/go-pkgs/hash"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
-	"google.golang.org/grpc"
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 
 	"github.com/iotexproject/iotex-antenna-go/v2/account"
 )
 
-type stakingBase struct {
+type stakingCaller struct {
 	account       account.Account
 	api           iotexapi.APIServiceClient
 	payload       []byte
@@ -29,26 +29,26 @@ type stakingBase struct {
 	stakingAction interface{}
 }
 
-func (c *stakingBase) SetGasLimit(g uint64) StakingCaller {
+func (c *stakingCaller) SetGasLimit(g uint64) StakingCaller {
 	c.gasLimit = &g
 	return c
 }
 
-func (c *stakingBase) SetGasPrice(g *big.Int) StakingCaller {
+func (c *stakingCaller) SetGasPrice(g *big.Int) StakingCaller {
 	c.gasPrice = g
 	return c
 }
 
-func (c *stakingBase) SetNonce(n uint64) StakingCaller {
+func (c *stakingCaller) SetNonce(n uint64) StakingCaller {
 	c.nonce = &n
 	return c
 }
 
-func (c *stakingBase) API() iotexapi.APIServiceClient {
+func (c *stakingCaller) API() iotexapi.APIServiceClient {
 	return c.api
 }
 
-func (c *stakingBase) Call(ctx context.Context, opts ...grpc.CallOption) (hash.Hash256, error) {
+func (c *stakingCaller) Call(ctx context.Context, opts ...grpc.CallOption) (hash.Hash256, error) {
 	sc := &sendActionCaller{
 		account:  c.account,
 		api:      c.api,
@@ -83,7 +83,7 @@ func NewStakeUnstake(bucketIndex uint64, payload []byte) interface{} {
 		tx.Payload = make([]byte, len(payload))
 		copy(tx.Payload, payload)
 	}
-	return tx
+	return &reclaim{tx, false}
 }
 
 func NewStakeWithdraw(bucketIndex uint64, payload []byte) interface{} {
@@ -94,7 +94,7 @@ func NewStakeWithdraw(bucketIndex uint64, payload []byte) interface{} {
 		tx.Payload = make([]byte, len(payload))
 		copy(tx.Payload, payload)
 	}
-	return tx
+	return &reclaim{tx, true}
 }
 
 func NewStakeAddDeposit(index uint64, amount string, payload []byte) interface{} {

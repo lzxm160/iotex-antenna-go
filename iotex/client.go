@@ -62,9 +62,9 @@ func (c *authedClient) DeployContract(data []byte) DeployContractCaller {
 
 func (c *authedClient) Account() account.Account { return c.account }
 
-// StakeCreate
+// StakingCaller
 func (c *authedClient) StakingCaller(action interface{}) StakingCaller {
-	return &stakingBase{
+	return &stakingCaller{
 		account:       c.account,
 		api:           c.api,
 		stakingAction: action,
