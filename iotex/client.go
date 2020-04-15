@@ -62,6 +62,15 @@ func (c *authedClient) DeployContract(data []byte) DeployContractCaller {
 
 func (c *authedClient) Account() account.Account { return c.account }
 
+// StakeCreate
+func (c *authedClient) StakingCaller(action interface{}) StakingCaller {
+	return &stakingBase{
+		account:       c.account,
+		api:           c.api,
+		stakingAction: action,
+	}
+}
+
 // NewReadOnlyClient creates a ReadOnlyClient.
 func NewReadOnlyClient(c iotexapi.APIServiceClient) ReadOnlyClient {
 	return &client{api: c}

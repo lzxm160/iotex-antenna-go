@@ -55,6 +55,24 @@ func (c *sendActionCaller) Call(ctx context.Context, opts ...grpc.CallOption) (h
 		core.Action = &iotextypes.ActionCore_Transfer{Transfer: a}
 	case *iotextypes.ClaimFromRewardingFund:
 		core.Action = &iotextypes.ActionCore_ClaimFromRewardingFund{ClaimFromRewardingFund: a}
+	case *iotextypes.StakeCreate:
+		core.Action = &iotextypes.ActionCore_StakeCreate{StakeCreate: a}
+	case *iotextypes.StakeReclaim:
+		core.Action = &iotextypes.ActionCore_StakeUnstake{StakeUnstake: a}
+	//case *iotextypes.StakeCreate:
+	//	core.Action = &iotextypes.ActionCore_StakeCreate{StakeCreate: a}
+	case *iotextypes.StakeAddDeposit:
+		core.Action = &iotextypes.ActionCore_StakeAddDeposit{StakeAddDeposit: a}
+	case *iotextypes.StakeRestake:
+		core.Action = &iotextypes.ActionCore_StakeRestake{StakeRestake: a}
+	case *iotextypes.StakeTransferOwnership:
+		core.Action = &iotextypes.ActionCore_StakeTransferOwnership{StakeTransferOwnership: a}
+	case *iotextypes.StakeChangeCandidate:
+		core.Action = &iotextypes.ActionCore_StakeChangeCandidate{StakeChangeCandidate: a}
+	case *iotextypes.CandidateRegister:
+		core.Action = &iotextypes.ActionCore_CandidateRegister{CandidateRegister: a}
+	case *iotextypes.CandidateBasicInfo:
+		core.Action = &iotextypes.ActionCore_CandidateUpdate{CandidateUpdate: a}
 	default:
 		return hash.ZeroHash256, errcodes.New("not support action call", errcodes.InternalError)
 	}
