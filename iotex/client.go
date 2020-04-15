@@ -60,6 +60,15 @@ func (c *authedClient) DeployContract(data []byte) DeployContractCaller {
 	}
 }
 
+// Staking
+func (c *authedClient) Staking(action interface{}) StakingCaller {
+	return &stakingCaller{
+		account:       c.account,
+		api:           c.api,
+		stakingAction: action,
+	}
+}
+
 func (c *authedClient) Account() account.Account { return c.account }
 
 // NewReadOnlyClient creates a ReadOnlyClient.

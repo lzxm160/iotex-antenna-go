@@ -66,6 +66,8 @@ type AuthedClient interface {
 	Transfer(to address.Address, value *big.Int) TransferCaller
 	ClaimReward(value *big.Int) ClaimRewardCaller
 	DeployContract(data []byte) DeployContractCaller
+	// staking related
+	Staking(interface{}) StakingCaller
 	Account() account.Account
 }
 
@@ -102,4 +104,12 @@ type Contract interface {
 // ReadOnlyContract allows to read on this contract's methods.
 type ReadOnlyContract interface {
 	Read(method string, args ...interface{}) ReadContractCaller
+}
+
+// StakingCaller is used to perform a staking call.
+type StakingCaller interface {
+	SendActionCaller
+	SetGasPrice(*big.Int) StakingCaller
+	SetGasLimit(uint64) StakingCaller
+	SetNonce(uint64) StakingCaller
 }
