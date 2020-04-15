@@ -66,6 +66,9 @@ type AuthedClient interface {
 	Transfer(to address.Address, value *big.Int) TransferCaller
 	ClaimReward(value *big.Int) ClaimRewardCaller
 	DeployContract(data []byte) DeployContractCaller
+	// staking related
+	Staking() StakingCaller
+	Candidate() CandidateCaller
 	Account() account.Account
 }
 
@@ -102,4 +105,75 @@ type Contract interface {
 // ReadOnlyContract allows to read on this contract's methods.
 type ReadOnlyContract interface {
 	Read(method string, args ...interface{}) ReadContractCaller
+}
+
+// StakingCaller is used to perform a staking call.
+type StakingCaller interface {
+	Create(candidateName string, amount *big.Int, duration uint32, autoStake bool) StakeCreateCaller
+	Unstake(bucketIndex uint64) StakeUnstakeCaller
+	Withdraw(bucketIndex uint64) StakeWithdrawCaller
+	AddDeposit(index uint64, amount *big.Int) StakeAddDepositCaller
+	ChangeCandidate(candName string, bucketIndex uint64) StakeChangeCandidateCaller
+	StakingTransfer(voterAddress address.Address, bucketIndex uint64) StakeTransferCaller
+	Restake(index uint64, duration uint32, autoStake bool) RestakeCaller
+}
+
+// CandidateCaller is used to perform a candidate call.
+type CandidateCaller interface {
+	Register(name, operatorAddr, rewardAddr address.Address, amount *big.Int, duration uint32, autoStake bool) CandidateRegisterCaller
+	Update(name string, operatorAddr, rewardAddr address.Address) CandidateUpdateCaller
+}
+
+// StakingBase is for staking
+type StakingBase interface {
+	SendActionCaller
+	SetGasPrice(*big.Int) StakingBase
+	SetGasLimit(uint64) StakingBase
+	SetNonce(uint64) StakingBase
+	SetPayload([]byte) StakingBase
+}
+
+// StakeCreateCaller is for stake create call.
+type StakeCreateCaller interface {
+	StakingBase
+}
+
+// StakeUnstakeCaller is for stake unstake call.
+type StakeUnstakeCaller interface {
+	StakingBase
+}
+
+// StakeWithdrawCaller is for stake withdraw call.
+type StakeWithdrawCaller interface {
+	StakingBase
+}
+
+// StakeAddDepositCaller is for stake add deposit call.
+type StakeAddDepositCaller interface {
+	StakingBase
+}
+
+// StakeChangeCandidateCaller is for stake change candidate call.
+type StakeChangeCandidateCaller interface {
+	StakingBase
+}
+
+// StakeTransferCaller is for stake transfer call.
+type StakeTransferCaller interface {
+	StakingBase
+}
+
+// RestakeCaller is for stake restake call.
+type RestakeCaller interface {
+	StakingBase
+}
+
+// CandidateRegisterCaller is for candidate register call.
+type CandidateRegisterCaller interface {
+	StakingBase
+}
+
+// CandidateUpdateCaller is for candidate update call.
+type CandidateUpdateCaller interface {
+	StakingBase
 }
