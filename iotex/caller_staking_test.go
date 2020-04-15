@@ -2,6 +2,8 @@ package iotex
 
 import (
 	"context"
+	"encoding/hex"
+	"fmt"
 	"math/big"
 	"testing"
 	"time"
@@ -27,6 +29,7 @@ func TestStakeCreate(t *testing.T) {
 	hash, err := c.StakeCreate("io19d0p3ah4g8ww9d7kcxfq87yxe7fnr8rpth5shj", "100", uint32(10000), true, []byte("payload")).SetGasPrice(big.NewInt(10)).SetGasLimit(1000000).Call(context.Background())
 	require.NoError(err)
 	require.NotEmpty(hash)
+	fmt.Println(hex.EncodeToString(hash[:]))
 	time.Sleep(time.Second * 10)
 	receipt, err := c.GetReceipt(hash).Call(context.Background())
 	require.NoError(err)
