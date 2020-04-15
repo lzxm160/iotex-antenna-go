@@ -9,7 +9,6 @@ package iotex
 import (
 	"context"
 	"encoding/hex"
-	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -69,7 +68,6 @@ func (c *sendActionCaller) Call(ctx context.Context, opts ...grpc.CallOption) (h
 		if a.isWithdraw {
 			core.Action = &iotextypes.ActionCore_StakeWithdraw{StakeWithdraw: a.action.(*iotextypes.StakeReclaim)}
 		} else {
-			fmt.Println("unstake")
 			core.Action = &iotextypes.ActionCore_StakeUnstake{StakeUnstake: a.action.(*iotextypes.StakeReclaim)}
 		}
 	case *iotextypes.StakeAddDeposit:
