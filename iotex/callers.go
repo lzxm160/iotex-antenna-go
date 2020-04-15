@@ -56,6 +56,8 @@ func (c *sendActionCaller) Call(ctx context.Context, opts ...grpc.CallOption) (h
 		core.Action = &iotextypes.ActionCore_Transfer{Transfer: a}
 	case *iotextypes.ClaimFromRewardingFund:
 		core.Action = &iotextypes.ActionCore_ClaimFromRewardingFund{ClaimFromRewardingFund: a}
+	case *iotextypes.StakeCreate:
+		core.Action = &iotextypes.ActionCore_StakeCreate{StakeCreate: a}
 	default:
 		fmt.Println("default")
 		return hash.ZeroHash256, errcodes.New("not support action call", errcodes.InternalError)
