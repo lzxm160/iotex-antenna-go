@@ -68,7 +68,7 @@ type AuthedClient interface {
 	DeployContract(data []byte) DeployContractCaller
 	Account() account.Account
 	// staking related
-	StakeCreate(string, string, uint32, bool, []byte) StakingCaller
+	StakingCaller() StakingCaller
 }
 
 // ReadOnlyClient is an iotex client which can perform read actions.
@@ -108,8 +108,8 @@ type ReadOnlyContract interface {
 
 // StakingCaller is used to perform a staking call.
 type StakingCaller interface {
-	SendActionCaller
-
+	API() iotexapi.APIServiceClient
+	Call(context.Context, interface{}, ...grpc.CallOption) (hash.Hash256, error)
 	SetGasPrice(*big.Int) StakingCaller
 	SetGasLimit(uint64) StakingCaller
 	SetNonce(uint64) StakingCaller

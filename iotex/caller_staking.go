@@ -10,9 +10,10 @@ import (
 	"context"
 	"math/big"
 
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
+
 	"github.com/iotexproject/go-pkgs/hash"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
-	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 	"google.golang.org/grpc"
 
 	"github.com/iotexproject/iotex-antenna-go/v2/account"
@@ -27,53 +28,48 @@ type stakingBase struct {
 	nonce    *uint64
 }
 
-// StakeCreate
-type createStakeCaller struct {
-	stakingBase
-	candidateName string
-	amount        string
-	duration      uint32
-	autoStake     bool
-}
-
-func (c *createStakeCaller) SetGasLimit(g uint64) StakingCaller {
+func (c *stakingBase) SetGasLimit(g uint64) StakingCaller {
 	c.gasLimit = &g
 	return c
 }
 
-func (c *createStakeCaller) SetGasPrice(g *big.Int) StakingCaller {
+func (c *stakingBase) SetGasPrice(g *big.Int) StakingCaller {
 	c.gasPrice = g
 	return c
 }
 
-func (c *createStakeCaller) SetNonce(n uint64) StakingCaller {
+func (c *stakingBase) SetNonce(n uint64) StakingCaller {
 	c.nonce = &n
 	return c
 }
 
-func (c *createStakeCaller) API() iotexapi.APIServiceClient {
+func (c *stakingBase) API() iotexapi.APIServiceClient {
 	return c.api
 }
 
-func (c *createStakeCaller) Call(ctx context.Context, opts ...grpc.CallOption) (hash.Hash256, error) {
-	tx := &iotextypes.StakeCreate{
-		CandidateName:  c.candidateName,
-		StakedDuration: c.duration,
-		AutoStake:      c.autoStake,
-		StakedAmount:   c.amount,
-	}
-
-	if len(c.payload) > 0 {
-		tx.Payload = make([]byte, len(c.payload))
-		copy(tx.Payload, c.payload)
-	}
+func (c *stakingBase) Call(ctx context.Context, action interface{}, opts ...grpc.CallOption) (hash.Hash256, error) {
 	sc := &sendActionCaller{
 		account:  c.account,
 		api:      c.api,
 		gasLimit: c.gasLimit,
 		gasPrice: c.gasPrice,
 		nonce:    c.nonce,
-		action:   tx,
+		action:   action,
 	}
 	return sc.Call(ctx, opts...)
+}
+
+func NewStakeCreate(candidateName string, amount string, duration uint32, autoStake bool, payload []byte) interface{} {
+	tx := &iotextypes.StakeCreate{
+		CandidateName:  candidateName,
+		StakedDuration: duration,
+		AutoStake:      autoStake,
+		StakedAmount:   amount,
+	}
+
+	if len(payload) > 0 {
+		tx.Payload = make([]byte, len(payload))
+		copy(tx.Payload, payload)
+	}
+	return tx
 }

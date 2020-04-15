@@ -26,8 +26,8 @@ func TestStakeCreate(t *testing.T) {
 	acc, err := account.HexStringToAccount(_accountPrivateKey)
 	require.NoError(err)
 	c := NewAuthedClient(iotexapi.NewAPIServiceClient(conn), acc)
-
-	hash, err := c.StakeCreate("io19d0p3ah4g8ww9d7kcxfq87yxe7fnr8rpth5shj", "100", uint32(10000), true, []byte("payload")).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(1000000).Call(context.Background())
+	sc := NewStakeCreate("io19d0p3ah4g8ww9d7kcxfq87yxe7fnr8rpth5shj", "100", uint32(10000), true, []byte("payload"))
+	hash, err := c.StakingCaller().SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(1000000).Call(context.Background(), sc)
 	require.NoError(err)
 	require.NotEmpty(hash)
 	fmt.Println(hex.EncodeToString(hash[:]))
