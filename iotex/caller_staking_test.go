@@ -31,7 +31,7 @@ func TestStake(t *testing.T) {
 	sc := NewCandidateRegister("test", "io10a298zmzvrt4guq79a9f4x7qedj59y7ery84he", "io13sj9mzpewn25ymheukte4v39hvjdtrfp00mlyv", "io19d0p3ah4g8ww9d7kcxfq87yxe7fnr8rpth5shj", "100", uint32(10000), false, []byte("payload"))
 	ret, err := c.StakingCaller(sc).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(1000000).Call(context.Background())
 	require.Error(err)
-	require.NotEqual(hash.ZeroHash256, ret)
+	require.Equal(hash.ZeroHash256, ret)
 
 	// need to fix when testnet ready
 	//time.Sleep(time.Second * 10)
@@ -43,7 +43,7 @@ func TestStake(t *testing.T) {
 	sc = NewStakeCreate("io19d0p3ah4g8ww9d7kcxfq87yxe7fnr8rpth5shj", "100", uint32(10000), true, []byte("payload"))
 	ret, err = c.StakingCaller(sc).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(1000000).Call(context.Background())
 	require.Error(err)
-	require.NotEqual(hash.ZeroHash256, ret)
+	require.Equal(hash.ZeroHash256, ret)
 
 	// need to fix when testnet ready
 	//time.Sleep(time.Second * 10)
