@@ -20,12 +20,13 @@ import (
 )
 
 type stakingBase struct {
-	account  account.Account
-	api      iotexapi.APIServiceClient
-	payload  []byte
-	gasLimit *uint64
-	gasPrice *big.Int
-	nonce    *uint64
+	account       account.Account
+	api           iotexapi.APIServiceClient
+	payload       []byte
+	gasLimit      *uint64
+	gasPrice      *big.Int
+	nonce         *uint64
+	stakingAction interface{}
 }
 
 func (c *stakingBase) SetGasLimit(g uint64) StakingCaller {
@@ -47,14 +48,14 @@ func (c *stakingBase) API() iotexapi.APIServiceClient {
 	return c.api
 }
 
-func (c *stakingBase) Call(ctx context.Context, action interface{}, opts ...grpc.CallOption) (hash.Hash256, error) {
+func (c *stakingBase) Call(ctx context.Context, opts ...grpc.CallOption) (hash.Hash256, error) {
 	sc := &sendActionCaller{
 		account:  c.account,
 		api:      c.api,
 		gasLimit: c.gasLimit,
 		gasPrice: c.gasPrice,
 		nonce:    c.nonce,
-		action:   action,
+		action:   stakingAction,
 	}
 	return sc.Call(ctx, opts...)
 }
