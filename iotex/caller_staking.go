@@ -55,7 +55,7 @@ func (c *stakingBase) Call(ctx context.Context, opts ...grpc.CallOption) (hash.H
 		gasLimit: c.gasLimit,
 		gasPrice: c.gasPrice,
 		nonce:    c.nonce,
-		action:   stakingAction,
+		action:   c.stakingAction,
 	}
 	return sc.Call(ctx, opts...)
 }
