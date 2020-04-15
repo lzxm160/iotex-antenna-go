@@ -89,7 +89,7 @@ func (c *sendActionCaller) Call(ctx context.Context, opts ...grpc.CallOption) (h
 	if err != nil {
 		return hash.ZeroHash256, errcodes.NewError(err, errcodes.InternalError)
 	}
-
+	fmt.Println("before send")
 	response, err := c.api.SendAction(ctx, &iotexapi.SendActionRequest{Action: sealed}, opts...)
 	if err != nil {
 		return hash.ZeroHash256, errcodes.NewError(err, errcodes.RPCError)
