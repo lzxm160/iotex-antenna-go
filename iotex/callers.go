@@ -9,6 +9,7 @@ package iotex
 import (
 	"context"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -56,6 +57,7 @@ func (c *sendActionCaller) Call(ctx context.Context, opts ...grpc.CallOption) (h
 	case *iotextypes.ClaimFromRewardingFund:
 		core.Action = &iotextypes.ActionCore_ClaimFromRewardingFund{ClaimFromRewardingFund: a}
 	default:
+		fmt.Println("default")
 		return hash.ZeroHash256, errcodes.New("not support action call", errcodes.InternalError)
 	}
 
