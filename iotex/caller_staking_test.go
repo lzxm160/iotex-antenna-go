@@ -8,11 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/iotexproject/iotex-proto/golang/iotextypes"
-
 	"github.com/stretchr/testify/require"
 
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
+
 	"github.com/iotexproject/iotex-antenna-go/v2/account"
+	"github.com/iotexproject/iotex-antenna-go/v2/utils/unit"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
 )
 
@@ -26,7 +27,7 @@ func TestStakeCreate(t *testing.T) {
 	require.NoError(err)
 	c := NewAuthedClient(iotexapi.NewAPIServiceClient(conn), acc)
 
-	hash, err := c.StakeCreate("io19d0p3ah4g8ww9d7kcxfq87yxe7fnr8rpth5shj", "100", uint32(10000), true, []byte("payload")).SetGasPrice(big.NewInt(10)).SetGasLimit(1000000).Call(context.Background())
+	hash, err := c.StakeCreate("io19d0p3ah4g8ww9d7kcxfq87yxe7fnr8rpth5shj", "100", uint32(10000), true, []byte("payload")).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(1000000).Call(context.Background())
 	require.NoError(err)
 	require.NotEmpty(hash)
 	fmt.Println(hex.EncodeToString(hash[:]))
