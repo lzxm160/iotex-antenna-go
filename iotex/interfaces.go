@@ -66,9 +66,9 @@ type AuthedClient interface {
 	Transfer(to address.Address, value *big.Int) TransferCaller
 	ClaimReward(value *big.Int) ClaimRewardCaller
 	DeployContract(data []byte) DeployContractCaller
-	Account() account.Account
 	// staking related
-	StakingCaller(interface{}) StakingCaller
+	Staking(interface{}) StakingCaller
+	Account() account.Account
 }
 
 // ReadOnlyClient is an iotex client which can perform read actions.

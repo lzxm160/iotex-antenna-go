@@ -60,16 +60,16 @@ func (c *authedClient) DeployContract(data []byte) DeployContractCaller {
 	}
 }
 
-func (c *authedClient) Account() account.Account { return c.account }
-
 // StakingCaller
-func (c *authedClient) StakingCaller(action interface{}) StakingCaller {
+func (c *authedClient) Staking(action interface{}) StakingCaller {
 	return &stakingCaller{
 		account:       c.account,
 		api:           c.api,
 		stakingAction: action,
 	}
 }
+
+func (c *authedClient) Account() account.Account { return c.account }
 
 // NewReadOnlyClient creates a ReadOnlyClient.
 func NewReadOnlyClient(c iotexapi.APIServiceClient) ReadOnlyClient {
