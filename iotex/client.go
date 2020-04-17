@@ -60,13 +60,14 @@ func (c *authedClient) DeployContract(data []byte) DeployContractCaller {
 	}
 }
 
-// Staking
-func (c *authedClient) Staking(action interface{}) StakingCaller {
-	return &stakingCaller{
-		account:       c.account,
-		api:           c.api,
-		stakingAction: action,
-	}
+//Staking interface
+func (c *authedClient) Staking() StakingCaller {
+	return &stakingCaller{}
+}
+
+//Candidate interface
+func (c *authedClient) Candidate() CandidateCaller {
+	return &candidateCaller{}
 }
 
 func (c *authedClient) Account() account.Account { return c.account }
