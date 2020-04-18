@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/lzxm160/grpc-rest/golang/iotextypes"
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 	"github.com/stretchr/testify/require"
 
 	"github.com/iotexproject/go-pkgs/hash"
