@@ -9,7 +9,6 @@ package iotex
 import (
 	"context"
 	"encoding/hex"
-	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -63,14 +62,12 @@ func (c *sendActionCaller) Call(ctx context.Context, opts ...grpc.CallOption) (h
 	case *iotextypes.ClaimFromRewardingFund:
 		core.Action = &iotextypes.ActionCore_ClaimFromRewardingFund{ClaimFromRewardingFund: a}
 	case *iotextypes.StakeCreate:
-		fmt.Println("*iotextypes.StakeCreate")
 		core.Action = &iotextypes.ActionCore_StakeCreate{StakeCreate: a}
 		// special reclaim type to differentiate unstake and withdraw
 	case *reclaim:
 		if a.isWithdraw {
 			core.Action = &iotextypes.ActionCore_StakeWithdraw{StakeWithdraw: a.action.(*iotextypes.StakeReclaim)}
 		} else {
-			fmt.Println("*iotextypes.ActionCore_StakeUnstake")
 			core.Action = &iotextypes.ActionCore_StakeUnstake{StakeUnstake: a.action.(*iotextypes.StakeReclaim)}
 		}
 	case *iotextypes.StakeAddDeposit:
@@ -82,7 +79,6 @@ func (c *sendActionCaller) Call(ctx context.Context, opts ...grpc.CallOption) (h
 	case *iotextypes.StakeChangeCandidate:
 		core.Action = &iotextypes.ActionCore_StakeChangeCandidate{StakeChangeCandidate: a}
 	case *iotextypes.CandidateRegister:
-		fmt.Println("*iotextypes.CandidateRegister")
 		core.Action = &iotextypes.ActionCore_CandidateRegister{CandidateRegister: a}
 	case *iotextypes.CandidateBasicInfo:
 		core.Action = &iotextypes.ActionCore_CandidateUpdate{CandidateUpdate: a}
