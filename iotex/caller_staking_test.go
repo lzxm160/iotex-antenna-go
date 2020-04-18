@@ -4,7 +4,9 @@ import (
 	"context"
 	"math/big"
 	"testing"
+	"time"
 
+	"github.com/lzxm160/grpc-rest/golang/iotextypes"
 	"github.com/stretchr/testify/require"
 
 	"github.com/iotexproject/go-pkgs/hash"
@@ -54,8 +56,8 @@ func TestStake(t *testing.T) {
 	ret, err = c.Staking().Unstake(1).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(1000000).SetPayload([]byte("payload")).Call(context.Background())
 	require.NoError(err)
 	require.NotEqual(hash.ZeroHash256, ret)
-	//time.Sleep(time.Second * 10)
-	//receipt, err := c.GetReceipt(ret).Call(context.Background())
-	//require.NoError(err)
-	//require.NotEqual(iotextypes.ReceiptStatus_Success, receipt.ReceiptInfo.Receipt.Status)
+	time.Sleep(time.Second * 10)
+	receipt, err := c.GetReceipt(ret).Call(context.Background())
+	require.NoError(err)
+	require.NotEqual(iotextypes.ReceiptStatus_Success, receipt.ReceiptInfo.Receipt.Status)
 }

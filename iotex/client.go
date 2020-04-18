@@ -62,12 +62,18 @@ func (c *authedClient) DeployContract(data []byte) DeployContractCaller {
 
 //Staking interface
 func (c *authedClient) Staking() StakingCaller {
-	return &stakingCaller{account: c.account, api: c.api}
+	return &stakingCaller{stakingBase{
+		account: c.account,
+		api:     c.api,
+	}}
 }
 
 //Candidate interface
 func (c *authedClient) Candidate() CandidateCaller {
-	return &candidateCaller{account: c.account, api: c.api}
+	return &candidateCaller{stakingBase{
+		account: c.account,
+		api:     c.api,
+	}}
 }
 
 func (c *authedClient) Account() account.Account { return c.account }
