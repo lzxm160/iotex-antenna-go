@@ -10,15 +10,14 @@ import (
 	"context"
 	"math/big"
 
-	"github.com/iotexproject/iotex-proto/golang/iotextypes"
-
-	"github.com/iotexproject/go-pkgs/hash"
 	"google.golang.org/grpc"
 
-	"github.com/iotexproject/iotex-antenna-go/v2/account"
-	"github.com/iotexproject/iotex-proto/golang/iotexapi"
-
+	"github.com/iotexproject/go-pkgs/hash"
 	"github.com/iotexproject/iotex-address/address"
+	"github.com/iotexproject/iotex-proto/golang/iotexapi"
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
+
+	"github.com/iotexproject/iotex-antenna-go/v2/account"
 )
 
 type (

@@ -5,14 +5,14 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/iotexproject/iotex-address/address"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/iotexproject/go-pkgs/hash"
+	"github.com/iotexproject/iotex-address/address"
+	"github.com/iotexproject/iotex-proto/golang/iotexapi"
+
 	"github.com/iotexproject/iotex-antenna-go/v2/account"
 	"github.com/iotexproject/iotex-antenna-go/v2/utils/unit"
-	"github.com/iotexproject/iotex-proto/golang/iotexapi"
 )
 
 func TestStake(t *testing.T) {
