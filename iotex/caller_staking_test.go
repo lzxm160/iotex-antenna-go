@@ -60,5 +60,5 @@ func TestStake(t *testing.T) {
 	time.Sleep(time.Second * 10)
 	receipt, err := c.GetReceipt(ret).Call(context.Background())
 	require.NoError(err)
-	require.Equal(iotextypes.ReceiptStatus_Success, receipt.ReceiptInfo.Receipt.Status)
+	require.NotEqual(iotextypes.ReceiptStatus_Success, receipt.ReceiptInfo.Receipt.Status)
 }
