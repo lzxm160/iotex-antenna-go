@@ -22,9 +22,15 @@ import (
 )
 
 type (
-	stakingCaller   struct{}
-	candidateCaller struct{}
-	stakingBase     struct {
+	stakingCaller struct {
+		account account.Account
+		api     iotexapi.APIServiceClient
+	}
+	candidateCaller struct {
+		account account.Account
+		api     iotexapi.APIServiceClient
+	}
+	stakingBase struct {
 		account  account.Account
 		api      iotexapi.APIServiceClient
 		payload  []byte
@@ -43,7 +49,7 @@ func (c *stakingCaller) Create(candidateName string, amount *big.Int, duration u
 		AutoStake:      autoStake,
 		StakedAmount:   amount.String(),
 	}
-	return &stakingBase{action: tx}
+	return &stakingBase{account: c.account, api: c.api, action: tx}
 }
 
 //Unstake Staking
@@ -52,7 +58,7 @@ func (c *stakingCaller) Unstake(bucketIndex uint64) StakeUnstakeCaller {
 		BucketIndex: bucketIndex,
 	}
 	unstake := &reclaim{tx, false}
-	return &stakingBase{action: unstake}
+	return &stakingBase{account: c.account, api: c.api, action: unstake}
 }
 
 //Withdraw Staking
@@ -61,7 +67,7 @@ func (c *stakingCaller) Withdraw(bucketIndex uint64) StakeWithdrawCaller {
 		BucketIndex: bucketIndex,
 	}
 	withdraw := &reclaim{tx, true}
-	return &stakingBase{action: withdraw}
+	return &stakingBase{account: c.account, api: c.api, action: withdraw}
 }
 
 //AddDeposit Staking
@@ -70,7 +76,7 @@ func (c *stakingCaller) AddDeposit(index uint64, amount *big.Int) StakeAddDeposi
 		BucketIndex: index,
 		Amount:      amount.String(),
 	}
-	return &stakingBase{action: tx}
+	return &stakingBase{account: c.account, api: c.api, action: tx}
 }
 
 //ChangeCandidate Staking
@@ -79,7 +85,7 @@ func (c *stakingCaller) ChangeCandidate(candName string, bucketIndex uint64) Sta
 		CandidateName: candName,
 		BucketIndex:   bucketIndex,
 	}
-	return &stakingBase{action: tx}
+	return &stakingBase{account: c.account, api: c.api, action: tx}
 }
 
 //StakingTransfer Staking
@@ -88,7 +94,7 @@ func (c *stakingCaller) StakingTransfer(voterAddress address.Address, bucketInde
 		VoterAddress: voterAddress.String(),
 		BucketIndex:  bucketIndex,
 	}
-	return &stakingBase{action: tx}
+	return &stakingBase{account: c.account, api: c.api, action: tx}
 }
 
 //Restake Staking
@@ -98,7 +104,7 @@ func (c *stakingCaller) Restake(index uint64, duration uint32, autoStake bool) R
 		StakedDuration: duration,
 		AutoStake:      autoStake,
 	}
-	return &stakingBase{action: tx}
+	return &stakingBase{account: c.account, api: c.api, action: tx}
 }
 
 //Register Staking
@@ -114,7 +120,7 @@ func (c *candidateCaller) Register(name, operatorAddr, rewardAddr address.Addres
 		StakedDuration: duration,
 		AutoStake:      autoStake,
 	}
-	return &stakingBase{action: tx}
+	return &stakingBase{account: c.account, api: c.api, action: tx}
 }
 
 //Update Staking
@@ -124,7 +130,7 @@ func (c *candidateCaller) Update(name string, operatorAddr, rewardAddr address.A
 		OperatorAddress: operatorAddr.String(),
 		RewardAddress:   rewardAddr.String(),
 	}
-	return &stakingBase{action: tx}
+	return &stakingBase{account: c.account, api: c.api, action: tx}
 }
 
 func (c *stakingBase) SetGasLimit(g uint64) StakingBase {

@@ -2,12 +2,12 @@ package iotex
 
 import (
 	"context"
-	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 	"math/big"
 	"testing"
 	"time"
 
 	"github.com/iotexproject/iotex-address/address"
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 
 	"github.com/stretchr/testify/require"
 
