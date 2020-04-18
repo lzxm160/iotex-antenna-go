@@ -36,7 +36,7 @@ func TestStake(t *testing.T) {
 	require.Equal(hash.ZeroHash256, ret)
 
 	// need to fix when testnet ready
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 20)
 	receipt, err := c.GetReceipt(ret).Call(context.Background())
 	require.NoError(err)
 	require.Equal(iotextypes.ReceiptStatus_Success, receipt.ReceiptInfo.Receipt.Status)
