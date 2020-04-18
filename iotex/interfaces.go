@@ -120,9 +120,7 @@ type StakingCaller interface {
 
 // CandidateCaller is used to perform a candidate call.
 type CandidateCaller interface {
-	Register(name, operatorAddrStr, rewardAddrStr, ownerAddrStr, amountStr string,
-		duration uint32,
-		autoStake bool) CandidateRegisterCaller
+	Register(name, operatorAddr, rewardAddr address.Address, amount *big.Int, duration uint32, autoStake bool) CandidateRegisterCaller
 	Update(name string, operatorAddr, rewardAddr address.Address) CandidateUpdateCaller
 }
 
