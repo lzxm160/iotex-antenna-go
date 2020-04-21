@@ -39,148 +39,80 @@ type (
 )
 
 //Create Staking
-func (c *stakingCaller) Create(candidateName string, amount *big.Int, duration uint32, autoStake bool) StakingCaller {
+func (c *stakingCaller) Create(candidateName string, amount *big.Int, duration uint32, autoStake bool) StakingAPICaller {
 	tx := &iotextypes.StakeCreate{
 		CandidateName:  candidateName,
 		StakedDuration: duration,
 		AutoStake:      autoStake,
 		StakedAmount:   amount.String(),
 	}
-	return &stakingCaller{
-		stakingBase{
-			account: c.account,
-			api:     c.api,
-			action:  tx,
-		}}
+	c.stakingBase.action = tx
+	return c
 }
 
 //Unstake Staking
-func (c *stakingCaller) Unstake(bucketIndex uint64) StakingCaller {
+func (c *stakingCaller) Unstake(bucketIndex uint64) StakingAPICaller {
 	tx := &iotextypes.StakeReclaim{
 		BucketIndex: bucketIndex,
 	}
 	unstake := &reclaim{tx, false}
-	return &stakingCaller{
-		stakingBase{
-			account: c.account,
-			api:     c.api,
-			action:  unstake,
-		}}
+	c.stakingBase.action = unstake
+	return c
 }
 
 //Withdraw Staking
-func (c *stakingCaller) Withdraw(bucketIndex uint64) StakingCaller {
+func (c *stakingCaller) Withdraw(bucketIndex uint64) StakingAPICaller {
 	tx := &iotextypes.StakeReclaim{
 		BucketIndex: bucketIndex,
 	}
 	withdraw := &reclaim{tx, true}
-	return &stakingCaller{
-		stakingBase{
-			account: c.account,
-			api:     c.api,
-			action:  withdraw,
-		}}
+	c.stakingBase.action = withdraw
+	return c
 }
 
 //AddDeposit Staking
-func (c *stakingCaller) AddDeposit(index uint64, amount *big.Int) StakingCaller {
+func (c *stakingCaller) AddDeposit(index uint64, amount *big.Int) StakingAPICaller {
 	tx := &iotextypes.StakeAddDeposit{
 		BucketIndex: index,
 		Amount:      amount.String(),
 	}
-	return &stakingCaller{
-		stakingBase{
-			account: c.account,
-			api:     c.api,
-			action:  tx,
-		}}
+	c.stakingBase.action = tx
+	return c
 }
 
 //ChangeCandidate Staking
-func (c *stakingCaller) ChangeCandidate(candName string, bucketIndex uint64) StakingCaller {
+func (c *stakingCaller) ChangeCandidate(candName string, bucketIndex uint64) StakingAPICaller {
 	tx := &iotextypes.StakeChangeCandidate{
 		CandidateName: candName,
 		BucketIndex:   bucketIndex,
 	}
-	return &stakingCaller{
-		stakingBase{
-			account: c.account,
-			api:     c.api,
-			action:  tx,
-		}}
+	c.stakingBase.action = tx
+	return c
 }
 
 //StakingTransfer Staking
-func (c *stakingCaller) StakingTransfer(voterAddress address.Address, bucketIndex uint64) StakingCaller {
+func (c *stakingCaller) StakingTransfer(voterAddress address.Address, bucketIndex uint64) StakingAPICaller {
 	tx := &iotextypes.StakeTransferOwnership{
 		VoterAddress: voterAddress.String(),
 		BucketIndex:  bucketIndex,
 	}
-	return &stakingCaller{
-		stakingBase{
-			account: c.account,
-			api:     c.api,
-			action:  tx,
-		}}
+	c.stakingBase.action = tx
+	return c
 }
 
 //Restake Staking
-func (c *stakingCaller) Restake(index uint64, duration uint32, autoStake bool) StakingCaller {
+func (c *stakingCaller) Restake(index uint64, duration uint32, autoStake bool) StakingAPICaller {
 	tx := &iotextypes.StakeRestake{
 		BucketIndex:    index,
 		StakedDuration: duration,
 		AutoStake:      autoStake,
 	}
-	return &stakingCaller{
-		stakingBase{
-			account: c.account,
-			api:     c.api,
-			action:  tx,
-		}}
-}
-
-func (c *stakingCaller) SetGasLimit(g uint64) StakingCaller {
-	c.gasLimit = &g
+	c.stakingBase.action = tx
 	return c
-}
-
-func (c *stakingCaller) SetGasPrice(g *big.Int) StakingCaller {
-	c.gasPrice = g
-	return c
-}
-
-func (c *stakingCaller) SetNonce(n uint64) StakingCaller {
-	c.nonce = &n
-	return c
-}
-
-func (c *stakingCaller) SetPayload(pl []byte) StakingCaller {
-	if pl == nil {
-		return c
-	}
-	c.payload = make([]byte, len(pl))
-	copy(c.payload, pl)
-	return c
-}
-
-func (c *stakingCaller) API() iotexapi.APIServiceClient {
-	return c.api
-}
-
-func (c *stakingCaller) Call(ctx context.Context, opts ...grpc.CallOption) (hash.Hash256, error) {
-	sc := &sendActionCaller{
-		account:  c.account,
-		api:      c.api,
-		gasLimit: c.gasLimit,
-		gasPrice: c.gasPrice,
-		nonce:    c.nonce,
-		action:   c.action,
-	}
-	return sc.Call(ctx, opts...)
 }
 
 //Register Staking
-func (c *candidateCaller) Register(name, operatorAddr, rewardAddr address.Address, amount *big.Int, duration uint32, autoStake bool) CandidateCaller {
+func (c *candidateCaller) Register(name, operatorAddr, rewardAddr address.Address, amount *big.Int, duration uint32, autoStake bool) StakingAPICaller {
 	basic := &iotextypes.CandidateBasicInfo{
 		Name:            name.String(),
 		OperatorAddress: operatorAddr.String(),
@@ -192,45 +124,41 @@ func (c *candidateCaller) Register(name, operatorAddr, rewardAddr address.Addres
 		StakedDuration: duration,
 		AutoStake:      autoStake,
 	}
-	return &candidateCaller{
-		stakingBase{
-			account: c.account,
-			api:     c.api,
-			action:  tx,
-		}}
+	c.stakingBase.action = tx
+	return c
 }
 
 //Update Staking
-func (c *candidateCaller) Update(name string, operatorAddr, rewardAddr address.Address) CandidateCaller {
+func (c *candidateCaller) Update(name string, operatorAddr, rewardAddr address.Address) StakingAPICaller {
 	tx := &iotextypes.CandidateBasicInfo{
 		Name:            name,
 		OperatorAddress: operatorAddr.String(),
 		RewardAddress:   rewardAddr.String(),
 	}
-	return &candidateCaller{
-		stakingBase{
-			account: c.account,
-			api:     c.api,
-			action:  tx,
-		}}
+	c.stakingBase.action = tx
+	return c
 }
 
-func (c *candidateCaller) SetGasLimit(g uint64) CandidateCaller {
+//SetGasLimit set basic data
+func (c *stakingBase) SetGasLimit(g uint64) StakingAPICaller {
 	c.gasLimit = &g
 	return c
 }
 
-func (c *candidateCaller) SetGasPrice(g *big.Int) CandidateCaller {
+//SetGasPrice set basic data
+func (c *stakingBase) SetGasPrice(g *big.Int) StakingAPICaller {
 	c.gasPrice = g
 	return c
 }
 
-func (c *candidateCaller) SetNonce(n uint64) CandidateCaller {
+//SetNonce set basic data
+func (c *stakingBase) SetNonce(n uint64) StakingAPICaller {
 	c.nonce = &n
 	return c
 }
 
-func (c *candidateCaller) SetPayload(pl []byte) CandidateCaller {
+//SetPayload set basic data
+func (c *stakingBase) SetPayload(pl []byte) StakingAPICaller {
 	if pl == nil {
 		return c
 	}
@@ -239,11 +167,13 @@ func (c *candidateCaller) SetPayload(pl []byte) CandidateCaller {
 	return c
 }
 
-func (c *candidateCaller) API() iotexapi.APIServiceClient {
+//API returns api
+func (c *stakingBase) API() iotexapi.APIServiceClient {
 	return c.api
 }
 
-func (c *candidateCaller) Call(ctx context.Context, opts ...grpc.CallOption) (hash.Hash256, error) {
+//Call call sendActionCaller
+func (c *stakingBase) Call(ctx context.Context, opts ...grpc.CallOption) (hash.Hash256, error) {
 	sc := &sendActionCaller{
 		account:  c.account,
 		api:      c.api,
