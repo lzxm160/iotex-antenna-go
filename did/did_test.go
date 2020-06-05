@@ -13,8 +13,6 @@ import (
 
 	"github.com/iotexproject/iotex-antenna-go/v2/account"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/iotexproject/iotex-antenna-go/v2/did/contract/IoTeXDID"
 )
 
@@ -27,45 +25,37 @@ const (
 )
 
 func TestDidCreateDID(t *testing.T) {
-	require := require.New(t)
-	h, err := CeateDID(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "", "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed", "url")
-	require.NoError(err)
+	//require := require.New(t)
+	h := CeateDID(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "", "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed", "url")
 	fmt.Println(h)
 }
 
 func TestDidDeleteDID(t *testing.T) {
-	require := require.New(t)
-	h, err := DeleteDID(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
-	require.NoError(err)
+	//require := require.New(t)
+	h := DeleteDID(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
 	fmt.Println(h)
 }
 
 func TestDidUpdateHash(t *testing.T) {
-	require := require.New(t)
-	h, err := UpdateHash(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10ddddd")
-	require.NoError(err)
+	//require := require.New(t)
+	h := UpdateHash(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10ddddd")
 	fmt.Println(h)
 }
 
 func TestDidUpdateUri(t *testing.T) {
-	require := require.New(t)
-	h, err := UpdateUri(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "url2")
-	require.NoError(err)
+	h := UpdateUri(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "url2")
 	fmt.Println(h)
 }
 
 func TestDidGetHash(t *testing.T) {
 	acc, _ := account.HexStringToAccount(privateKey)
 	fmt.Println(hex.EncodeToString(acc.Address().Bytes()))
-	require := require.New(t)
-	h, err := GetHash(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfc506136fb7c050cc2e9511eccd81b15e7426")
-	require.NoError(err)
+	h := GetHash(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfc506136fb7c050cc2e9511eccd81b15e7426")
 	fmt.Println(h)
 }
 
 func TestDidGetUri(t *testing.T) {
-	require := require.New(t)
-	h, err := GetUri(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
-	require.NoError(err)
+	//require := require.New(t)
+	h := GetUri(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
 	fmt.Println(h)
 }
