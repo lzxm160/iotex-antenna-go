@@ -62,6 +62,7 @@ int main ()
     //UpdateHash
     struct UpdateHash_return UpdateHashRet=UpdateHash(Endpoint,PrivateKey,Contract,Abi,GasPrice,1000000,Id,UpdatedHash);
     printf("UpdateHash %s %lld %s\n",UpdateHashRet.r0,UpdateHashRet.r1,UpdateHashRet.r2);
+    sleep(10);
     //UpdateUri
     struct UpdateUri_return UpdateUriRet=UpdateUri(Endpoint,PrivateKey,Contract,Abi,GasPrice,1000000,Id,UpdatedUri);
     printf("UpdateUri %s %lld %s\n",UpdateUriRet.r0,UpdateUriRet.r1,UpdateUriRet.r2);
