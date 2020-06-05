@@ -26,7 +26,7 @@ const (
 	IoTeXDIDProxy_address = "io1zgs5gqjl679qlj4gqqpa9t329r8f5gr8xc9lr0"
 )
 
-func TestDidCeateDID(t *testing.T) {
+func TestDidCreateDID(t *testing.T) {
 	require := require.New(t)
 	h, err := CeateDID(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "", "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed", "url")
 	require.NoError(err)
@@ -49,7 +49,7 @@ func TestDidUpdateHash(t *testing.T) {
 
 func TestDidUpdateUri(t *testing.T) {
 	require := require.New(t)
-	h, err := UpdateUri(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "url2")
+	h, err := UpdateUri(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "url2")
 	require.NoError(err)
 	fmt.Println(h)
 }
@@ -65,7 +65,7 @@ func TestDidGetHash(t *testing.T) {
 
 func TestDidGetUri(t *testing.T) {
 	require := require.New(t)
-	h, err := GetUri(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
+	h, err := GetUri(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
 	require.NoError(err)
 	fmt.Println(h)
 }
