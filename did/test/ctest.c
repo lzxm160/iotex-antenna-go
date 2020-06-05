@@ -27,6 +27,6 @@ int main ()
     printf("test\n");
     //GetHash
     struct GetHash_return ret=GetHash(Endpoint,Contract,Abi,Did);
-    printf("%s %s\n",ret.r0,ret.r1);
+    printf("%s %v\n",ret.r0.p,ret.r1.t,ret.r1.v);
     return 0;
 }
