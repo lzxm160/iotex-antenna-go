@@ -10,9 +10,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/iotexproject/iotex-antenna-go/v2/account"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/iotexproject/iotex-antenna-go/v2/did/contract/IoTeXDID"
@@ -55,11 +52,6 @@ func TestDidUpdateUri(t *testing.T) {
 }
 
 func TestDidGetHash(t *testing.T) {
-	acc, err := account.HexStringToAccount(privateKey)
-	if err != nil {
-		return
-	}
-	fmt.Println(common.HexToAddress(acc.Address().String()).String())
 	require := require.New(t)
 	h, err := GetHash(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
 	require.NoError(err)
