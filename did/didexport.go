@@ -86,7 +86,6 @@ func UpdateUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLi
 
 //export GetHash
 func GetHash(endpoint, contract, abiString, did string) (*C.char, uint64, *C.char) {
-	fmt.Println(endpoint, contract, did, abiString)
 	d, err := NewDID(endpoint, "", contract, abiString, nil, 0)
 	if err != nil {
 		return C.CString(""), Failure, C.CString(err.Error())
