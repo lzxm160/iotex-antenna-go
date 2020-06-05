@@ -23,29 +23,44 @@ const (
 	IoTeXDIDProxy_address = "io1zgs5gqjl679qlj4gqqpa9t329r8f5gr8xc9lr0"
 )
 
-func TestDidCreateDid(t *testing.T) {
+func TestDidCeateDID(t *testing.T) {
 	require := require.New(t)
 	h, err := CeateDID(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "", "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed", "url")
 	require.NoError(err)
 	fmt.Println(h)
 }
 
-func TestDidDelete(t *testing.T) {
-
+func TestDidDeleteDID(t *testing.T) {
+	require := require.New(t)
+	h, err := DeleteDID(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
+	require.NoError(err)
+	fmt.Println(h)
 }
 
 func TestDidUpdateHash(t *testing.T) {
-
+	require := require.New(t)
+	h, err := UpdateHash(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10ddddd")
+	require.NoError(err)
+	fmt.Println(h)
 }
 
 func TestDidUpdateUri(t *testing.T) {
-
+	require := require.New(t)
+	h, err := UpdateUri(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "url2")
+	require.NoError(err)
+	fmt.Println(h)
 }
 
-func TestDidReadHashContract(t *testing.T) {
-
+func TestDidGetHash(t *testing.T) {
+	require := require.New(t)
+	h, err := GetHash(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
+	require.NoError(err)
+	fmt.Println(h)
 }
 
-func TestDidReadUriContract(t *testing.T) {
-
+func TestDidGetUri(t *testing.T) {
+	require := require.New(t)
+	h, err := GetUri(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
+	require.NoError(err)
+	fmt.Println(h)
 }
