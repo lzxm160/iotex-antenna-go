@@ -7,8 +7,11 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"testing"
+
+	"github.com/iotexproject/iotex-antenna-go/v2/account"
 
 	"github.com/stretchr/testify/require"
 
@@ -52,6 +55,8 @@ func TestDidUpdateUri(t *testing.T) {
 }
 
 func TestDidGetHash(t *testing.T) {
+	acc, _ := account.HexStringToAccount(privateKey)
+	fmt.Println(hex.EncodeToString(acc.Address().Bytes()))
 	require := require.New(t)
 	h, err := GetHash(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
 	require.NoError(err)
