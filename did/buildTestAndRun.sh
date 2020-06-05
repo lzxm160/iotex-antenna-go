@@ -1,1 +1,1 @@
-gcc -o ctest ctest.c didlib.a -lpthread
+gcc -o ctest ./test/ctest.c didlib.a -lpthread
