@@ -1,1 +1,1 @@
-go build -o didlib.a -buildmode=c-archive didexport.go
+gcc -o ctest ctest.c didlib.a
