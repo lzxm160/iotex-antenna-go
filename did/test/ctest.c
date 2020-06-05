@@ -33,7 +33,7 @@ int main ()
     GoString Uri;
     Uri.p = uri;
     Uri.n = strlen(uri);
-    GoString id;
+    GoString Id;
     Id.p = id;
     Id.n = strlen(id);
     //CeateDID
