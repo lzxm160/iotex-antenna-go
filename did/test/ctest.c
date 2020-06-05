@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "../didlib.h"
 
 int main ()
@@ -49,6 +50,7 @@ int main ()
     //CeateDID
     struct CeateDID_return CeateDIDRet=CeateDID(Endpoint,PrivateKey,Contract,Abi,GasPrice,1000000,Id,PrivateKey,Uri);
     printf("CeateDID %s %lld %s\n",CeateDIDRet.r0,CeateDIDRet.r1,CeateDIDRet.r2);
+    sleep(10);
 
     //GetHash
     struct GetHash_return GetHashRet=GetHash(Endpoint,Contract,Abi,Did);
@@ -63,6 +65,7 @@ int main ()
     //UpdateUri
     struct UpdateUri_return UpdateUriRet=UpdateUri(Endpoint,PrivateKey,Contract,Abi,GasPrice,1000000,Id,UpdatedUri);
     printf("UpdateUri %s %lld %s\n",UpdateUriRet.r0,UpdateUriRet.r1,UpdateUriRet.r2);
+    sleep(10);
 
     printf("after update\n");
     //GetHash
@@ -75,6 +78,7 @@ int main ()
     //DeleteDID
     struct DeleteDID_return DeleteDIDRet=DeleteDID(Endpoint,PrivateKey,Contract,Abi,GasPrice,1000000,Id);
     printf("DeleteDID %s %lld %s\n",DeleteDIDRet.r0,DeleteDIDRet.r1,DeleteDIDRet.r2);
+    sleep(10);
 
     printf("after delete\n");
     //GetHash
