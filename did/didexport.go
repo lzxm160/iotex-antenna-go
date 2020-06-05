@@ -20,6 +20,7 @@ func CeateDID(endpoint, privateKey, contract, abiString, gasPrice string, gasLim
 	if err != nil {
 		return C.CString("")
 	}
+	fmt.Println(h)
 	return C.CString(h)
 }
 
@@ -38,6 +39,7 @@ func DeleteDID(endpoint, privateKey, contract, abiString, gasPrice string, gasLi
 	if err != nil {
 		return C.CString("")
 	}
+	fmt.Println(h)
 	return C.CString(h)
 }
 
@@ -55,6 +57,7 @@ func UpdateHash(endpoint, privateKey, contract, abiString, gasPrice string, gasL
 	if err != nil {
 		return C.CString("")
 	}
+	fmt.Println(h)
 	return C.CString(h)
 }
 
@@ -72,6 +75,7 @@ func UpdateUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLi
 	if err != nil {
 		return C.CString("")
 	}
+	fmt.Println(h)
 	return C.CString(h)
 }
 
@@ -86,6 +90,7 @@ func GetHash(endpoint, contract, abiString, did string) *C.char {
 	if err != nil {
 		return C.CString("")
 	}
+	fmt.Println(h)
 	return C.CString(h)
 }
 
@@ -99,6 +104,7 @@ func GetUri(endpoint, contract, abiString, did string) *C.char {
 	if err != nil {
 		return C.CString("")
 	}
+	fmt.Println(uri)
 	return C.CString(uri)
 }
 func main() {}
