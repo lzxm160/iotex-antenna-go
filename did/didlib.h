@@ -69,17 +69,59 @@ extern "C" {
 #endif
 
 
-extern char* CeateDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7, GoString p8);
+/* Return type for CeateDID */
+struct CeateDID_return {
+	char* r0;
+	GoUint64 r1;
+	char* r2;
+};
 
-extern char* DeleteDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6);
+extern struct CeateDID_return CeateDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7, GoString p8);
 
-extern char* UpdateHash(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
+/* Return type for DeleteDID */
+struct DeleteDID_return {
+	char* r0;
+	GoUint64 r1;
+	char* r2;
+};
 
-extern char* UpdateUri(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
+extern struct DeleteDID_return DeleteDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6);
 
-extern char* GetHash(GoString p0, GoString p1, GoString p2, GoString p3);
+/* Return type for UpdateHash */
+struct UpdateHash_return {
+	char* r0;
+	GoUint64 r1;
+	char* r2;
+};
 
-extern char* GetUri(GoString p0, GoString p1, GoString p2, GoString p3);
+extern struct UpdateHash_return UpdateHash(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
+
+/* Return type for UpdateUri */
+struct UpdateUri_return {
+	char* r0;
+	GoUint64 r1;
+	char* r2;
+};
+
+extern struct UpdateUri_return UpdateUri(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
+
+/* Return type for GetHash */
+struct GetHash_return {
+	char* r0;
+	GoUint64 r1;
+	char* r2;
+};
+
+extern struct GetHash_return GetHash(GoString p0, GoString p1, GoString p2, GoString p3);
+
+/* Return type for GetUri */
+struct GetUri_return {
+	char* r0;
+	GoUint64 r1;
+	char* r2;
+};
+
+extern struct GetUri_return GetUri(GoString p0, GoString p1, GoString p2, GoString p3);
 
 #ifdef __cplusplus
 }

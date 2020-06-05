@@ -37,11 +37,11 @@ int main ()
     Id.p = id;
     Id.n = strlen(id);
     //CeateDID
-    char* ret=CeateDID(Endpoint,PrivateKey,Contract,Abi,GasPrice,1000000,Id,PrivateKey,Uri);
-    printf("CeateDID %s\n",ret);
+    CeateDID_return CeateDIDRet=CeateDID(Endpoint,PrivateKey,Contract,Abi,GasPrice,1000000,Id,PrivateKey,Uri);
+    printf("CeateDID %s %d %s\n",CeateDIDRet.r0,CeateDIDRet.r1,CeateDIDRet.r2);
     //GetHash
-    ret=GetHash(Endpoint,Contract,Abi,Did);
-    printf("GetHash %s\n",ret);
+    GetHash_return GetHashRet=GetHash(Endpoint,Contract,Abi,Did);
+    printf("GetHash %s %d %s\n",GetHashRet.r0,GetHashRet.r1,GetHashRet.r2);
 
     return 0;
 }
