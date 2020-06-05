@@ -86,6 +86,7 @@ func GetHash(endpoint, contract, abiString, did string) *C.char {
 	if err != nil {
 		return C.CString("")
 	}
+	fmt.Println(h)
 	return C.CString(h)
 }
 
