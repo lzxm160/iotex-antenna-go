@@ -25,9 +25,12 @@ int main ()
     Did.p = did;
     Did.n = strlen(did);
     printf("test\n");
+    //CeateDID
+    char* ret=CeateDID(Endpoint,PrivateKey,Contract,Abi,"1000000000000",1000000,"","414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed","urixxx");
+    printf("CeateDID %s\n",ret);
     //GetHash
     char* ret=GetHash(Endpoint,Contract,Abi,Did);
-    printf("%s\n",ret);
-    
+    printf("GetHash %s\n",ret);
+
     return 0;
 }
