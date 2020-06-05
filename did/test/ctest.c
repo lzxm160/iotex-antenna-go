@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "../didexport.h"
+#include "../didlib.h"
 
 int main ()
 {
