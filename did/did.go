@@ -70,11 +70,13 @@ func (d *did) CreateDID(id, didHash, url string) (hash string, err error) {
 	}
 	defer conn.Close()
 	cli := iotex.NewAuthedClient(iotexapi.NewAPIServiceClient(conn), d.account)
-	hashBytes, err := hex.DecodeString(didHash)
+	hashSlice, err := hex.DecodeString(didHash)
 	if err != nil {
 		return
 	}
-	h, err := cli.Contract(d.contract, d.abi).Execute(createDID, id, hashBytes, url).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
+	var hashArray [32]byte
+	copy(hashArray[:], hashSlice)
+	h, err := cli.Contract(d.contract, d.abi).Execute(createDID, id, hashArray, url).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
 	if err != nil {
 		return
 	}
@@ -104,11 +106,13 @@ func (d *did) UpdateHash(did, didHash string) (hash string, err error) {
 	}
 	defer conn.Close()
 	cli := iotex.NewAuthedClient(iotexapi.NewAPIServiceClient(conn), d.account)
-	hashBytes, err := hex.DecodeString(didHash)
+	hashSlice, err := hex.DecodeString(didHash)
 	if err != nil {
 		return
 	}
-	h, err := cli.Contract(d.contract, d.abi).Execute(updateHash, did, hashBytes).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
+	var hashArray [32]byte
+	copy(hashArray[:], hashSlice)
+	h, err := cli.Contract(d.contract, d.abi).Execute(updateHash, did, hashArray).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
 	if err != nil {
 		return
 	}
