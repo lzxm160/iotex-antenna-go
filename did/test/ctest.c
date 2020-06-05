@@ -25,7 +25,7 @@ int main ()
     Did.p = did;
     Did.n = strlen(did);
     //GetHash
-    GetHash_return ret=GetHash(Endpoint,Contract,Abi,Did);
+    struct GetHash_return ret=GetHash(Endpoint,Contract,Abi,Did);
     printf("%s %s\n",ret.r0,ret.r1);
     return 0;
 }
