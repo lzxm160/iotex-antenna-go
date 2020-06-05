@@ -38,10 +38,10 @@ int main ()
     Id.n = strlen(id);
     //CeateDID
     struct CeateDID_return CeateDIDRet=CeateDID(Endpoint,PrivateKey,Contract,Abi,GasPrice,1000000,Id,PrivateKey,Uri);
-    printf("CeateDID %s %d %s\n",CeateDIDRet.r0,CeateDIDRet.r1,CeateDIDRet.r2);
+    printf("CeateDID %s %lld %s\n",CeateDIDRet.r0,CeateDIDRet.r1,CeateDIDRet.r2);
     //GetHash
     struct GetHash_return GetHashRet=GetHash(Endpoint,Contract,Abi,Did);
-    printf("GetHash %s %d %s\n",GetHashRet.r0,GetHashRet.r1,GetHashRet.r2);
+    printf("GetHash %s %lld %s\n",GetHashRet.r0,GetHashRet.r1,GetHashRet.r2);
 
     return 0;
 }
