@@ -24,6 +24,7 @@ int main ()
     GoString Did;
     Did.p = did;
     Did.n = strlen(did);
+    printf("test\n");
     //GetHash
     struct GetHash_return ret=GetHash(Endpoint,Contract,Abi,Did);
     printf("%s %s\n",ret.r0,ret.r1);
