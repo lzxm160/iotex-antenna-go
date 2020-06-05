@@ -83,3 +83,4 @@ func GetUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit
 	}
 	return d.GetUri(did)
 }
+func main() {}
