@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"math/big"
 	"strings"
 
@@ -47,15 +46,19 @@ func NewDID(endpoint, privateKey, contract, abiString string, gasPrice *big.Int,
 	if err != nil {
 		return
 	}
-	account, err := account.HexStringToAccount(privateKey)
-	if err != nil {
-		return
+	var acc account.Account
+	if privateKey != "" {
+		acc, err = account.HexStringToAccount(privateKey)
+		if err != nil {
+			return
+		}
 	}
+
 	addr, err := address.FromString(contract)
 	if err != nil {
 		return
 	}
-	d = &did{endpoint, account, addr, abi, gasPrice, gasLimit}
+	d = &did{endpoint, acc, addr, abi, gasPrice, gasLimit}
 	return
 }
 
@@ -136,7 +139,6 @@ func (d *did) UpdateUri(did, uri string) (hash string, err error) {
 }
 
 func (d *did) GetHash(did string) (hash string, err error) {
-	fmt.Println("GetHash")
 	conn, err := iotex.NewDefaultGRPCConn(d.endpoint)
 	if err != nil {
 		return

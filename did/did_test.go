@@ -53,14 +53,14 @@ func TestDidUpdateUri(t *testing.T) {
 
 func TestDidGetHash(t *testing.T) {
 	require := require.New(t)
-	h, err := GetHash(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
+	h, err := GetHash(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
 	require.NoError(err)
 	fmt.Println(h)
 }
 
 func TestDidGetUri(t *testing.T) {
 	require := require.New(t)
-	h, err := GetUri(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
+	h, err := GetUri(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
 	require.NoError(err)
 	fmt.Println(h)
 }

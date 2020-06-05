@@ -59,12 +59,8 @@ func UpdateUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLi
 }
 
 //export GetHash
-func GetHash(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did string) (hash string, err error) {
-	gp, ok := new(big.Int).SetString(gasPrice, 10)
-	if !ok {
-		err = errors.New("gas price convert error")
-	}
-	d, err := NewDID(endpoint, privateKey, contract, abiString, gp, gasLimit)
+func GetHash(endpoint, contract, abiString, did string) (hash string, err error) {
+	d, err := NewDID(endpoint, "", contract, abiString, nil, 0)
 	if err != nil {
 		return
 	}
@@ -72,12 +68,8 @@ func GetHash(endpoint, privateKey, contract, abiString, gasPrice string, gasLimi
 }
 
 //export GetUri
-func GetUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did string) (uri string, err error) {
-	gp, ok := new(big.Int).SetString(gasPrice, 10)
-	if !ok {
-		err = errors.New("gas price convert error")
-	}
-	d, err := NewDID(endpoint, privateKey, contract, abiString, gp, gasLimit)
+func GetUri(endpoint, contract, abiString, did string) (uri string, err error) {
+	d, err := NewDID(endpoint, "", contract, abiString, nil, 0)
 	if err != nil {
 		return
 	}
