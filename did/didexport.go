@@ -2,12 +2,16 @@ package main
 
 import (
 	"C"
+	"errors"
 	"math/big"
 )
 
 //export CeateDID
-func CeateDID(endpoint, privateKey, contract, abiString string, gasPrice uint64, gasLimit uint64, id, didHash, url string) (hash string, err error) {
-	gp := new(big.Int).SetUint64(gasPrice)
+func CeateDID(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, id, didHash, url string) (hash string, err error) {
+	gp, ok := new(big.Int).SetString(gasPrice, 10)
+	if !ok {
+		err = errors.New("gas price convert error")
+	}
 	d, err := NewDID(endpoint, privateKey, contract, abiString, gp, gasLimit)
 	if err != nil {
 		return
@@ -16,8 +20,11 @@ func CeateDID(endpoint, privateKey, contract, abiString string, gasPrice uint64,
 }
 
 //export DeleteDID
-func DeleteDID(endpoint, privateKey, contract, abiString string, gasPrice uint64, gasLimit uint64, did string) (hash string, err error) {
-	gp := new(big.Int).SetUint64(gasPrice)
+func DeleteDID(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did string) (hash string, err error) {
+	gp, ok := new(big.Int).SetString(gasPrice, 10)
+	if !ok {
+		err = errors.New("gas price convert error")
+	}
 	d, err := NewDID(endpoint, privateKey, contract, abiString, gp, gasLimit)
 	if err != nil {
 		return
@@ -26,8 +33,11 @@ func DeleteDID(endpoint, privateKey, contract, abiString string, gasPrice uint64
 }
 
 //export UpdateHash
-func UpdateHash(endpoint, privateKey, contract, abiString string, gasPrice uint64, gasLimit uint64, did, didHash string) (hash string, err error) {
-	gp := new(big.Int).SetUint64(gasPrice)
+func UpdateHash(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did, didHash string) (hash string, err error) {
+	gp, ok := new(big.Int).SetString(gasPrice, 10)
+	if !ok {
+		err = errors.New("gas price convert error")
+	}
 	d, err := NewDID(endpoint, privateKey, contract, abiString, gp, gasLimit)
 	if err != nil {
 		return
@@ -36,8 +46,11 @@ func UpdateHash(endpoint, privateKey, contract, abiString string, gasPrice uint6
 }
 
 //export UpdateUri
-func UpdateUri(endpoint, privateKey, contract, abiString string, gasPrice uint64, gasLimit uint64, did, uri string) (hash string, err error) {
-	gp := new(big.Int).SetUint64(gasPrice)
+func UpdateUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did, uri string) (hash string, err error) {
+	gp, ok := new(big.Int).SetString(gasPrice, 10)
+	if !ok {
+		err = errors.New("gas price convert error")
+	}
 	d, err := NewDID(endpoint, privateKey, contract, abiString, gp, gasLimit)
 	if err != nil {
 		return
@@ -46,8 +59,11 @@ func UpdateUri(endpoint, privateKey, contract, abiString string, gasPrice uint64
 }
 
 //export GetHash
-func GetHash(endpoint, privateKey, contract, abiString string, gasPrice uint64, gasLimit uint64, did string) (hash string, err error) {
-	gp := new(big.Int).SetUint64(gasPrice)
+func GetHash(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did string) (hash string, err error) {
+	gp, ok := new(big.Int).SetString(gasPrice, 10)
+	if !ok {
+		err = errors.New("gas price convert error")
+	}
 	d, err := NewDID(endpoint, privateKey, contract, abiString, gp, gasLimit)
 	if err != nil {
 		return
@@ -56,8 +72,11 @@ func GetHash(endpoint, privateKey, contract, abiString string, gasPrice uint64, 
 }
 
 //export GetUri
-func GetUri(endpoint, privateKey, contract, abiString string, gasPrice uint64, gasLimit uint64, did string) (uri string, err error) {
-	gp := new(big.Int).SetUint64(gasPrice)
+func GetUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did string) (uri string, err error) {
+	gp, ok := new(big.Int).SetString(gasPrice, 10)
+	if !ok {
+		err = errors.New("gas price convert error")
+	}
 	d, err := NewDID(endpoint, privateKey, contract, abiString, gp, gasLimit)
 	if err != nil {
 		return

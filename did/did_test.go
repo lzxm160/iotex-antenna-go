@@ -8,7 +8,6 @@ package main
 
 import (
 	"fmt"
-	"math/big"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -26,11 +25,9 @@ const (
 
 func TestDidCreateDid(t *testing.T) {
 	require := require.New(t)
-	d, err := NewDID(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, big.NewInt(1e12), uint64(1000000))
+	h, err := CeateDID(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "", "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed", "url")
 	require.NoError(err)
-	hash, err := d.CreateDID("", "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed", "url")
-	require.NoError(err)
-	fmt.Println(hash)
+	fmt.Println(h)
 }
 
 func TestDidDelete(t *testing.T) {
