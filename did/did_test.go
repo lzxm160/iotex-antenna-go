@@ -51,7 +51,7 @@ func TestDidGetHash(t *testing.T) {
 	acc, _ := account.HexStringToAccount(privateKey)
 	fmt.Println(hex.EncodeToString(acc.Address().Bytes()))
 	h := GetHash(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfc506136fb7c050cc2e9511eccd81b15e7426")
-	fmt.Println(h)
+	fmt.Println(*h)
 }
 
 func TestDidGetUri(t *testing.T) {
