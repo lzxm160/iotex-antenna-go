@@ -26,8 +26,8 @@ int main ()
     Did.n = strlen(did);
     printf("test\n");
     //GetHash
-    struct GetHash_return ret=GetHash(Endpoint,Contract,Abi,Did);
-    printf("%s\n",ret.r0.p);
-    printf("%d %d\n",*((int *)ret.r1.t),*((int *)ret.r1.v));
+    char* ret=GetHash(Endpoint,Contract,Abi,Did);
+    printf("%s\n",ret);
+    
     return 0;
 }

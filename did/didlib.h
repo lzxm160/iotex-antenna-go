@@ -69,53 +69,17 @@ extern "C" {
 #endif
 
 
-/* Return type for CeateDID */
-struct CeateDID_return {
-	GoString r0; /* hash */
-	GoInterface r1; /* err */
-};
+extern char* CeateDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7, GoString p8);
 
-extern struct CeateDID_return CeateDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7, GoString p8);
+extern char* DeleteDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6);
 
-/* Return type for DeleteDID */
-struct DeleteDID_return {
-	GoString r0; /* hash */
-	GoInterface r1; /* err */
-};
+extern char* UpdateHash(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
 
-extern struct DeleteDID_return DeleteDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6);
+extern char* UpdateUri(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
 
-/* Return type for UpdateHash */
-struct UpdateHash_return {
-	GoString r0; /* hash */
-	GoInterface r1; /* err */
-};
+extern char* GetHash(GoString p0, GoString p1, GoString p2, GoString p3);
 
-extern struct UpdateHash_return UpdateHash(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
-
-/* Return type for UpdateUri */
-struct UpdateUri_return {
-	GoString r0; /* hash */
-	GoInterface r1; /* err */
-};
-
-extern struct UpdateUri_return UpdateUri(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
-
-/* Return type for GetHash */
-struct GetHash_return {
-	GoString r0; /* hash */
-	GoInterface r1; /* err */
-};
-
-extern struct GetHash_return GetHash(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6);
-
-/* Return type for GetUri */
-struct GetUri_return {
-	GoString r0; /* uri */
-	GoInterface r1; /* err */
-};
-
-extern struct GetUri_return GetUri(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6);
+extern char* GetUri(GoString p0, GoString p1, GoString p2, GoString p3);
 
 #ifdef __cplusplus
 }
