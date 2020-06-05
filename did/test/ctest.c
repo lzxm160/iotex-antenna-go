@@ -65,18 +65,24 @@ int main ()
     printf("UpdateUri %s %lld %s\n",UpdateUriRet.r0,UpdateUriRet.r1,UpdateUriRet.r2);
 
     printf("after update\n");
-    struct GetHash_return GetHashRet=GetHash(Endpoint,Contract,Abi,Did);
+    //GetHash
+    GetHashRet=GetHash(Endpoint,Contract,Abi,Did);
     printf("GetHash %s %lld %s\n",GetHashRet.r0,GetHashRet.r1,GetHashRet.r2);
     //GetUri
-    struct GetUri_return GetUriRet=GetUri(Endpoint,Contract,Abi,Did);
+    GetUriRet=GetUri(Endpoint,Contract,Abi,Did);
     printf("GetUri %s %lld %s\n",GetUriRet.r0,GetUriRet.r1,GetUriRet.r2);
 
+    //DeleteDID
+    struct DeleteDID_return DeleteDIDRet=DeleteDID(Endpoint,PrivateKey,Contract,Abi,GasPrice,1000000,Id);
+    printf("DeleteDID %s %lld %s\n",DeleteDIDRet.r0,DeleteDIDRet.r1,DeleteDIDRet.r2);
+
     printf("after delete\n");
-    struct GetHash_return GetHashRet=GetHash(Endpoint,Contract,Abi,Did);
+    //GetHash
+    GetHashRet=GetHash(Endpoint,Contract,Abi,Did);
     printf("GetHash %s %lld %s\n",GetHashRet.r0,GetHashRet.r1,GetHashRet.r2);
     //GetUri
-    struct GetUri_return GetUriRet=GetUri(Endpoint,Contract,Abi,Did);
+    GetUriRet=GetUri(Endpoint,Contract,Abi,Did);
     printf("GetUri %s %lld %s\n",GetUriRet.r0,GetUriRet.r1,GetUriRet.r2);
-    
+
     return 0;
 }
