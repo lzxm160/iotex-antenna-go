@@ -27,10 +27,10 @@ int main ()
     GoString Did;
     Did.p = did;
     Did.n = strlen(did);
-    GoString gasPrice;
+    GoString GasPrice;
     GasPrice.p = gasPrice;
     GasPrice.n = strlen(gasPrice);
-    GoString uri;
+    GoString Uri;
     Uri.p = uri;
     Uri.n = strlen(uri);
     GoString id;
