@@ -49,7 +49,7 @@ func TestDidUpdateHash(t *testing.T) {
 
 func TestDidUpdateUri(t *testing.T) {
 	require := require.New(t)
-	h, err := UpdateUri(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "url2")
+	h, err := UpdateUri(endpoint, privateKey, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "1000000000000", uint64(1000000), "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426", "url2")
 	require.NoError(err)
 	fmt.Println(h)
 }
@@ -58,14 +58,14 @@ func TestDidGetHash(t *testing.T) {
 	acc, _ := account.HexStringToAccount(privateKey)
 	fmt.Println(hex.EncodeToString(acc.Address().Bytes()))
 	require := require.New(t)
-	h, err := GetHash(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0ddfc506136fb7c050cc2e9511eccd81b15e7426")
+	h, err := GetHash(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfc506136fb7c050cc2e9511eccd81b15e7426")
 	require.NoError(err)
 	fmt.Println(h)
 }
 
 func TestDidGetUri(t *testing.T) {
 	require := require.New(t)
-	h, err := GetUri(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
+	h, err := GetUri(endpoint, IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, "did:io:0x0ddfC506136fb7c050Cc2E9511eccD81b15e7426")
 	require.NoError(err)
 	fmt.Println(h)
 }
