@@ -55,7 +55,7 @@ func UpdateUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLi
 	if err != nil {
 		return
 	}
-	return d.DeleteDID(did)
+	return d.UpdateUri(did, uri)
 }
 
 //export GetHash
