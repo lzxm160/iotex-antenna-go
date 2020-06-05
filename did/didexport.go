@@ -83,10 +83,10 @@ func GetHash(endpoint, contract, abiString, did string) *C.char {
 		return C.CString("")
 	}
 	h, err := d.GetHash(did)
+	fmt.Println(h, err)
 	if err != nil {
 		return C.CString("")
 	}
-	fmt.Println(h, err)
 	return C.CString(h)
 }
 
