@@ -1,2 +1,2 @@
 #!/bin/bash
-go build -ldflags "-s -w" -o didlib.a -buildmode='c-archive'
+go build -v -x -work -ldflags "-s -w" -o didlib.a -buildmode='c-archive' -gcflags='-l'
