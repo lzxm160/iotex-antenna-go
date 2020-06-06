@@ -10,7 +10,8 @@ const (
 	Success = 1
 )
 
-//export CeateDID returns transaction hash,transaction if success,error message
+//CeateDID returns transaction hash,transaction if success,error message
+//export CeateDID
 func CeateDID(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, id, didHash, url string) (*C.char, uint64, *C.char) {
 	gp, ok := new(big.Int).SetString(gasPrice, 10)
 	if !ok {
@@ -27,7 +28,8 @@ func CeateDID(endpoint, privateKey, contract, abiString, gasPrice string, gasLim
 	return C.CString(h), Success, C.CString("")
 }
 
-//export DeleteDID returns transaction hash,transaction if success,error message
+//DeleteDID returns transaction hash,transaction if success,error message
+//export DeleteDID
 func DeleteDID(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did string) (*C.char, uint64, *C.char) {
 	gp, ok := new(big.Int).SetString(gasPrice, 10)
 	if !ok {
@@ -45,7 +47,8 @@ func DeleteDID(endpoint, privateKey, contract, abiString, gasPrice string, gasLi
 	return C.CString(h), Success, C.CString("")
 }
 
-//export UpdateHash returns transaction hash,transaction if success,error message
+//UpdateHash returns transaction hash,transaction if success,error message
+//export UpdateHash
 func UpdateHash(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did, didHash string) (*C.char, uint64, *C.char) {
 	gp, ok := new(big.Int).SetString(gasPrice, 10)
 	if !ok {
@@ -62,7 +65,8 @@ func UpdateHash(endpoint, privateKey, contract, abiString, gasPrice string, gasL
 	return C.CString(h), Success, C.CString("")
 }
 
-//export UpdateUri returns transaction hash,transaction if success,error message
+//UpdateUri returns transaction hash,transaction if success,error message
+//export UpdateUri
 func UpdateUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLimit uint64, did, uri string) (*C.char, uint64, *C.char) {
 	gp, ok := new(big.Int).SetString(gasPrice, 10)
 	if !ok {
@@ -79,7 +83,8 @@ func UpdateUri(endpoint, privateKey, contract, abiString, gasPrice string, gasLi
 	return C.CString(h), Success, C.CString("")
 }
 
-//export GetHash returns did hash,transaction if success,error message
+//GetHash returns did hash,transaction if success,error message
+//export GetHash
 func GetHash(endpoint, contract, abiString, did string) (*C.char, uint64, *C.char) {
 	d, err := NewDID(endpoint, "", contract, abiString, nil, 0)
 	if err != nil {
@@ -92,7 +97,8 @@ func GetHash(endpoint, contract, abiString, did string) (*C.char, uint64, *C.cha
 	return C.CString(h), Success, C.CString("")
 }
 
-//export GetUri returns did uri,transaction if success,error message
+//GetUri returns did uri,transaction if success,error message
+//export GetUri
 func GetUri(endpoint, contract, abiString, did string) (*C.char, uint64, *C.char) {
 	d, err := NewDID(endpoint, "", contract, abiString, nil, 0)
 	if err != nil {
