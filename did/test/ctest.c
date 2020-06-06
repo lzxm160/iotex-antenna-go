@@ -73,7 +73,7 @@ int main ()
     GetHashRet=GetHash(Endpoint,Contract,Abi,Did);
     printf("GetHash %s %lld %s\n",GetHashRet.r0,GetHashRet.r1,GetHashRet.r2);
     //GetURI
-    struct GetURI_return GetURIRet=GetURI(Endpoint,Contract,Abi,Did);
+    GetURIRet=GetURI(Endpoint,Contract,Abi,Did);
     printf("GetURI %s %lld %s\n",GetURIRet.r0,GetURIRet.r1,GetURIRet.r2);
 
     //DeleteDID
@@ -86,7 +86,7 @@ int main ()
     GetHashRet=GetHash(Endpoint,Contract,Abi,Did);
     printf("GetHash %s %lld %s\n",GetHashRet.r0,GetHashRet.r1,GetHashRet.r2);
     //GetURI
-    struct GetURI_return GetURIRet=GetURI(Endpoint,Contract,Abi,Did);
+    GetURIRet=GetURI(Endpoint,Contract,Abi,Did);
     printf("GetURI %s %lld %s\n",GetURIRet.r0,GetURIRet.r1,GetURIRet.r2);
 
     return 0;
