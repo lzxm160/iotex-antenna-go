@@ -76,6 +76,8 @@ struct CeateDID_return {
 	char* r2;
 };
 
+//CeateDID returns transaction hash,transaction if success,error message
+
 extern struct CeateDID_return CeateDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7, GoString p8);
 
 /* Return type for DeleteDID */
@@ -84,6 +86,8 @@ struct DeleteDID_return {
 	GoUint64 r1;
 	char* r2;
 };
+
+//DeleteDID returns transaction hash,transaction if success,error message
 
 extern struct DeleteDID_return DeleteDID(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6);
 
@@ -94,6 +98,8 @@ struct UpdateHash_return {
 	char* r2;
 };
 
+//UpdateHash returns transaction hash,transaction if success,error message
+
 extern struct UpdateHash_return UpdateHash(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
 
 /* Return type for UpdateUri */
@@ -102,6 +108,8 @@ struct UpdateUri_return {
 	GoUint64 r1;
 	char* r2;
 };
+
+//UpdateUri returns transaction hash,transaction if success,error message
 
 extern struct UpdateUri_return UpdateUri(GoString p0, GoString p1, GoString p2, GoString p3, GoString p4, GoUint64 p5, GoString p6, GoString p7);
 
@@ -112,6 +120,8 @@ struct GetHash_return {
 	char* r2;
 };
 
+//GetHash returns did hash,transaction if success,error message
+
 extern struct GetHash_return GetHash(GoString p0, GoString p1, GoString p2, GoString p3);
 
 /* Return type for GetUri */
@@ -120,6 +130,8 @@ struct GetUri_return {
 	GoUint64 r1;
 	char* r2;
 };
+
+//GetUri returns did uri,transaction if success,error message
 
 extern struct GetUri_return GetUri(GoString p0, GoString p1, GoString p2, GoString p3);
 
