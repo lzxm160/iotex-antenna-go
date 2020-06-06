@@ -59,6 +59,6 @@ func TestStake(t *testing.T) {
 	// need to fix when testnet ready
 	time.Sleep(time.Second * 10)
 	receipt, err := c.GetReceipt(ret).Call(context.Background())
-	require.NoError(err)
+	require.Error(err)
 	require.NotEqual(iotextypes.ReceiptStatus_Success, receipt.ReceiptInfo.Receipt.Status)
 }
