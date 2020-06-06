@@ -11,7 +11,6 @@ import (
 	"github.com/iotexproject/go-pkgs/hash"
 	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
-	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 
 	"github.com/iotexproject/iotex-antenna-go/v2/account"
 	"github.com/iotexproject/iotex-antenna-go/v2/utils/unit"
@@ -58,7 +57,7 @@ func TestStake(t *testing.T) {
 	require.NotEqual(hash.ZeroHash256, ret)
 	// need to fix when testnet ready
 	time.Sleep(time.Second * 10)
-	receipt, err := c.GetReceipt(ret).Call(context.Background())
+	_, err = c.GetReceipt(ret).Call(context.Background())
 	require.Error(err)
-	require.NotEqual(iotextypes.ReceiptStatus_Success, receipt.ReceiptInfo.Receipt.Status)
+	//require.NotEqual(iotextypes.ReceiptStatus_Success, receipt.ReceiptInfo.Receipt.Status)
 }
