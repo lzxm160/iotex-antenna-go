@@ -48,10 +48,10 @@ const (
 )
 
 var (
-	gasPrice     = big.NewInt(0).SetUint64(1e12)
-	gasLimit     = uint64(10000000)
-	stringTy, _  = abi.NewType("string")
-	bytes32Ty, _ = abi.NewType("bytes32")
+	gasPrice = big.NewInt(0).SetUint64(1e12)
+	gasLimit = uint64(10000000)
+	//stringTy, _  = abi.NewType("string")
+	//bytes32Ty, _ = abi.NewType("bytes32")
 )
 
 func TestDidDeployContract(t *testing.T) {
@@ -384,12 +384,12 @@ func encodeParamsCreate(id, operate string, h [32]byte, uri string) ([]byte, err
 	bytes = append(bytes, h[:]...)
 	bytes = append(bytes, []byte(uri)...)
 	fmt.Println("what:", hex.EncodeToString(bytes))
-	var buf []byte
-	hashforcom := sha3.NewKeccak256()
-	hashforcom.Write(bytes)
-	buf = hashforcom.Sum(buf)
+	//var buf []byte
+	//hashforcom := sha3.NewKeccak256()
+	//hashforcom.Write(bytes)
+	//buf = hashforcom.Sum(buf)
 
-	fmt.Println(hexutil.Encode(buf))
+	//fmt.Println(hexutil.Encode(buf))
 	hash := crypto.Keccak256Hash(bytes)
 	fmt.Println("crypto.Keccak256Hash(bytes):", hexutil.Encode(hash.Bytes()))
 
@@ -400,8 +400,8 @@ func encodeParamsCreate(id, operate string, h [32]byte, uri string) ([]byte, err
 
 	sig, err := crypto.Sign(hash.Bytes(), pri)
 	fmt.Println("ethereum sig hash:", hex.EncodeToString(sig))
-	sigxx, err := crypto.Sign(buf, pri)
-	fmt.Println("ethereum sig buf:", hex.EncodeToString(sigxx))
+	//sigxx, err := crypto.Sign(buf, pri)
+	//fmt.Println("ethereum sig buf:", hex.EncodeToString(sigxx))
 
 	acc, _ := account.HexStringToAccount(signPrivateKey)
 	sig2, _ := acc.Sign(bytes)
