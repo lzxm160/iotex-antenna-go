@@ -32,6 +32,4 @@ require (
 	gopkg.in/urfave/cli.v1 v1.20.0 // indirect
 )
 
-replace github.com/ethereum/go-ethereum v1.8.27 => github.com/iotexproject/go-ethereum v0.3.0
-
 go 1.13
