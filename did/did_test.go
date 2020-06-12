@@ -43,8 +43,8 @@ const (
 	privateKey            = "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed"
 	signPrivateKey        = "0d4d9b248110257c575ef2e8d93dd53471d9178984482817dcbd6edb607f8cc5"
 	endpoint              = "api.testnet.iotex.one:443"
-	IoTeXDID_address      = "io1wvxxzkwfftehupa0ym4xp7ej7gcgatud9kgtpw"
-	IoTeXDIDProxy_address = "io1yzzxphmtwpfnguhlpnry7nsqgpkc9lc5fn73v4"
+	IoTeXDID_address      = "io1qswvysrfav83ehgsfsfa4v8ugw4vqfsydp8snk"
+	IoTeXDIDProxy_address = "io1kqwtdw7daf74l8sf0u9j3u9fgv225ua6hjn3n0"
 )
 
 var (
@@ -217,7 +217,7 @@ func TestDidCreateDidSigned(t *testing.T) {
 	var s [32]byte
 	copy(s[:], signed[32:64])
 	fmt.Println(hex.EncodeToString(s[:]))
-	h, err := d.CreateDIDSigned("", v, r, s, testDIDHash, "urisigned")
+	h, err := d.CreateDIDSigned("", v+27, r, s, testDIDHash, "urisigned")
 	require.NoError(err)
 	checkHash(h, t)
 }
@@ -232,7 +232,8 @@ func TestDidDeleteSigned(t *testing.T) {
 
 	didString := "did:io:" + ethAddress.String()
 	fmt.Println(didString)
-	dataB := encodeParamsDelete(didString, "deleteDID")
+	//dataB := encodeParamsDelete(didString, "deleteDID")
+	dataB := []byte(didString)
 	require.NoError(err)
 	fmt.Println("data", hex.EncodeToString(dataB))
 	signed, err := acc.Sign(dataB)
@@ -256,13 +257,27 @@ func TestDidUpdateHash(t *testing.T) {
 }
 
 func TestDidUpdateUri(t *testing.T) {
+	testuri := "https://gateway.pinata.cloud/ipfs/QmWUzz4EoBVGX9WJM3tsjyU4CzABReD8akrZqpc6f94Ba4/ddo-test.json"
+	require := require.New(t)
+	d, err := NewDID(endpoint, privateKey, "io1j2af3s4f7qjk8eudzx6a6kdhekr7zt2k5y5qlk", IoTeXDID.IoTeXDIDABI, gasPrice, gasLimit)
+	require.NoError(err)
+	acc, err := account.HexStringToAccount(privateKey)
+	require.NoError(err)
+
+	ethAddress := common.HexToAddress(hex.EncodeToString(acc.Address().Bytes()))
+
+	didString := "did:io:" + ethAddress.String()
+	fmt.Println(didString)
+	h, err := d.UpdateUri(didString, testuri)
+	require.NoError(err)
+	checkHash(h, t)
 }
 
 func TestDidGetHash(t *testing.T) {
 	require := require.New(t)
-	d, err := NewDID(endpoint, "", IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, nil, 0)
+	d, err := NewDID(endpoint, "", "io1j2af3s4f7qjk8eudzx6a6kdhekr7zt2k5y5qlk", IoTeXDID.IoTeXDIDABI, nil, 0)
 	require.NoError(err)
-	acc, err := account.HexStringToAccount(signPrivateKey)
+	acc, err := account.HexStringToAccount(privateKey)
 	require.NoError(err)
 
 	ethAddress := common.HexToAddress(hex.EncodeToString(acc.Address().Bytes()))
@@ -276,9 +291,9 @@ func TestDidGetHash(t *testing.T) {
 
 func TestDidGetURI(t *testing.T) {
 	require := require.New(t)
-	d, err := NewDID(endpoint, "", IoTeXDIDProxy_address, IoTeXDID.IoTeXDIDABI, nil, 0)
+	d, err := NewDID(endpoint, "", "io1j2af3s4f7qjk8eudzx6a6kdhekr7zt2k5y5qlk", IoTeXDID.IoTeXDIDABI, nil, 0)
 	require.NoError(err)
-	acc, err := account.HexStringToAccount(signPrivateKey)
+	acc, err := account.HexStringToAccount(privateKey)
 	require.NoError(err)
 
 	ethAddress := common.HexToAddress(hex.EncodeToString(acc.Address().Bytes()))
@@ -409,30 +424,30 @@ func encodeParamsCreate(id, operate string, h [32]byte, uri string) ([]byte, err
 	return sig, err
 }
 
-func encodeParamsDelete(did, operate string) []byte {
-	arguments := abi.Arguments{
-		{
-			Type: stringTy,
-		},
-		{
-			Type: stringTy,
-		},
-	}
-
-	bytes, _ := arguments.Pack(
-		did,
-		operate,
-	)
-	fmt.Println("what:", hex.EncodeToString(bytes))
-	var buf []byte
-	hash := sha3.NewKeccak256()
-	hash.Write(bytes)
-	buf = hash.Sum(buf)
-
-	fmt.Println(hexutil.Encode(buf))
-
-	return buf
-}
+//func encodeParamsDelete(did, operate string) []byte {
+//	arguments := abi.Arguments{
+//		{
+//			Type: stringTy,
+//		},
+//		{
+//			Type: stringTy,
+//		},
+//	}
+//
+//	bytes, _ := arguments.Pack(
+//		did,
+//		operate,
+//	)
+//	fmt.Println("what:", hex.EncodeToString(bytes))
+//	var buf []byte
+//	hash := sha3.NewKeccak256()
+//	hash.Write(bytes)
+//	buf = hash.Sum(buf)
+//
+//	fmt.Println(hexutil.Encode(buf))
+//
+//	return buf
+//}
 
 func TestEncode(t *testing.T) {
 	encodeParamsCreate("", "xx", [32]byte{1, 2, 3}, "uri")

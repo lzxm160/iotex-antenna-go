@@ -1,5 +1,7 @@
 module github.com/iotexproject/iotex-antenna-go/v2
 
+go 1.13
+
 require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/edsrzf/mmap-go v1.0.0 // indirect
@@ -32,4 +34,4 @@ require (
 	gopkg.in/urfave/cli.v1 v1.20.0 // indirect
 )
 
-go 1.13
+replace github.com/ethereum/go-ethereum => github.com/iotexproject/go-ethereum v0.2.0
