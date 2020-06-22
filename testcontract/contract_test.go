@@ -11,8 +11,10 @@ import (
 	"encoding/hex"
 	"fmt"
 	"math/big"
+	"strings"
 	"testing"
 
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/iotexproject/iotex-address/address"
 
@@ -58,8 +60,12 @@ func TestDidCreateDid(t *testing.T) {
 	//io1l9vaqmanwj47tlrpv6etf3pwq0s0snsq4vxke2 - 0xf959d06fB374ABE5Fc6166B2B4c42e03E0F84E00
 	//contractAddr := common.BytesToAddress(contract.Bytes())
 	//	io1lmqlk9fvg0qyvrn2z5l542lzn6fne46tza8a3j - 0xFec1FB152c43c0460e6A153f4aAbE29E933cd74B
+	abi, err := abi.JSON(strings.NewReader(MultisendABI)) // note,this is IoTeXDID_abi
+	if err != nil {
+		return
+	}
 	amounts := []*big.Int{big.NewInt(11111111), big.NewInt(22222222)}
-	h, err := cli.Contract(addr, MultisendABI).Execute("multiSend", recipients, amounts, "").SetGasPrice(gasPrice).SetGasLimit(gasLimit).
+	h, err := cli.Contract(addr, abi).Execute("multiSend", recipients, amounts, "").SetGasPrice(gasPrice).SetGasLimit(gasLimit).
 		Call(context.Background())
 	require.NoError(err)
 	fmt.Println(hex.EncodeToString(h[:]))
