@@ -65,7 +65,8 @@ func TestDidCreateDid(t *testing.T) {
 		return
 	}
 	amounts := []*big.Int{big.NewInt(11111111), big.NewInt(22222222)}
-	h, err := cli.Contract(addr, abi).Execute("multiSend", recipients, amounts, "").SetGasPrice(gasPrice).SetGasLimit(gasLimit).
+	h, err := cli.Contract(addr, abi).Execute("multiSend", recipients, amounts,
+		"").SetGasPrice(gasPrice).SetGasLimit(gasLimit).SetAmount(big.NewInt(33333333)).
 		Call(context.Background())
 	require.NoError(err)
 	fmt.Println(hex.EncodeToString(h[:]))
