@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	createDID        = "createDID"
+	createDID        = "registerDID"
 	deleteDID        = "deleteDID"
 	updateHash       = "updateHash"
 	updateURI        = "updateURI"

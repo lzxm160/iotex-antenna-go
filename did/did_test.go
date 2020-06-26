@@ -38,9 +38,9 @@ const (
 	//signsender            = "io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg"
 	privateKey = "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed"
 	//signPrivateKey        = "0d4d9b248110257c575ef2e8d93dd53471d9178984482817dcbd6edb607f8cc5"
-	endpoint           = "api.testnet.iotex.one:443"
-	IoTeXDIDDB_address = "io1qswvysrfav83ehgsfsfa4v8ugw4vqfsydp8snk"
-	IoTeXDID_address   = "io1qswvysrfav83ehgsfsfa4v8ugw4vqfsydp8snk"
+	endpoint = "api.testnet.iotex.one:443"
+	//IoTeXDIDDB_address = "io1qswvysrfav83ehgsfsfa4v8ugw4vqfsydp8snk"
+	IoTeXDID_address = "io1pq4zg4mf2wheah33e9d4yq8fujk7k83s3crzxz"
 	//IoTeXDIDProxy_address = "io1kqwtdw7daf74l8sf0u9j3u9fgv225ua6hjn3n0"
 )
 
@@ -80,6 +80,16 @@ func TestDidDeployContract(t *testing.T) {
 	contractAddress := receiptResponse.GetReceiptInfo().GetReceipt().GetContractAddress()
 	fmt.Println("Status:", receiptResponse.GetReceiptInfo().GetReceipt().Status)
 	fmt.Println("Contract Address:", contractAddress)
+}
+
+func TestDidCreateDid(t *testing.T) {
+	require := require.New(t)
+	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, abibin.AddressBasedDIDManagerABI, gasPrice, gasLimit)
+	require.NoError(err)
+	testDIDHash := "1111111111111111111111111111111111111111111111111111111111111112"
+	h, err := d.CreateDID("", testDIDHash, "uri1")
+	require.NoError(err)
+	checkHash(h, t)
 }
 
 //func TestDidProxyDeployContract(t *testing.T) {
@@ -186,16 +196,6 @@ func TestDidDeployContract(t *testing.T) {
 //	iotexAddr, err := address.FromBytes(addr.Bytes())
 //	require.NoError(err)
 //	fmt.Println(iotexAddr.String())
-//}
-
-//func TestDidCreateDid(t *testing.T) {
-//	require := require.New(t)
-//	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, IoTeXDID.IoTeXDIDABI, gasPrice, gasLimit)
-//	require.NoError(err)
-//	testDIDHash := "1111111111111111111111111111111111111111111111111111111111111112"
-//	h, err := d.CreateDID("", testDIDHash, "uri1")
-//	require.NoError(err)
-//	checkHash(h, t)
 //}
 
 //func TestDidCreateDidSigned(t *testing.T) {
