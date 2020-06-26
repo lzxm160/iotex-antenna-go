@@ -87,7 +87,7 @@ func (d *did) CreateDID(id, didHash, url string) (hash string, err error) {
 	}
 	var hashArray [32]byte
 	copy(hashArray[:], hashSlice)
-	h, err := cli.Contract(d.contract, d.abi).Execute(createDID, id, hashArray, url).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
+	h, err := cli.Contract(d.contract, d.abi).Execute(createDID, hashArray, url).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
 	if err != nil {
 		return
 	}
