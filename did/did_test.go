@@ -66,6 +66,7 @@ func TestDidDeployContract(t *testing.T) {
 	time.Sleep(20 * time.Second)
 	receiptResponse, err := c.GetReceipt(hash).Call(context.Background())
 	contractAddress := receiptResponse.GetReceiptInfo().GetReceipt().GetContractAddress()
+	fmt.Println("Status:", receiptResponse.GetReceiptInfo().GetReceipt().Status)
 	fmt.Println("Contract Address:", contractAddress)
 }
 
