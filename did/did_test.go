@@ -62,7 +62,7 @@ func TestDidDeployContract(t *testing.T) {
 	hash, err := c.DeployContract(data).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(10000000).Call(context.Background())
 	require.NoError(err)
 	require.NotNil(hash)
-
+	fmt.Println("hash", hex.EncodeToString(hash[:]))
 	time.Sleep(20 * time.Second)
 	receiptResponse, err := c.GetReceipt(hash).Call(context.Background())
 	contractAddress := receiptResponse.GetReceiptInfo().GetReceipt().GetContractAddress()
