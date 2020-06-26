@@ -28,7 +28,7 @@ const (
 )
 
 type DID interface {
-	CreateDID(did, didHash, url string) (hash string, err error)
+	CreateDID(did, didHash string, url []byte) (hash string, err error)
 	DeleteDID(did string) (hash string, err error)
 	UpdateHash(did, didHash string) (hash string, err error)
 	UpdateUri(did, uri string) (hash string, err error)
@@ -70,7 +70,7 @@ func NewDID(endpoint, privateKey, contract, abiString string, gasPrice *big.Int,
 	return
 }
 
-func (d *did) CreateDID(id, didHash, url string) (hash string, err error) {
+func (d *did) CreateDID(id, didHash string, uri []byte) (hash string, err error) {
 	if len(didHash) != 64 {
 		err = errors.New("hash should be 32 bytes")
 		return
@@ -87,7 +87,9 @@ func (d *did) CreateDID(id, didHash, url string) (hash string, err error) {
 	}
 	var hashArray [32]byte
 	copy(hashArray[:], hashSlice)
-	h, err := cli.Contract(d.contract, d.abi).Execute(createDID, hashArray, url).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
+
+	h, err := cli.Contract(d.contract, d.abi).Execute(createDID, hashArray,
+		uri).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
 	if err != nil {
 		return
 	}

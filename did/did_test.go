@@ -87,7 +87,7 @@ func TestDidCreateDid(t *testing.T) {
 	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, abibin.AddressBasedDIDManagerABI, gasPrice, gasLimit)
 	require.NoError(err)
 	testDIDHash := "1111111111111111111111111111111111111111111111111111111111111112"
-	h, err := d.CreateDID("", testDIDHash, "uri1")
+	h, err := d.CreateDID("", testDIDHash, []byte("uri1"))
 	require.NoError(err)
 	checkHash(h, t)
 }
