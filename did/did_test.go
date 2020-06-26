@@ -11,8 +11,12 @@ import (
 	"encoding/hex"
 	"fmt"
 	"math/big"
+	"strings"
 	"testing"
 	"time"
+
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/iotexproject/iotex-address/address"
 
 	"github.com/iotexproject/iotex-antenna-go/v2/did/abibin"
 
@@ -47,30 +51,6 @@ var (
 	//bytes32Ty, _ = abi.NewType("bytes32")
 )
 
-func TestDidStorage(t *testing.T) {
-	require := require.New(t)
-	conn, err := iotex.NewDefaultGRPCConn(endpoint)
-	require.NoError(err)
-	defer conn.Close()
-
-	acc, err := account.HexStringToAccount(privateKey)
-	require.NoError(err)
-	c := iotex.NewAuthedClient(iotexapi.NewAPIServiceClient(conn), acc)
-
-	data, err := hex.DecodeString(abibin.DIDStorageBin[2:])
-	require.NoError(err)
-
-	hash, err := c.DeployContract(data).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(10000000).Call(context.Background())
-	require.NoError(err)
-	require.NotNil(hash)
-	fmt.Println("hash", hex.EncodeToString(hash[:]))
-	time.Sleep(20 * time.Second)
-	receiptResponse, err := c.GetReceipt(hash).Call(context.Background())
-	contractAddress := receiptResponse.GetReceiptInfo().GetReceipt().GetContractAddress()
-	fmt.Println("Status:", receiptResponse.GetReceiptInfo().GetReceipt().Status)
-	fmt.Println("Contract Address:", contractAddress)
-}
-
 func TestDidDeployContract(t *testing.T) {
 	require := require.New(t)
 	conn, err := iotex.NewDefaultGRPCConn(endpoint)
@@ -83,8 +63,15 @@ func TestDidDeployContract(t *testing.T) {
 
 	data, err := hex.DecodeString(abibin.AddressBasedDIDManagerBin[2:])
 	require.NoError(err)
+	abi, err := abi.JSON(strings.NewReader(abibin.AddressBasedDIDManagerABI))
+	require.NoError(err)
+	DIDcontract, err := address.FromString(address.ZeroAddress)
+	require.NoError(err)
 
-	hash, err := c.DeployContract(data).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(10000000).Call(context.Background())
+	hash, err := c.DeployContract(data).SetArgs(abi, []byte("did:io"), DIDcontract).SetGasPrice(big.NewInt(int64(unit.
+		Qev))).
+		SetGasLimit(
+			10000000).Call(context.Background())
 	require.NoError(err)
 	require.NotNil(hash)
 	fmt.Println("hash", hex.EncodeToString(hash[:]))
