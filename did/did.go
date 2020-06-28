@@ -7,6 +7,8 @@ import (
 	"math/big"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/common"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-antenna-go/v2/account"
@@ -15,17 +17,17 @@ import (
 )
 
 const (
-	createDID = "registerDID"
-	deleteDID = "deregisterDID"
-	update    = "updateDID"
+	createDID = "registerByAgent"
+	deleteDID = "deregisterByAgent"
+	update    = "updateByAgent"
 	getHash   = "getHash"
 	getURI    = "getURI"
 )
 
 type DID interface {
-	RegisterDID(didHash string, uri []byte) (hash string, err error)
-	DeregisterDID() (hash string, err error)
-	UpdateDID(h, uri string) (hash string, err error)
+	RegisterDID(didHash string, uri []byte, addr common.Address, msg []byte) (hash string, err error)
+	DeregisterDID(did, msg string) (hash string, err error)
+	UpdateDID(h, uri, msg string) (hash string, err error)
 	GetHash(did string) (hash string, err error)
 	GetUri(did string) (uri string, err error)
 }
@@ -60,7 +62,7 @@ func NewDID(endpoint, privateKey, contract, abiString string, gasPrice *big.Int,
 	return
 }
 
-func (d *did) RegisterDID(didHash string, uri []byte) (hash string, err error) {
+func (d *did) RegisterDID(didHash string, uri []byte, addr common.Address, msg []byte) (hash string, err error) {
 	if len(didHash) != 64 {
 		err = errors.New("hash should be 32 bytes")
 		return
@@ -79,7 +81,7 @@ func (d *did) RegisterDID(didHash string, uri []byte) (hash string, err error) {
 	copy(hashArray[:], hashSlice)
 
 	h, err := cli.Contract(d.contract, d.abi).Execute(createDID, hashArray,
-		uri).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
+		uri, addr, msg).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
 	if err != nil {
 		return
 	}
@@ -87,7 +89,7 @@ func (d *did) RegisterDID(didHash string, uri []byte) (hash string, err error) {
 	return
 }
 
-func (d *did) DeregisterDID() (hash string, err error) {
+func (d *did) DeregisterDID(did, msg string) (hash string, err error) {
 	conn, err := iotex.NewDefaultGRPCConn(d.endpoint)
 	if err != nil {
 		return
@@ -102,7 +104,7 @@ func (d *did) DeregisterDID() (hash string, err error) {
 	return
 }
 
-func (d *did) UpdateDID(h, uri string) (hash string, err error) {
+func (d *did) UpdateDID(h, uri, msg string) (hash string, err error) {
 	conn, err := iotex.NewDefaultGRPCConn(d.endpoint)
 	if err != nil {
 		return
