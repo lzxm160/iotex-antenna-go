@@ -8,6 +8,7 @@ package did
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -273,6 +274,42 @@ func uint2str(i uint) string {
 		k--
 	}
 	return string(b)
+}
+func TestBase(t *testing.T) {
+	en := base64.StdEncoding.EncodeToString([]byte(`<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+	<activeProfiles>
+		<activeProfile>github</activeProfile>
+	</activeProfiles>
+	<profiles>
+		<profile>
+			<id>github</id>
+			<repositories>
+				<repository>
+					<id>central</id>
+					<url>https://repo.maven.apache.org/maven2</url>
+				</repository>
+				<repository>
+					<id>github-did-common-java</id>
+					<name>GitHub decentralized-identity/did-common-java</name>
+					<url>https://maven.pkg.github.com/decentralized-identity/did-common-java</url>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
+	<servers>
+		<!-- personal access token with permission: read:packages -->
+		<server>
+			<id>github-did-common-java</id>
+			<username>lzxm160</username>
+			<password>ef8161e22449b5b5e440a481d156d85c1e9ef338</password>
+		</server>
+	</servers>
+</settings>
+`))
+	fmt.Println(en)
 }
 
 //func TestDidCreateDid(t *testing.T) {
