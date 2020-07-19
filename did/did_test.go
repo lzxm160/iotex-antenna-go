@@ -8,7 +8,6 @@ package did
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -38,17 +37,21 @@ import (
 )
 
 const (
+	didPrefix        = "did:io:ucam:"
+	testdid          = didPrefix + "E7UAA51MKZVCSH6GYHRJ"
+	usingABI         = abibin.UCamDIDManagerABI
 	sender           = "io1ph0u2psnd7muq5xv9623rmxdsxc4uapxhzpg02"
 	signsender       = "io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg"
 	privateKey       = "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed"
 	signPrivateKey   = "0d4d9b248110257c575ef2e8d93dd53471d9178984482817dcbd6edb607f8cc5"
 	endpoint         = "api.testnet.iotex.one:443"
-	IoTeXDID_address = "io14gqv7s4dkfhdgssq4l7sedjv68kv70hl4x5j0u"
+	IoTeXDID_address = "io1d33zen8t5usc20udlgw0fzen9sgj4ql0wa8cqe"
 )
 
 var (
 	gasPrice = big.NewInt(0).SetUint64(1e12)
 	gasLimit = uint64(10000000)
+	uisngBIN = abibin.UCamDIDManagerBin[2:]
 )
 
 func TestDidDeployContract(t *testing.T) {
@@ -61,11 +64,11 @@ func TestDidDeployContract(t *testing.T) {
 	require.NoError(err)
 	c := iotex.NewAuthedClient(iotexapi.NewAPIServiceClient(conn), acc)
 
-	data, err := hex.DecodeString(abibin.AddressBasedDIDManagerWithAgentEnabledBin[2:])
+	data, err := hex.DecodeString(uisngBIN)
 	require.NoError(err)
-	abi, err := abi.JSON(strings.NewReader(abibin.AddressBasedDIDManagerWithAgentEnabledABI))
+	abi, err := abi.JSON(strings.NewReader(usingABI))
 	require.NoError(err)
-	hash, err := c.DeployContract(data).SetArgs(abi, []byte("did:io:"), common.Address{0}).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(10000000).Call(context.Background())
+	hash, err := c.DeployContract(data).SetArgs(abi, common.Address{0}).SetGasPrice(big.NewInt(int64(unit.Qev))).SetGasLimit(10000000).Call(context.Background())
 	require.NoError(err)
 	require.NotNil(hash)
 	fmt.Println("hash", hex.EncodeToString(hash[:]))
@@ -79,9 +82,9 @@ func TestDidDeployContract(t *testing.T) {
 
 func TestDidCreateDid(t *testing.T) {
 	require := require.New(t)
-	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, abibin.AddressBasedDIDManagerWithAgentEnabledABI, gasPrice, gasLimit)
+	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, usingABI, gasPrice, gasLimit)
 	require.NoError(err)
-	testDIDHash := "1111111111111111111111111111111111111111111111111111111111111112"
+	testDIDHash := "9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658"
 	testDIDHashBytes, err := hex.DecodeString(testDIDHash)
 	require.NoError(err)
 	var testDidHashArray [32]byte
@@ -92,17 +95,18 @@ func TestDidCreateDid(t *testing.T) {
 	signer, err := account.HexStringToAccount(signPrivateKey)
 	require.NoError(err)
 	signerethAddress := common.HexToAddress(hex.EncodeToString(signer.Address().Bytes()))
-	did := "did:io:" + strings.ToLower(signerethAddress.String())
-	uri := "uri1"
+	//did := didPrefix + strings.ToLower(signerethAddress.String())
+	uri := "s3://iotex-did/documents"
 	contractAddress, err := address.FromString(IoTeXDID_address)
 	require.NoError(err)
 
 	hb, err := hex.DecodeString(testDIDHash)
 	require.NoError(err)
 	ha := string(hb)
-	authMsg := "I authorize " + strings.ToLower(senderethAddress.String()) + " to create DID " + did + " in contract with " + strings.ToLower(common.HexToAddress(
+	authMsg := "I authorize " + strings.ToLower(senderethAddress.String()) + " to create DID " + testdid + " in contract with " + strings.ToLower(common.HexToAddress(
 		hex.EncodeToString(contractAddress.Bytes())).String()) + " (" +
 		ha + ", " + uri + ")"
+	fmt.Println("authMsg", authMsg)
 	prefix := fmt.Sprintf("\x19Ethereum Signed Message:\n%d", len(authMsg))
 	msg := []byte(prefix + authMsg)
 
@@ -117,33 +121,33 @@ func TestDidCreateDid(t *testing.T) {
 
 func TestDidGetHash(t *testing.T) {
 	require := require.New(t)
-	d, err := NewDID(endpoint, "", IoTeXDID_address, abibin.AddressBasedDIDManagerWithAgentEnabledABI, nil, 0)
+	d, err := NewDID(endpoint, "", IoTeXDID_address, usingABI, nil, 0)
 	require.NoError(err)
-	acc, err := account.HexStringToAccount(signPrivateKey)
-	require.NoError(err)
+	//acc, err := account.HexStringToAccount(signPrivateKey)
+	//require.NoError(err)
 
-	ethAddress := common.HexToAddress(hex.EncodeToString(acc.Address().Bytes()))
+	//ethAddress := common.HexToAddress(hex.EncodeToString(acc.Address().Bytes()))
 
-	didString := "did:io:" + ethAddress.String()
+	//didString := didPrefix + ethAddress.String()
 	//didString = "did:io:0x6356908ace09268130dee2b7de643314bbeb3683"
-	fmt.Println(didString)
-	h, err := d.GetHash(didString)
+	fmt.Println(testdid)
+	h, err := d.GetHash(testdid)
 	require.NoError(err)
 	fmt.Println(h)
 }
 
 func TestDidGetURI(t *testing.T) {
 	require := require.New(t)
-	d, err := NewDID(endpoint, "", IoTeXDID_address, abibin.AddressBasedDIDManagerWithAgentEnabledABI, nil, 0)
+	d, err := NewDID(endpoint, "", IoTeXDID_address, usingABI, nil, 0)
 	require.NoError(err)
-	acc, err := account.HexStringToAccount(signPrivateKey)
-	require.NoError(err)
-
-	ethAddress := common.HexToAddress(hex.EncodeToString(acc.Address().Bytes()))
-
-	didString := "did:io:" + ethAddress.String()
-	fmt.Println(didString)
-	h, err := d.GetUri(didString)
+	//acc, err := account.HexStringToAccount(signPrivateKey)
+	//require.NoError(err)
+	//
+	//ethAddress := common.HexToAddress(hex.EncodeToString(acc.Address().Bytes()))
+	//
+	//didString := didPrefix + ethAddress.String()
+	fmt.Println(testdid)
+	h, err := d.GetUri(testdid)
 	require.NoError(err)
 	fmt.Println(h)
 }
@@ -151,7 +155,7 @@ func TestDidGetURI(t *testing.T) {
 func TestDidUpdate(t *testing.T) {
 	testuri := "https://gateway.pinata.cloud/ipfs/QmWUzz4EoBVGX9WJM3tsjyU4CzABReD8akrZqpc6f94Ba4/ddo-test.json"
 	require := require.New(t)
-	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, abibin.AddressBasedDIDManagerWithAgentEnabledABI, gasPrice, gasLimit)
+	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, usingABI, gasPrice, gasLimit)
 	require.NoError(err)
 	sender, err := account.HexStringToAccount(privateKey)
 	require.NoError(err)
@@ -162,26 +166,30 @@ func TestDidUpdate(t *testing.T) {
 	contractAddress, err := address.FromString(IoTeXDID_address)
 	require.NoError(err)
 
-	didString := "did:io:" + signerethAddress.String()
-	fmt.Println(didString)
+	//didString := didPrefix + strings.ToLower(signerethAddress.String())
+	//fmt.Println(didString)
 	testDIDHash := "4420e4869750c98a56ac621854d2d00e598698ac87193cdfcbb6ed1164e9cbcd"
 	hb, err := hex.DecodeString(testDIDHash)
 	require.NoError(err)
 	ha := string(hb)
-	authMsg := "I authorize " + strings.ToLower(senderethAddress.String()) + " to update DID " + didString + " in contract to " + strings.ToLower(common.HexToAddress(hex.EncodeToString(contractAddress.Bytes())).String()) + " (" + ha + ", " + testuri + ")"
+	authMsg := "I authorize " + strings.ToLower(senderethAddress.String()) + " to update DID " + testdid + " in contract to " + strings.ToLower(common.HexToAddress(hex.EncodeToString(contractAddress.Bytes())).String()) + " (" + ha + ", " + testuri + ")"
+	//"I authorize ", addrToString(agent), " to update DID ", did, " in contract to ", addrToString(address(this)), " (", h, ", ", uri, ")");
+	fmt.Println(authMsg)
 	prefix := fmt.Sprintf("\x19Ethereum Signed Message:\n%d", len(authMsg))
 	msgSum := []byte(prefix + authMsg)
 
 	signedMsg, err := signer.Sign(msgSum)
 	require.NoError(err)
-	h, err := d.UpdateDID(didString, testDIDHash, testuri, signedMsg)
+	var uid [20]byte
+	copy(uid[:], signerethAddress.Bytes())
+	h, err := d.UpdateDID(uid, testDIDHash, testuri, signedMsg)
 	require.NoError(err)
 	checkHash(h, t)
 }
 
 func TestDeregister(t *testing.T) {
 	require := require.New(t)
-	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, abibin.AddressBasedDIDManagerWithAgentEnabledABI, gasPrice, gasLimit)
+	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, abibin.UCamDIDManagerABI, gasPrice, gasLimit)
 	require.NoError(err)
 	sender, err := account.HexStringToAccount(privateKey)
 	require.NoError(err)
@@ -192,15 +200,17 @@ func TestDeregister(t *testing.T) {
 	contractAddress, err := address.FromString(IoTeXDID_address)
 	require.NoError(err)
 
-	didString := "did:io:" + signerethAddress.String()
-	fmt.Println(didString)
-	authMsg := "I authorize " + strings.ToLower(senderethAddress.String()) + " to delete DID " + didString + " in contract " + strings.ToLower(common.HexToAddress(hex.EncodeToString(contractAddress.Bytes())).String())
+	//didString := didPrefix + strings.ToLower(signerethAddress.String())
+	//fmt.Println(didString)
+	authMsg := "I authorize " + strings.ToLower(senderethAddress.String()) + " to delete DID " + testdid + " in contract " + strings.ToLower(common.HexToAddress(hex.EncodeToString(contractAddress.Bytes())).String())
 	prefix := fmt.Sprintf("\x19Ethereum Signed Message:\n%d", len(authMsg))
 	msgSum := []byte(prefix + authMsg)
 
 	signedMsg, err := signer.Sign(msgSum)
 	require.NoError(err)
-	h, err := d.DeregisterDID(didString, signedMsg)
+	var uid [20]byte
+	copy(uid[:], signerethAddress.Bytes())
+	h, err := d.DeregisterDID(uid, signedMsg)
 	require.NoError(err)
 	checkHash(h, t)
 }
@@ -228,6 +238,7 @@ func checkHash(h string, t *testing.T) {
 		}
 	}
 }
+
 func TestConver(t *testing.T) {
 	fmt.Println(uint2str(100))
 	//b := []byte("0x0ddfc506136fb7c050cc2e9511eccd81b15e7426")
@@ -245,6 +256,7 @@ func TestConver(t *testing.T) {
 	fmt.Println(xxx)
 	fmt.Println([]byte(hex.EncodeToString(xxx)))
 }
+
 func addrToString(value [32]byte) string {
 	alphabet := []byte("0123456789abcdef")
 
@@ -257,6 +269,7 @@ func addrToString(value [32]byte) string {
 	}
 	return string(str[:])
 }
+
 func uint2str(i uint) string {
 	if i == 0 {
 		return "0"
@@ -275,42 +288,48 @@ func uint2str(i uint) string {
 	}
 	return string(b)
 }
-func TestBase(t *testing.T) {
-	en := base64.StdEncoding.EncodeToString([]byte(`<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
-	<activeProfiles>
-		<activeProfile>github</activeProfile>
-	</activeProfiles>
-	<profiles>
-		<profile>
-			<id>github</id>
-			<repositories>
-				<repository>
-					<id>central</id>
-					<url>https://repo.maven.apache.org/maven2</url>
-				</repository>
-				<repository>
-					<id>github-did-common-java</id>
-					<name>GitHub decentralized-identity/did-common-java</name>
-					<url>https://maven.pkg.github.com/decentralized-identity/did-common-java</url>
-				</repository>
-			</repositories>
-		</profile>
-	</profiles>
-	<servers>
-		<!-- personal access token with permission: read:packages -->
-		<server>
-			<id>github-did-common-java</id>
-			<username>lzxm160</username>
-			<password>ef8161e22449b5b5e440a481d156d85c1e9ef338</password>
-		</server>
-	</servers>
-</settings>
-`))
-	fmt.Println(en)
+
+func TestTe(t *testing.T) {
+	b, _ := hex.DecodeString("4920617574686f72697a652030783863303365306432303031316431653738656230623666633565333865313834613430353165653420746f2063726561746520444944206469643a696f3a7563616d3a30783462353661333666363462653231333663363337333366363435383161323433366266313930303520696e20636f6e747261637420776974682030786439303539343661313138393563316237383633623166636564343534393562383136613631313020289c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb6582c2073333a2f2f696f7465782d6469642f646f63756d656e747329")
+	fmt.Println(string(b))
 }
+
+//func TestBase(t *testing.T) {
+//	en := base64.StdEncoding.EncodeToString([]byte(`<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+//	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+//	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+//                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+//	<activeProfiles>
+//		<activeProfile>github</activeProfile>
+//	</activeProfiles>
+//	<profiles>
+//		<profile>
+//			<id>github</id>
+//			<repositories>
+//				<repository>
+//					<id>central</id>
+//					<url>https://repo.maven.apache.org/maven2</url>
+//				</repository>
+//				<repository>
+//					<id>github-did-common-java</id>
+//					<name>GitHub decentralized-identity/did-common-java</name>
+//					<url>https://maven.pkg.github.com/decentralized-identity/did-common-java</url>
+//				</repository>
+//			</repositories>
+//		</profile>
+//	</profiles>
+//	<servers>
+//		<!-- personal access token with permission: read:packages -->
+//		<server>
+//			<id>github-did-common-java</id>
+//			<username>lzxm160</username>
+//			<password>ef8161e22449b5b5e440a481d156d85c1e9ef338</password>
+//		</server>
+//	</servers>
+//</settings>
+//`))
+//	fmt.Println(en)
+//}
 
 //func TestDidCreateDid(t *testing.T) {
 //	require := require.New(t)
