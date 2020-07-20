@@ -38,14 +38,15 @@ import (
 
 const (
 	didPrefix        = "did:io:ucam:"
-	testdid          = didPrefix + "E7UAA51MKZVCSH6GYHRJ"
+	testuid          = "E7UAA51MKZVCSH6GYHRJ"
+	testdid          = didPrefix + testuid
 	usingABI         = abibin.UCamDIDManagerABI
 	sender           = "io1ph0u2psnd7muq5xv9623rmxdsxc4uapxhzpg02"
 	signsender       = "io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg"
 	privateKey       = "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed"
 	signPrivateKey   = "0d4d9b248110257c575ef2e8d93dd53471d9178984482817dcbd6edb607f8cc5"
 	endpoint         = "api.testnet.iotex.one:443"
-	IoTeXDID_address = "io1d33zen8t5usc20udlgw0fzen9sgj4ql0wa8cqe"
+	IoTeXDID_address = "io19wm6wtx2k9gfgs4wf339fz98kz6h8z8djwcnnf"
 )
 
 var (
@@ -114,7 +115,7 @@ func TestDidCreateDid(t *testing.T) {
 	signedMsg, err := signer.Sign(msg)
 	require.NoError(err)
 	fmt.Println("signed", hex.EncodeToString(signedMsg))
-	h, err := d.RegisterDID(testDIDHash, []byte(uri), signerethAddress, signedMsg)
+	h, err := d.RegisterDID(testuid, testDIDHash, []byte(uri), signerethAddress, signedMsg)
 	require.NoError(err)
 	checkHash(h, t)
 }
@@ -162,7 +163,7 @@ func TestDidUpdate(t *testing.T) {
 	senderethAddress := common.HexToAddress(hex.EncodeToString(sender.Address().Bytes()))
 	signer, err := account.HexStringToAccount(signPrivateKey)
 	require.NoError(err)
-	signerethAddress := common.HexToAddress(hex.EncodeToString(signer.Address().Bytes()))
+	//signerethAddress := common.HexToAddress(hex.EncodeToString(signer.Address().Bytes()))
 	contractAddress, err := address.FromString(IoTeXDID_address)
 	require.NoError(err)
 
@@ -181,7 +182,7 @@ func TestDidUpdate(t *testing.T) {
 	signedMsg, err := signer.Sign(msgSum)
 	require.NoError(err)
 	var uid [20]byte
-	copy(uid[:], signerethAddress.Bytes())
+	copy(uid[:], []byte(testuid))
 	h, err := d.UpdateDID(uid, testDIDHash, testuri, signedMsg)
 	require.NoError(err)
 	checkHash(h, t)
@@ -189,14 +190,14 @@ func TestDidUpdate(t *testing.T) {
 
 func TestDeregister(t *testing.T) {
 	require := require.New(t)
-	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, abibin.UCamDIDManagerABI, gasPrice, gasLimit)
+	d, err := NewDID(endpoint, privateKey, IoTeXDID_address, usingABI, gasPrice, gasLimit)
 	require.NoError(err)
 	sender, err := account.HexStringToAccount(privateKey)
 	require.NoError(err)
 	senderethAddress := common.HexToAddress(hex.EncodeToString(sender.Address().Bytes()))
 	signer, err := account.HexStringToAccount(signPrivateKey)
 	require.NoError(err)
-	signerethAddress := common.HexToAddress(hex.EncodeToString(signer.Address().Bytes()))
+	//signerethAddress := common.HexToAddress(hex.EncodeToString(signer.Address().Bytes()))
 	contractAddress, err := address.FromString(IoTeXDID_address)
 	require.NoError(err)
 
@@ -209,7 +210,7 @@ func TestDeregister(t *testing.T) {
 	signedMsg, err := signer.Sign(msgSum)
 	require.NoError(err)
 	var uid [20]byte
-	copy(uid[:], signerethAddress.Bytes())
+	copy(uid[:], []byte(testuid))
 	h, err := d.DeregisterDID(uid, signedMsg)
 	require.NoError(err)
 	checkHash(h, t)
@@ -292,6 +293,37 @@ func uint2str(i uint) string {
 func TestTe(t *testing.T) {
 	b, _ := hex.DecodeString("4920617574686f72697a652030783863303365306432303031316431653738656230623666633565333865313834613430353165653420746f2063726561746520444944206469643a696f3a7563616d3a30783462353661333666363462653231333663363337333366363435383161323433366266313930303520696e20636f6e747261637420776974682030786439303539343661313138393563316237383633623166636564343534393562383136613631313020289c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb6582c2073333a2f2f696f7465782d6469642f646f63756d656e747329")
 	fmt.Println(string(b))
+}
+func TestTTT(t *testing.T) {
+	uidstr := "E7UAA51MKZVCSH6GYHRJ"
+	var domainID [20]byte
+	copy(domainID[:], []byte(uidstr))
+	fmt.Println([]byte(uidstr))
+	uidInt := new(big.Int)
+	int256 := big.NewInt(256)
+	for i := 0; i < 20; i++ {
+		uidInt = uidInt.Mul(uidInt, int256)
+		//b1 := uint8(domainID[i])
+		//b2 := uint8(domainID[i-1])
+
+		//if b1 >= 97 && b1 <= 102 {
+		//	b1 -= 87
+		//} else if b1 >= 48 && b1 <= 57 {
+		//	b1 -= 48
+		//} else if b1 >= 65 && b1 <= 70 {
+		//	b1 -= 55
+		//}
+		//if b2 >= 97 && b2 <= 102 {
+		//	b2 -= 87
+		//} else if b2 >= 48 && b2 <= 57 {
+		//	b2 -= 48
+		//} else if b2 >= 65 && b2 <= 70 {
+		//	b2 -= 55
+		//}
+		fmt.Println("b1", string(domainID[i]))
+		uidInt = uidInt.Add(uidInt, big.NewInt(int64(domainID[i])))
+	}
+	fmt.Println(string(uidInt.Bytes()))
 }
 
 //func TestBase(t *testing.T) {

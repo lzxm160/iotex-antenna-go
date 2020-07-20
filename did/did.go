@@ -26,7 +26,7 @@ const (
 )
 
 type DID interface {
-	RegisterDID(didHash string, uri []byte, addr common.Address, msg []byte) (hash string, err error)
+	RegisterDID(testuid, didHash string, uri []byte, addr common.Address, msg []byte) (hash string, err error)
 	DeregisterDID(uid [20]byte, msg []byte) (hash string, err error)
 	UpdateDID(uid [20]byte, h, uri string, msg []byte) (hash string, err error)
 	GetHash(did string) (hash string, err error)
@@ -63,7 +63,7 @@ func NewDID(endpoint, privateKey, contract, abiString string, gasPrice *big.Int,
 	return
 }
 
-func (d *did) RegisterDID(didHash string, uri []byte, addr common.Address, msg []byte) (hash string, err error) {
+func (d *did) RegisterDID(uid, didHash string, uri []byte, addr common.Address, msg []byte) (hash string, err error) {
 	if len(didHash) != 64 {
 		err = errors.New("hash should be 32 bytes")
 		return
@@ -80,10 +80,11 @@ func (d *did) RegisterDID(didHash string, uri []byte, addr common.Address, msg [
 	}
 	var hashArray [32]byte
 	copy(hashArray[:], hashSlice)
-	var addrArray [20]byte
-	copy(addrArray[:], addr.Bytes())
+	uidSlice := []byte(uid)
+	var uidArray [20]byte
+	copy(uidArray[:], uidSlice)
 	fmt.Println(hex.EncodeToString(uri))
-	h, err := cli.Contract(d.contract, d.abi).Execute(createDID, addrArray, hashArray,
+	h, err := cli.Contract(d.contract, d.abi).Execute(createDID, uidArray, hashArray,
 		uri, addr, msg).SetGasPrice(d.gasPrice).SetGasLimit(d.gasLimit).Call(context.Background())
 	if err != nil {
 		return
@@ -142,8 +143,10 @@ func (d *did) GetHash(did string) (hash string, err error) {
 	cli := iotex.NewReadOnlyClient(iotexapi.NewAPIServiceClient(conn))
 	ret, err := cli.ReadOnlyContract(d.contract, d.abi).Read(getHash, []byte(did)).Call(context.Background())
 	if err != nil {
+		fmt.Println("GetHash call", err)
 		return
 	}
+	fmt.Println(ret.Raw)
 	hashBytes := [32]uint8{}
 	err = ret.Unmarshal(&hashBytes)
 	if err != nil {
