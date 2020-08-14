@@ -46,7 +46,7 @@ const (
 	privateKey       = "414efa99dfac6f4095d6954713fb0085268d400d6a05a8ae8a69b5b1c10b4bed"
 	signPrivateKey   = "0d4d9b248110257c575ef2e8d93dd53471d9178984482817dcbd6edb607f8cc5"
 	endpoint         = "api.testnet.iotex.one:443"
-	IoTeXDID_address = "io19wm6wtx2k9gfgs4wf339fz98kz6h8z8djwcnnf"
+	IoTeXDID_address = "io1zkaqhq6q2c3efj78kwtnh8nns2muczrtcjwyy9"
 )
 
 var (
@@ -427,3 +427,8 @@ func TestTTT(t *testing.T) {
 //	require.NoError(err)
 //	checkHash(h, t)
 //}
+
+func TestD(t *testing.T) {
+	//fmt.Println(hex.DecodeString(""))
+	fmt.Println([]byte("did:io:"))
+}
