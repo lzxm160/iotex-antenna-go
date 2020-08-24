@@ -53,7 +53,7 @@ func (s *iotexService) Transfer(ctx context.Context, to string, amount *big.Int)
 	if err != nil {
 		return
 	}
-	ethAddr := common.FromHex(hex.EncodeToString(addr.Bytes()))
+	ethAddr := common.HexToAddress(hex.EncodeToString(addr.Bytes()))
 	h, err := s.AuthClient().Contract(s.contract, s.abi).Execute("transfer", ethAddr, amount).SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).Call(ctx)
 	if err != nil {
 		return
