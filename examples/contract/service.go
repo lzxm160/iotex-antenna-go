@@ -60,7 +60,7 @@ func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, arg
 	}
 	hash = hex.EncodeToString(h[:])
 	if waitContractAddress {
-		time.Sleep(time.Second * 5)
+		time.Sleep(time.Second * 10)
 		receiptResponse, err := s.AuthClient().GetReceipt(h).Call(ctx)
 		if err != nil {
 			return "", err
