@@ -50,6 +50,10 @@ func NewIotexService(accountPrivate, abiString, binString, contract string, gasP
 }
 
 func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (hash string, err error) {
+	err = s.Connect()
+	if err != nil {
+		return
+	}
 	h, err := s.AuthClient().DeployContract([]byte(s.bin)).SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).SetArgs(s.abi, args...).Call(ctx)
 	if err != nil {
 		return
