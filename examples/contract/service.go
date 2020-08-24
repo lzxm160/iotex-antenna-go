@@ -9,12 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/iotexproject/iotex-proto/golang/iotextypes"
-
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/iotexproject/iotex-address/address"
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 
 	"github.com/iotexproject/iotex-antenna-go/v2/examples/service"
 )
