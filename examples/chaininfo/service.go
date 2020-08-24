@@ -17,6 +17,8 @@ import (
 
 type IotexService interface {
 	GetChainMeta(ctx context.Context, in *iotexapi.GetChainMetaRequest) (*iotexapi.GetChainMetaResponse, error)
+	GetBlockMetas(ctx context.Context, in *iotexapi.GetBlockMetasRequest) (*iotexapi.GetBlockMetasResponse, error)
+	GetActions(ctx context.Context, in *iotexapi.GetActionsRequest) (*iotexapi.GetActionsResponse, error)
 }
 
 type iotexService struct {
@@ -44,6 +46,22 @@ func (s *iotexService) GetChainMeta(ctx context.Context, in *iotexapi.GetChainMe
 		return nil, err
 	}
 	return s.readOnlyClient.API().GetChainMeta(ctx, in)
+}
+
+func (s *iotexService) GetBlockMetas(ctx context.Context, in *iotexapi.GetBlockMetasRequest) (*iotexapi.GetBlockMetasResponse, error) {
+	err := s.connect()
+	if err != nil {
+		return nil, err
+	}
+	return s.readOnlyClient.API().GetBlockMetas(ctx, in)
+}
+
+func (s *iotexService) GetActions(ctx context.Context, in *iotexapi.GetActionsRequest) (*iotexapi.GetActionsResponse, error) {
+	err := s.connect()
+	if err != nil {
+		return nil, err
+	}
+	return s.readOnlyClient.API().GetActions(ctx, in)
 }
 
 func (s *iotexService) connect() (err error) {
