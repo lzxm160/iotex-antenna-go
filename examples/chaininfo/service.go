@@ -43,7 +43,10 @@ func (s *iotexService) GetChainMeta(ctx context.Context, in *iotexapi.GetChainMe
 	if err != nil {
 		return nil, err
 	}
-	return s.readOnlyClient.API().GetChainMeta(ctx, in, opts...)
+	if len(opts) != 0 {
+		return s.readOnlyClient.API().GetChainMeta(ctx, in, opts...)
+	}
+	return s.readOnlyClient.API().GetChainMeta(ctx, in)
 }
 
 func (s *iotexService) connect() (err error) {
