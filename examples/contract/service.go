@@ -58,12 +58,15 @@ func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, arg
 	if err != nil {
 		return
 	}
-	h, err := s.AuthClient().DeployContract([]byte(s.bin)).SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).SetArgs(s.abi, args...).Call(ctx)
+	data, err := hex.DecodeString(s.bin)
+	if err != nil {
+		return
+	}
+	h, err := s.AuthClient().DeployContract(data).SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).SetArgs(s.abi, args...).Call(ctx)
 	if err != nil {
 		return
 	}
 	hash = hex.EncodeToString(h[:])
-	fmt.Println("hash", hash)
 	if waitContractAddress {
 		time.Sleep(time.Second * 10)
 		receiptResponse, err := s.AuthClient().GetReceipt(h).Call(ctx)
@@ -75,7 +78,6 @@ func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, arg
 			return "", errors.New("deploy error,status:" + fmt.Sprintf("%d", status))
 		}
 		addr := receiptResponse.GetReceiptInfo().GetReceipt().GetContractAddress()
-		fmt.Println("addr", addr)
 		s.contract, err = address.FromString(addr)
 		if err != nil {
 			return "", err
