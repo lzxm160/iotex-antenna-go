@@ -59,12 +59,12 @@ func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, arg
 		time.Sleep(time.Second * 5)
 		receiptResponse, err := s.AuthClient().GetReceipt(h).Call(ctx)
 		if err != nil {
-			return
+			return "", err
 		}
 		addr := receiptResponse.GetReceiptInfo().GetReceipt().GetContractAddress()
 		s.contract, err = address.FromString(addr)
 		if err != nil {
-			return
+			return "", err
 		}
 	}
 	return
