@@ -35,9 +35,9 @@ func main() {
 	getActionsResponse, err := s.GetActions(context.Background(), getActionsRequest)
 	fmt.Println("action", getActionsResponse, err)
 
-	getCandidatesResponse, err := s.GetStakingCandidates(context.Background(), 6360120)
+	getCandidatesResponse, err := s.GetStakingCandidates(context.Background(), 7060000)
 	fmt.Println("candidates", getCandidatesResponse, err)
 
-	getBucketsResponse, err := s.GetStakingBuckets(context.Background(), 6360120)
+	getBucketsResponse, err := s.GetStakingBuckets(context.Background(), 7060000)
 	fmt.Println("buckets", getBucketsResponse, err)
 }
