@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 	"strings"
 	"time"
@@ -66,6 +67,7 @@ func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, arg
 			return "", err
 		}
 		addr := receiptResponse.GetReceiptInfo().GetReceipt().GetContractAddress()
+		fmt.Println("addr", addr)
 		s.contract, err = address.FromString(addr)
 		if err != nil {
 			return "", err
