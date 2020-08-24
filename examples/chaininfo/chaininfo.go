@@ -17,7 +17,7 @@ func main() {
 		Lookup: &iotexapi.GetBlockMetasRequest_ByIndex{
 			ByIndex: &iotexapi.GetBlockMetasByIndexRequest{
 				Start: 10000,
-				Count: 10,
+				Count: 1,
 			},
 		},
 	}
@@ -28,7 +28,7 @@ func main() {
 		Lookup: &iotexapi.GetActionsRequest_ByIndex{
 			ByIndex: &iotexapi.GetActionsByIndexRequest{
 				Start: 1000000,
-				Count: 10,
+				Count: 1,
 			},
 		},
 	}

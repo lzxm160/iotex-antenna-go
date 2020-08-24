@@ -2,93 +2,48 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
-	"sync"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/connectivity"
-	"google.golang.org/grpc/credentials"
 
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
 
-	"github.com/iotexproject/iotex-antenna-go/v2/account"
-	"github.com/iotexproject/iotex-antenna-go/v2/iotex"
+	"github.com/iotexproject/iotex-antenna-go/v2/examples/service"
 )
 
-type IotexService interface {
+type GetInfoExample interface {
 	GetChainMeta(ctx context.Context, in *iotexapi.GetChainMetaRequest) (*iotexapi.GetChainMetaResponse, error)
 	GetBlockMetas(ctx context.Context, in *iotexapi.GetBlockMetasRequest) (*iotexapi.GetBlockMetasResponse, error)
 	GetActions(ctx context.Context, in *iotexapi.GetActionsRequest) (*iotexapi.GetActionsResponse, error)
 }
 
 type iotexService struct {
-	sync.RWMutex
-	endpoint       string
-	secure         bool
-	accountPrivate string
-
-	grpcConn       *grpc.ClientConn
-	authedClient   iotex.AuthedClient
-	readOnlyClient iotex.ReadOnlyClient
+	service.IotexService
 }
 
-func NewIotexService(accountPrivate, endpoint string, secure bool) IotexService {
+func NewIotexService(accountPrivate, endpoint string, secure bool) GetInfoExample {
 	return &iotexService{
-		endpoint:       endpoint,
-		secure:         secure,
-		accountPrivate: accountPrivate,
+		service.NewIotexService(accountPrivate, endpoint, secure),
 	}
 }
 
 func (s *iotexService) GetChainMeta(ctx context.Context, in *iotexapi.GetChainMetaRequest) (*iotexapi.GetChainMetaResponse, error) {
-	err := s.connect()
+	err := s.Connect()
 	if err != nil {
 		return nil, err
 	}
-	return s.readOnlyClient.API().GetChainMeta(ctx, in)
+	return s.ReadOnlyClient().API().GetChainMeta(ctx, in)
 }
 
 func (s *iotexService) GetBlockMetas(ctx context.Context, in *iotexapi.GetBlockMetasRequest) (*iotexapi.GetBlockMetasResponse, error) {
-	err := s.connect()
+	err := s.Connect()
 	if err != nil {
 		return nil, err
 	}
-	return s.readOnlyClient.API().GetBlockMetas(ctx, in)
+	return s.ReadOnlyClient().API().GetBlockMetas(ctx, in)
 }
 
 func (s *iotexService) GetActions(ctx context.Context, in *iotexapi.GetActionsRequest) (*iotexapi.GetActionsResponse, error) {
-	err := s.connect()
+	err := s.Connect()
 	if err != nil {
 		return nil, err
 	}
-	return s.readOnlyClient.API().GetActions(ctx, in)
-}
-
-func (s *iotexService) connect() (err error) {
-	s.Lock()
-	defer s.Unlock()
-	// Check if the existing connection is good.
-	if s.grpcConn != nil && s.grpcConn.GetState() != connectivity.Shutdown {
-		return
-	}
-	opts := []grpc.DialOption{}
-	if s.secure {
-		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})))
-	} else {
-		opts = append(opts, grpc.WithInsecure())
-	}
-	s.grpcConn, err = grpc.Dial(s.endpoint, opts...)
-	if err != nil {
-		return
-	}
-	if s.accountPrivate != "" {
-		creator, err := account.HexStringToAccount(s.accountPrivate)
-		if err != nil {
-			return err
-		}
-		s.authedClient = iotex.NewAuthedClient(iotexapi.NewAPIServiceClient(s.grpcConn), creator)
-	}
-
-	s.readOnlyClient = iotex.NewReadOnlyClient(iotexapi.NewAPIServiceClient(s.grpcConn))
-	return
+	return s.ReadOnlyClient().API().GetActions(ctx, in)
 }
