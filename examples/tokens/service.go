@@ -2,29 +2,58 @@ package main
 
 import (
 	"context"
+	"encoding/hex"
+	"math/big"
+	"strings"
+
+	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/iotexproject/iotex-address/address"
 
 	"github.com/iotexproject/iotex-antenna-go/v2/examples/service"
 )
 
-const (
-	protocolID          = "staking"
-	readBucketsLimit    = 30000
-	readCandidatesLimit = 20000
-)
-
 type xrc20Example interface {
-	Transfer(ctx context.Context, to string) (string, error)
+	Transfer(ctx context.Context, to string, amount *big.Int) (string, error)
 }
 
 type iotexService struct {
 	service.IotexService
+
+	contract address.Address
+	abi      abi.ABI
+	gasPrice *big.Int
+	gasLimit uint64
 }
 
-func NewIotexService(accountPrivate, endpoint string, secure bool) xrc20Example {
+func NewIotexService(accountPrivate, abiString, contract string, gasPrice *big.Int,
+	gasLimit uint64, endpoint string, secure bool) (xrc20Example, error) {
+	abi, err := abi.JSON(strings.NewReader(abiString))
+	if err != nil {
+		return nil, err
+	}
+
+	addr, err := address.FromString(contract)
+	if err != nil {
+		return nil, err
+	}
 	return &iotexService{
 		service.NewIotexService(accountPrivate, endpoint, secure),
-	}
+		addr, abi, gasPrice, gasLimit,
+	}, nil
 }
-func (s *iotexService) Transfer(ctx context.Context, to string) (string, error) {
 
+func (s *iotexService) Transfer(ctx context.Context, to string, amount *big.Int) (hash string, err error) {
+	addr, err := address.FromString(to)
+	if err != nil {
+		return
+	}
+	ethAddr := common.FromHex(hex.EncodeToString(addr.Bytes()))
+	h, err := s.AuthClient().Contract(s.contract, s.abi).Execute("transfer", ethAddr, amount).SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).Call(ctx)
+	if err != nil {
+		return
+	}
+	hash = hex.EncodeToString(h[:])
+	return
 }
