@@ -69,8 +69,8 @@ func (s *iotexService) connect() (err error) {
 			return err
 		}
 		s.authedClient = iotex.NewAuthedClient(iotexapi.NewAPIServiceClient(s.grpcConn), creator)
-	} else {
-		s.readOnlyClient = iotex.NewReadOnlyClient(iotexapi.NewAPIServiceClient(s.grpcConn))
 	}
+
+	s.readOnlyClient = iotex.NewReadOnlyClient(iotexapi.NewAPIServiceClient(s.grpcConn))
 	return
 }
