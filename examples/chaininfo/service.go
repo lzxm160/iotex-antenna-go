@@ -16,7 +16,7 @@ import (
 )
 
 type IotexService interface {
-	GetChainMeta(ctx context.Context, in *iotexapi.GetChainMetaRequest, opts ...grpc.CallOption) (*iotexapi.GetChainMetaResponse, error)
+	GetChainMeta(ctx context.Context, in *iotexapi.GetChainMetaRequest) (*iotexapi.GetChainMetaResponse, error)
 }
 
 type iotexService struct {
@@ -38,13 +38,10 @@ func NewIotexService(accountPrivate, endpoint string, secure bool) IotexService 
 	}
 }
 
-func (s *iotexService) GetChainMeta(ctx context.Context, in *iotexapi.GetChainMetaRequest, opts ...grpc.CallOption) (*iotexapi.GetChainMetaResponse, error) {
+func (s *iotexService) GetChainMeta(ctx context.Context, in *iotexapi.GetChainMetaRequest) (*iotexapi.GetChainMetaResponse, error) {
 	err := s.connect()
 	if err != nil {
 		return nil, err
-	}
-	if len(opts) != 0 {
-		return s.readOnlyClient.API().GetChainMeta(ctx, in, opts...)
 	}
 	return s.readOnlyClient.API().GetChainMeta(ctx, in)
 }
