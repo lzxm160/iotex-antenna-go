@@ -33,7 +33,7 @@ const xrc20abi = `[
 ]`
 
 var (
-	gasPrice, _ = big.NewInt(0).SetString("100000000000000", 10)
+	gasPrice, _ = big.NewInt(0).SetString("1000000000000", 10)
 	gasLimit    = uint64(1000000)
 )
 
