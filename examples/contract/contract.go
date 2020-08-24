@@ -23,6 +23,11 @@ func main() {
 	r, err := s.Deploy(context.Background(), true, initialSupply, tokenName, tokenSymbol)
 	fmt.Println("hash", r, err)
 
+	s, err = NewIotexService("", IotexTokenABI, "", "io1eq786nwuu6ygw4ct075gfp3u2f6xgmp8f5hygq", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
+	if err != nil {
+		return
+	}
+
 	b, err := s.BalanceOf(context.Background(), "io1tdfyk5gqrfas22am6sw732twxyjcnl6xqe850s")
 	fmt.Println("balance", b, err)
 }

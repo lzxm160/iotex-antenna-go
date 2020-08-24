@@ -96,7 +96,7 @@ func (s *iotexService) BalanceOf(ctx context.Context, addre string) (balance str
 		return
 	}
 	ethAddr := common.HexToAddress(hex.EncodeToString(addr.Bytes()))
-	ret, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("balanceof", ethAddr).Call(ctx)
+	ret, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("balanceOf", ethAddr).Call(ctx)
 	if err != nil {
 		return
 	}
