@@ -21,7 +21,7 @@ import (
 
 type contractExample interface {
 	Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (string, error)
-	BalanceOf(ctx context.Context, addre string) (balance string, err error)
+	BalanceOf(ctx context.Context, addre string) (balance *big.Int, err error)
 }
 
 type iotexService struct {
@@ -86,7 +86,7 @@ func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, arg
 	return
 }
 
-func (s *iotexService) BalanceOf(ctx context.Context, addre string) (balance string, err error) {
+func (s *iotexService) BalanceOf(ctx context.Context, addre string) (balance *big.Int, err error) {
 	err = s.Connect()
 	if err != nil {
 		return
@@ -100,6 +100,7 @@ func (s *iotexService) BalanceOf(ctx context.Context, addre string) (balance str
 	if err != nil {
 		return
 	}
+	balance = big.NewInt(0)
 	err = ret.Unmarshal(&balance)
 	return
 }
