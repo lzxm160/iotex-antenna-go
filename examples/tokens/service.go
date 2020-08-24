@@ -6,9 +6,9 @@ import (
 	"math/big"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/iotexproject/iotex-address/address"
 
 	"github.com/iotexproject/iotex-antenna-go/v2/examples/service"
@@ -45,6 +45,10 @@ func NewIotexService(accountPrivate, abiString, contract string, gasPrice *big.I
 }
 
 func (s *iotexService) Transfer(ctx context.Context, to string, amount *big.Int) (hash string, err error) {
+	err = s.Connect()
+	if err != nil {
+		return
+	}
 	addr, err := address.FromString(to)
 	if err != nil {
 		return

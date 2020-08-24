@@ -62,6 +62,10 @@ func (s *iotexService) GetActions(ctx context.Context, in *iotexapi.GetActionsRe
 }
 
 func (s *iotexService) GetStakingBuckets(ctx context.Context, height uint64) (voteBucketListAll *iotextypes.VoteBucketList, err error) {
+	err = s.Connect()
+	if err != nil {
+		return nil, err
+	}
 	voteBucketListAll = &iotextypes.VoteBucketList{}
 	for i := uint32(0); ; i++ {
 		offset := i * readBucketsLimit
@@ -79,6 +83,10 @@ func (s *iotexService) GetStakingBuckets(ctx context.Context, height uint64) (vo
 }
 
 func (s *iotexService) GetStakingCandidates(ctx context.Context, height uint64) (candidateListAll *iotextypes.CandidateListV2, err error) {
+	err = s.Connect()
+	if err != nil {
+		return nil, err
+	}
 	candidateListAll = &iotextypes.CandidateListV2{}
 	for i := uint32(0); ; i++ {
 		offset := i * readCandidatesLimit
