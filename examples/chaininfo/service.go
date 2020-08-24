@@ -39,6 +39,10 @@ func NewIotexService(accountPrivate, endpoint string, secure bool) IotexService 
 }
 
 func (s *iotexService) GetChainMeta(ctx context.Context, in *iotexapi.GetChainMetaRequest, opts ...grpc.CallOption) (*iotexapi.GetChainMetaResponse, error) {
+	err := s.connect()
+	if err != nil {
+		return nil, err
+	}
 	return s.readOnlyClient.API().GetChainMeta(ctx, in, opts...)
 }
 
