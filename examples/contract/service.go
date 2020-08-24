@@ -3,10 +3,13 @@ package main
 import (
 	"context"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"math/big"
 	"strings"
 	"time"
+
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -65,6 +68,10 @@ func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, arg
 		receiptResponse, err := s.AuthClient().GetReceipt(h).Call(ctx)
 		if err != nil {
 			return "", err
+		}
+		status := receiptResponse.GetReceiptInfo().GetReceipt().GetStatus()
+		if status != uint64(iotextypes.ReceiptStatus_Success) {
+			return "", errors.New("deploy error,status:" + fmt.Sprintf("%d", status))
 		}
 		addr := receiptResponse.GetReceiptInfo().GetReceipt().GetContractAddress()
 		fmt.Println("addr", addr)
