@@ -69,7 +69,7 @@ lint:
 
 .PHONY: examples
 examples:
-	$(GOBUILD) -ldflags "$(PackageFlags)" ./examples/...
+	$(GOBUILD) -ldflags "$(PackageFlags)" -v ./examples/...
 
 .PHONY: clean
 clean:
