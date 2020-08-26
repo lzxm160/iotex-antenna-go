@@ -4,10 +4,6 @@
 // permitted by law, all liability for your use of the code is disclaimed. This source code is governed by Apache
 // License 2.0 that can be found in the LICENSE file.
 
-// This example shows how to programmatically deploy a contract to IoTeX blockchain
-// To run:
-// go build; ./chaininfo
-
 package main
 
 import (

@@ -69,9 +69,9 @@ lint:
 
 .PHONY: examples
 examples:
-	$(GOBUILD) -ldflags "$(PackageFlags)" examples/chaininfo
-	$(GOBUILD) -ldflags "$(PackageFlags)" examples/openoracle
-	$(GOBUILD) -ldflags "$(PackageFlags)" examples/xrc20tokens
+	$(GOBUILD) -ldflags "$(PackageFlags)" ./examples/chaininfo
+	$(GOBUILD) -ldflags "$(PackageFlags)" ./examples/openoracle
+	$(GOBUILD) -ldflags "$(PackageFlags)" ./examples/xrc20tokens
 
 .PHONY: clean
 clean:
