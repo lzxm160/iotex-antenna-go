@@ -97,12 +97,12 @@ func (s *openOracleService) Deploy(ctx context.Context, waitContractAddress bool
 }
 
 // Put is the Put interface
-func (s *openOracleService) Put(ctx context.Context, message []byte, signature []byte) (hash string, err error) {
+func (s *openOracleService) Put(ctx context.Context, message, signature []byte) (hash string, err error) {
 	err = s.Connect()
 	if err != nil {
 		return
 	}
-	h, err := s.AuthClient().Contract(s.contract, s.abi).Execute("put", message, signature).Call(ctx)
+	h, err := s.AuthClient().Contract(s.contract, s.abi).Execute("put", message, signature).SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).Call(ctx)
 	if err != nil {
 		return
 	}

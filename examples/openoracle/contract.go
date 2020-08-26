@@ -45,8 +45,8 @@ func main() {
 	//
 	//r, err := s.Deploy(context.Background(), true)
 	//fmt.Println("hash", r, err)
-
-	authClient, err := NewOpenOracleService(PrivateKey, string(abi), string(bin), "io1wzrexqvzmevvkeyyzwyg6t6mw4696qnqfgz5jn", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
+	//io1wzrexqvzmevvkeyyzwyg6t6mw4696qnqfgz5jn
+	authClient, err := NewOpenOracleService(PrivateKey, string(abi), string(bin), "io1s50xy46vjtneh5m8jv6ync75m9vlj28qe0pr26", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
 	if err != nil {
 		return
 	}
