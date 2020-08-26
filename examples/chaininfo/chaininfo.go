@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	s := NewIotexService("", "api.testnet.iotex.one:443", true)
+	s := NewGetInfoService("", "api.testnet.iotex.one:443", true)
 
 	r, err := s.GetChainMeta(context.Background(), &iotexapi.GetChainMetaRequest{})
 	fmt.Println("chain meta", r, err)

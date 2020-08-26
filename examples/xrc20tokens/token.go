@@ -9,34 +9,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"math/big"
+	"os"
 )
-
-const xrc20abi = `[
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "_to",
-                "type": "address"
-            },
-            {
-                "name": "_value",
-                "type": "uint256"
-            }
-        ],
-        "name": "transfer",
-        "outputs": [
-            {
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    }
-]`
 
 var (
 	gasPrice, _ = big.NewInt(0).SetString("1000000000000", 10)
@@ -44,10 +20,29 @@ var (
 )
 
 func main() {
-	s, err := NewIotexService("583aa7b02dbba44d257cad116e7e427d4b2040a0079c348d83636e100a4a4039", xrc20abi, "io10gjq3edy6n953q0j3lm2p7zh3a8d3s4em0w6cj", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
+	PrivateKey := os.Getenv("PrivateKey")
+	if PrivateKey == "" {
+		return
+	}
+	bin, err := ioutil.ReadFile("XRC20.bin")
 	if err != nil {
 		return
 	}
-	r, err := s.Transfer(context.Background(), "io1zk6gqq0m2z9ytlu77t76e3632ezy39fa83xjnn", big.NewInt(10))
+	abi, err := ioutil.ReadFile("XRC20.abi")
+	if err != nil {
+		return
+	}
+
+	s, err := NewXrc20Service(PrivateKey, string(abi), string(bin), "", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
+	if err != nil {
+		return
+	}
+	r, err := s.Deploy(context.Background(), true, 2000000000, "IOTX", "IOTX")
 	fmt.Println("hash", r, err)
+
+	r, err = s.Transfer(context.Background(), "io1zk6gqq0m2z9ytlu77t76e3632ezy39fa83xjnn", big.NewInt(10))
+	fmt.Println("transfer", r, err)
+
+	b, err := s.BalanceOf(context.Background(), "io1zk6gqq0m2z9ytlu77t76e3632ezy39fa83xjnn")
+	fmt.Println("balance", b, err)
 }

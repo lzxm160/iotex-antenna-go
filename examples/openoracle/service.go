@@ -43,7 +43,7 @@ type openOracleService struct {
 	gasLimit uint64
 }
 
-// NewOpenOracleService returns OpenOracleService service
+// NewOpenOracleService returns OpenOracleService
 func NewOpenOracleService(accountPrivate, abiString, binString, contract string, gasPrice *big.Int, gasLimit uint64, endpoint string, secure bool) (OpenOracleService, error) {
 	abi, err := abi.JSON(strings.NewReader(abiString))
 	if err != nil {
@@ -93,7 +93,6 @@ func (s *openOracleService) Deploy(ctx context.Context, waitContractAddress bool
 		if err != nil {
 			return "", err
 		}
-		fmt.Println("contract", s.contract)
 	}
 	return
 }
