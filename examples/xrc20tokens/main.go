@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"math/big"
 	"os"
+	"time"
 )
 
 var (
@@ -48,8 +49,10 @@ func main() {
 	}
 	fmt.Println("transfer", r, err)
 
+	time.Sleep(time.Second * 10)
 	b, err := s.BalanceOf(context.Background(), "io1zk6gqq0m2z9ytlu77t76e3632ezy39fa83xjnn")
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	fmt.Println("balance", b, err)

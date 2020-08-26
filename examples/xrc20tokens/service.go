@@ -127,7 +127,7 @@ func (s *xrc20Service) BalanceOf(ctx context.Context, addr string) (balance *big
 	if err != nil {
 		return
 	}
-	ret, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("BalanceOf", addr).Call(ctx)
+	ret, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("balanceOf", addr).Call(ctx)
 	if err != nil {
 		return
 	}
