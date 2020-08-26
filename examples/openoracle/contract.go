@@ -12,6 +12,7 @@ package main
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"io/ioutil"
 	"math/big"
@@ -69,7 +70,7 @@ func main() {
 	if err != nil {
 		return
 	}
-	//addr, _ := hex.DecodeString("io1tdfyk5gqrfas22am6sw732twxyjcnl6xqe850s")
-	time, price, err := readClient.Get(context.Background(), "0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC", "BTC")
+	addr, _ := hex.DecodeString("0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC")
+	time, price, err := readClient.Get(context.Background(), addr, "BTC")
 	fmt.Println("get", time, price, err)
 }

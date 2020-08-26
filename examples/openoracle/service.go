@@ -30,7 +30,7 @@ type OpenOracleService interface {
 	// Put is the Put interface
 	Put(ctx context.Context, message []byte, signature []byte) (string, error)
 	// Get is the Get interface
-	Get(ctx context.Context, source, key string) (string, string, error)
+	Get(ctx context.Context, source []byte, key string) (string, string, error)
 }
 
 type openOracleService struct {
@@ -113,7 +113,7 @@ func (s *openOracleService) Put(ctx context.Context, message, signature []byte) 
 }
 
 // Get is the Get interface
-func (s *openOracleService) Get(ctx context.Context, source, key string) (time, price string, err error) {
+func (s *openOracleService) Get(ctx context.Context, source []byte, key string) (time, price string, err error) {
 	err = s.Connect()
 	if err != nil {
 		return
