@@ -126,7 +126,7 @@ func (s *openOracleService) Get(ctx context.Context, source, key string) (time, 
 	if err != nil {
 		return
 	}
-	ret := retPrice{}
+	ret := &retPrice{}
 	err = r.Unmarshal(&ret)
 	if err != nil {
 		return
