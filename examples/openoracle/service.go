@@ -26,11 +26,11 @@ import (
 // OpenOracleService is the OpenOracleService interface
 type OpenOracleService interface {
 	// Deploy is the Deploy interface
-	Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (hash string, err error)
+	Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (string, error)
 	// Put is the Put interface
 	Put(ctx context.Context, message []byte, signature []byte) (string, error)
 	// Get is the Get interface
-	Get(ctx context.Context, source, key string) (ret string, err error)
+	Get(ctx context.Context, source, key string) (string, string, error)
 }
 
 type openOracleService struct {
@@ -113,16 +113,25 @@ func (s *openOracleService) Put(ctx context.Context, message, signature []byte) 
 }
 
 // Get is the Get interface
-func (s *openOracleService) Get(ctx context.Context, source, key string) (ret string, err error) {
+func (s *openOracleService) Get(ctx context.Context, source, key string) (time, price string, err error) {
 	err = s.Connect()
 	if err != nil {
 		return
 	}
-
+	type retPrice struct {
+		time  uint64
+		price uint64
+	}
 	r, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("get", source, key).Call(ctx)
 	if err != nil {
 		return
 	}
+	ret := retPrice{}
 	err = r.Unmarshal(&ret)
+	if err != nil {
+		return
+	}
+	time = fmt.Sprintf("%d", ret.time)
+	price = fmt.Sprintf("%d", ret.price)
 	return
 }
