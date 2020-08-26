@@ -55,10 +55,12 @@ func NewXrc20Service(accountPrivate, abiString, binString, contract string, gasP
 	if err != nil {
 		return nil, err
 	}
-
-	addr, err := address.FromString(contract)
-	if err != nil {
-		return nil, err
+	var addr address.Address
+	if contract != "" {
+		addr, err = address.FromString(contract)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &xrc20Service{
 		util.NewIotexService(accountPrivate, endpoint, secure),
