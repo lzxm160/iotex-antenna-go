@@ -70,6 +70,6 @@ func main() {
 		return
 	}
 	//addr, _ := hex.DecodeString("io1tdfyk5gqrfas22am6sw732twxyjcnl6xqe850s")
-	ret, err := readClient.Get(context.Background(), "io1tdfyk5gqrfas22am6sw732twxyjcnl6xqe850s", "BTC")
-	fmt.Println("get", ret, err)
+	time, price, err := readClient.Get(context.Background(), "io1tdfyk5gqrfas22am6sw732twxyjcnl6xqe850s", "BTC")
+	fmt.Println("get", time, price, err)
 }
