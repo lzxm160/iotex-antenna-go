@@ -34,10 +34,9 @@ func main() {
 	}
 	s, err := NewXrc20Service(PrivateKey, string(abi), string(bin), "", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
-	r, err := s.Deploy(context.Background(), true, 2000000000, "IOTX", "IOTX")
+	r, err := s.Deploy(context.Background(), true, 2000000, "IOTX", "IOTX")
 	fmt.Println("hash", r, err)
 
 	r, err = s.Transfer(context.Background(), "io1zk6gqq0m2z9ytlu77t76e3632ezy39fa83xjnn", big.NewInt(10))
