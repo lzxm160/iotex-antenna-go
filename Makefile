@@ -69,9 +69,9 @@ lint:
 
 .PHONY: examples
 examples:
-	$(GOBUILD) -v examples/chaininfo -o examples/chaininfo/chaininfo
-	$(GOBUILD) -v examples/openoracle -o examples/openoracle/openoracle
-	$(GOBUILD) -v examples/xrc20tokens -o examples/xrc20tokens/xrc20tokens
+	$(GOBUILD) -v ./examples/chaininfo -o ./examples/chaininfo/chaininfo
+	$(GOBUILD) -v ./examples/openoracle -o ./examples/openoracle/openoracle
+	$(GOBUILD) -v ./examples/xrc20tokens -o ./examples/xrc20tokens/xrc20tokens
 
 .PHONY: clean
 clean:
