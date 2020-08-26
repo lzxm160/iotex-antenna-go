@@ -13,7 +13,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"math/big"
+	"os"
 )
 
 var (
@@ -22,22 +24,30 @@ var (
 )
 
 func main() {
-	s, err := NewIotexService("583aa7b02dbba44d257cad116e7e427d4b2040a0079c348d83636e100a4a4039", iotexTokenABI, iotexTokenBin, "", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
+	PrivateKey := os.Getenv("PrivateKey")
+	if PrivateKey == "" {
+		return
+	}
+	bin, err := ioutil.ReadFile("OpenOraclePriceData.bin")
+	if err != nil {
+		return
+	}
+	abi, err := ioutil.ReadFile("OpenOraclePriceData.abi")
+	if err != nil {
+		return
+	}
+	//"583aa7b02dbba44d257cad116e7e427d4b2040a0079c348d83636e100a4a4039"
+	s, err := NewOpenOracleService(PrivateKey, string(abi), string(bin), "", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
 	if err != nil {
 		return
 	}
 
-	initialSupply := big.NewInt(2000000000)
-	tokenName := "IOTX"
-	tokenSymbol := "IOTX"
-	r, err := s.Deploy(context.Background(), true, initialSupply, tokenName, tokenSymbol)
+	r, err := s.Deploy(context.Background(), true)
 	fmt.Println("hash", r, err)
 
-	readOnly, err := NewIotexService("", iotexTokenABI, "", "io1eq786nwuu6ygw4ct075gfp3u2f6xgmp8f5hygq", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
-	if err != nil {
-		return
-	}
+	//authClient, err := NewOpenOracleService("", string(abi), string(bin), "", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
+	//if err != nil {
+	//	return
+	//}
 
-	b, err := readOnly.BalanceOf(context.Background(), "io1tdfyk5gqrfas22am6sw732twxyjcnl6xqe850s")
-	fmt.Println("balance", b, err)
 }

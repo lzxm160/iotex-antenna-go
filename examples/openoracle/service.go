@@ -16,24 +16,23 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 
-	"github.com/iotexproject/iotex-antenna-go/v2/examples/service"
+	"github.com/iotexproject/iotex-antenna-go/v2/examples/util"
 )
 
-// ContractExample is the ContractExample interface
-type ContractExample interface {
+// OpenOracleService is the OpenOracleService interface
+type OpenOracleService interface {
 	// Deploy is the Deploy interface
-	Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (string, error)
-	// BalanceOf is the BalanceOf interface
-	BalanceOf(ctx context.Context, addre string) (balance *big.Int, err error)
+	Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (hash string, err error)
+	// Put is the Put interface
+	Put(ctx context.Context, message []byte, signature []byte) (string, error)
 }
 
-type iotexService struct {
-	service.IotexService
+type openOracleService struct {
+	util.IotexService
 
 	contract address.Address
 	abi      abi.ABI
@@ -42,8 +41,8 @@ type iotexService struct {
 	gasLimit uint64
 }
 
-// NewIotexService returns contractExample service
-func NewIotexService(accountPrivate, abiString, binString, contract string, gasPrice *big.Int, gasLimit uint64, endpoint string, secure bool) (ContractExample, error) {
+// NewOpenOracleService returns OpenOracleService service
+func NewOpenOracleService(accountPrivate, abiString, binString, contract string, gasPrice *big.Int, gasLimit uint64, endpoint string, secure bool) (OpenOracleService, error) {
 	abi, err := abi.JSON(strings.NewReader(abiString))
 	if err != nil {
 		return nil, err
@@ -56,14 +55,14 @@ func NewIotexService(accountPrivate, abiString, binString, contract string, gasP
 		}
 	}
 
-	return &iotexService{
-		service.NewIotexService(accountPrivate, endpoint, secure),
+	return &openOracleService{
+		util.NewIotexService(accountPrivate, endpoint, secure),
 		addr, abi, binString, gasPrice, gasLimit,
 	}, nil
 }
 
 // Deploy is the Deploy interface
-func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (hash string, err error) {
+func (s *openOracleService) Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (hash string, err error) {
 	err = s.Connect()
 	if err != nil {
 		return
@@ -92,26 +91,21 @@ func (s *iotexService) Deploy(ctx context.Context, waitContractAddress bool, arg
 		if err != nil {
 			return "", err
 		}
+		fmt.Println("contract", s.contract)
 	}
 	return
 }
 
-// BalanceOf is the BalanceOf interface
-func (s *iotexService) BalanceOf(ctx context.Context, addre string) (balance *big.Int, err error) {
+// Put is the Put interface
+func (s *openOracleService) Put(ctx context.Context, message []byte, signature []byte) (hash string, err error) {
 	err = s.Connect()
 	if err != nil {
 		return
 	}
-	addr, err := address.FromString(addre)
+	h, err := s.AuthClient().Contract(s.contract, s.abi).Execute("put", message, signature).Call(ctx)
 	if err != nil {
 		return
 	}
-	ethAddr := common.HexToAddress(hex.EncodeToString(addr.Bytes()))
-	ret, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("balanceOf", ethAddr).Call(ctx)
-	if err != nil {
-		return
-	}
-	balance = big.NewInt(0)
-	err = ret.Unmarshal(&balance)
+	hash = hex.EncodeToString(h[:])
 	return
 }
