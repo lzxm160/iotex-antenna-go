@@ -36,12 +36,21 @@ func main() {
 	if err != nil {
 		return
 	}
-	r, err := s.Deploy(context.Background(), true, 2000000, "IOTX", "IOTX")
+	r, err := s.Deploy(context.Background(), true, big.NewInt(2000000), "IOTX", "IOTX")
+	if err != nil {
+		return
+	}
 	fmt.Println("hash", r, err)
 
 	r, err = s.Transfer(context.Background(), "io1zk6gqq0m2z9ytlu77t76e3632ezy39fa83xjnn", big.NewInt(10))
+	if err != nil {
+		return
+	}
 	fmt.Println("transfer", r, err)
 
 	b, err := s.BalanceOf(context.Background(), "io1zk6gqq0m2z9ytlu77t76e3632ezy39fa83xjnn")
+	if err != nil {
+		return
+	}
 	fmt.Println("balance", b, err)
 }
