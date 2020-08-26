@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
@@ -17,7 +18,8 @@ func main() {
 	s := NewGetInfoService("", "api.testnet.iotex.one:443", true)
 
 	r, err := s.GetChainMeta(context.Background(), &iotexapi.GetChainMetaRequest{})
-	fmt.Println("chain meta", r, err)
+	out, _ := json.MarshalIndent(r, "", "\t")
+	fmt.Println("chain meta", string(out), err)
 
 	blockMetasRequest := &iotexapi.GetBlockMetasRequest{
 		Lookup: &iotexapi.GetBlockMetasRequest_ByIndex{
@@ -28,7 +30,8 @@ func main() {
 		},
 	}
 	BlockMetasResponse, err := s.GetBlockMetas(context.Background(), blockMetasRequest)
-	fmt.Println("block metas", BlockMetasResponse, err)
+	out, _ = json.MarshalIndent(BlockMetasResponse, "", "\t")
+	fmt.Println("block metas", string(out), err)
 
 	getActionsRequest := &iotexapi.GetActionsRequest{
 		Lookup: &iotexapi.GetActionsRequest_ByIndex{
@@ -39,11 +42,14 @@ func main() {
 		},
 	}
 	getActionsResponse, err := s.GetActions(context.Background(), getActionsRequest)
-	fmt.Println("action", getActionsResponse, err)
+	out, _ = json.MarshalIndent(getActionsResponse, "", "\t")
+	fmt.Println("action", string(out), err)
 
 	getCandidatesResponse, err := s.GetStakingCandidates(context.Background(), 7060000)
-	fmt.Println("candidates", getCandidatesResponse, err)
+	out, _ = json.MarshalIndent(getCandidatesResponse, "", "\t")
+	fmt.Println("candidates", string(out), err)
 
 	getBucketsResponse, err := s.GetStakingBuckets(context.Background(), 7060000)
-	fmt.Println("buckets", getBucketsResponse, err)
+	out, _ = json.MarshalIndent(getBucketsResponse, "", "\t")
+	fmt.Println("buckets", string(out), err)
 }
