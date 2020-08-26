@@ -17,6 +17,6 @@ require (
 	google.golang.org/grpc v1.27.0
 )
 
-replace github.com/ethereum/go-ethereum v1.8.27 => github.com/iotexproject/go-ethereum v0.1.0
+replace github.com/ethereum/go-ethereum v1.8.27 => github.com/iotexproject/go-ethereum v0.2.0
 
 go 1.13
