@@ -50,8 +50,7 @@ type xrc20Service struct {
 }
 
 // NewXrc20Service returns Xrc20Service
-func NewXrc20Service(accountPrivate, abiString, binString, contract string, gasPrice *big.Int,
-	gasLimit uint64, endpoint string, secure bool) (Xrc20Service, error) {
+func NewXrc20Service(accountPrivate, abiString, binString, contract string, gasPrice *big.Int, gasLimit uint64, endpoint string, secure bool) (Xrc20Service, error) {
 	abi, err := abi.JSON(strings.NewReader(abiString))
 	if err != nil {
 		return nil, err
