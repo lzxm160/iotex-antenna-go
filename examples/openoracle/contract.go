@@ -70,6 +70,6 @@ func main() {
 		return
 	}
 	// io1ln4d4743f4rwyq2y7jyzf5xqnvdq8u4u9hma6k - 0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC
-	time, price, err := readClient.Get(context.Background(), "io1ln4d4743f4rwyq2y7jyzf5xqnvdq8u4u9hma6k", "BTC")
-	fmt.Println("get", time, price, err)
+	ret, err := readClient.Get(context.Background(), "io1ln4d4743f4rwyq2y7jyzf5xqnvdq8u4u9hma6k", "BTC")
+	fmt.Println("get", ret, err)
 }
