@@ -35,7 +35,7 @@ contract XRC20 {
      */
     function _transfer(address _from, address _to, uint _value) internal {
         // Prevent transfer to 0x0 address. Use burn() instead
-        require(_to != 0x0);
+        require(_to != address(0));
         // Check if the sender has enough
         require(balanceOf[_from] >= _value);
         // Check for overflows
