@@ -131,6 +131,7 @@ func (s *xrc20Service) BalanceOf(ctx context.Context, addr string) (balance *big
 	if err != nil {
 		return
 	}
+	fmt.Println(ret.Raw)
 	balance = new(big.Int)
 	err = ret.Unmarshal(balance)
 	return
