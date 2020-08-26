@@ -26,13 +26,15 @@ func main() {
 	}
 	bin, err := ioutil.ReadFile("XRC20.bin")
 	if err != nil {
+		fmt.Println("bin", err)
 		return
 	}
 	abi, err := ioutil.ReadFile("XRC20.abi")
 	if err != nil {
+		fmt.Println("abi", err)
 		return
 	}
-
+	fmt.Println("xxxxxxxxxxxxxx")
 	s, err := NewXrc20Service(PrivateKey, string(abi), string(bin), "", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
 	if err != nil {
 		return
