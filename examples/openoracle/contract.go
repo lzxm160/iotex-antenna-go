@@ -70,7 +70,7 @@ func main() {
 	if err != nil {
 		return
 	}
-	addr, _ := hex.DecodeString("5B524B51001A7B052BBBd41de8a96e312589FF46")
+	addr, _ := hex.DecodeString("io1tdfyk5gqrfas22am6sw732twxyjcnl6xqe850s")
 	ret, err := readClient.Get(context.Background(), addr, "BTC")
 	fmt.Println("get", ret, err)
 }

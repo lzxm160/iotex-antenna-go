@@ -113,15 +113,13 @@ func (s *openOracleService) Put(ctx context.Context, message, signature []byte) 
 }
 
 // Get is the Get interface
-func (s *openOracleService) Get(ctx context.Context, source []byte, key string) (ret string, err error) {
+func (s *openOracleService) Get(ctx context.Context, source, key string) (ret string, err error) {
 	err = s.Connect()
 	if err != nil {
 		return
 	}
 
-	var sourceArray [20]byte
-	copy(sourceArray[:], source)
-	r, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("get", sourceArray, key).Call(ctx)
+	r, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("get", source, key).Call(ctx)
 	if err != nil {
 		return
 	}
