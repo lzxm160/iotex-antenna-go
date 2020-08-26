@@ -4,10 +4,6 @@
 // permitted by law, all liability for your use of the code is disclaimed. This source code is governed by Apache
 // License 2.0 that can be found in the LICENSE file.
 
-// This example shows how to programmatically deploy a contract to IoTeX blockchain and interact with it
-// To run:
-// go build; ./chaininfo
-
 package main
 
 import (
@@ -19,12 +15,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/iotexproject/iotex-proto/golang/iotextypes"
-
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/iotexproject/iotex-address/address"
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
 
 	"github.com/iotexproject/iotex-antenna-go/v2/examples/util"
 )
