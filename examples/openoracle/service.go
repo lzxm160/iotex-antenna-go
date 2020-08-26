@@ -118,20 +118,21 @@ func (s *openOracleService) Get(ctx context.Context, source, key string) (time, 
 	if err != nil {
 		return
 	}
-	type retPrice struct {
+	//type retPrice struct {
+	//	time  uint64
+	//	price uint64
+	//}
+	data, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("get", source, key).Call(ctx)
+	if err != nil {
+		return
+	}
+	//ret = hex.EncodeToString(data[:])
+	v := struct {
 		time  uint64
 		price uint64
-	}
-	r, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("get", source, key).Call(ctx)
-	if err != nil {
-		return
-	}
-	ret := &retPrice{}
-	err = r.Unmarshal(&ret)
-	if err != nil {
-		return
-	}
-	time = fmt.Sprintf("%d", ret.time)
-	price = fmt.Sprintf("%d", ret.price)
+	}{}
+
+	err = s.abi.Unpack(&v, "get", data.Raw)
+	fmt.Println(v)
 	return
 }
