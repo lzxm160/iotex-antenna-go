@@ -3,6 +3,7 @@ module github.com/iotexproject/iotex-antenna-go/v2
 require (
 	github.com/aristanetworks/goarista v0.0.0-20190531155855-fef20d617fa7 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible
+	github.com/elastic/gosigar v0.11.0 // indirect
 	github.com/ethereum/go-ethereum v1.8.27
 	github.com/golang/mock v1.4.0
 	github.com/golang/protobuf v1.4.2
@@ -12,6 +13,8 @@ require (
 	github.com/iotexproject/iotex-address v0.2.1
 	github.com/iotexproject/iotex-proto v0.4.0
 	github.com/pkg/errors v0.8.1
+	github.com/steakknife/bloomfilter v0.0.0-20180922174646-6819c0d2a570 // indirect
+	github.com/steakknife/hamming v0.0.0-20180906055917-c99c65617cd3 // indirect
 	github.com/stretchr/testify v1.4.0
 	golang.org/x/net v0.0.0-20191204025024-5ee1b9f4859a // indirect
 	google.golang.org/grpc v1.27.0
