@@ -30,7 +30,7 @@ type OpenOracleService interface {
 	// Put is the Put interface
 	Put(ctx context.Context, message []byte, signature []byte) (string, error)
 	// Get is the Get interface
-	Get(ctx context.Context, source []byte, key string) (ret string, err error)
+	Get(ctx context.Context, source, key string) (ret string, err error)
 }
 
 type openOracleService struct {
