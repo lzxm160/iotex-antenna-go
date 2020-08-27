@@ -128,8 +128,8 @@ func (s *multiSendService) CheckTime(ctx context.Context, h string) (t uint64, e
 	}
 	has := hash.BytesToHash256(ha)
 	start := time.Now().Second()
-	var status uint64
-	for i := 0; i < 20; i++ {
+	var i uint64
+	for i = 0; i < 20; i++ {
 		_, err := s.AuthClient().GetReceipt(has).Call(ctx)
 		if err != nil {
 			time.Sleep(time.Second)
@@ -145,7 +145,7 @@ func (s *multiSendService) CheckTime(ctx context.Context, h string) (t uint64, e
 		//	break
 		//}
 	}
-	if status != uint64(iotextypes.ReceiptStatus_Success) {
+	if i > 19 {
 		return 0, errors.New("not success")
 	}
 	t = uint64(time.Now().Second() - start)
