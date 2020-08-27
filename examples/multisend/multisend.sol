@@ -3,7 +3,7 @@ contract Multisend {
     event Transfer(address recipient,uint amount);
     event Refund(uint refund);
     event Payload(string payload);
-    function multiSend(address[] memory recipients, uint[] memory payable amounts,string memory payload) public payable{
+    function multiSend(address[] memory recipients, uint[] memory amounts payable,string memory payload) public payable{
         require(recipients.length <= 300, "number of recipients is larger than 300");
         require(recipients.length == amounts.length, "parameters not match");
         uint totalAmount = 0;
