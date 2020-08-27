@@ -132,7 +132,7 @@ func (s *multiSendService) CheckTime(ctx context.Context, h string) (t uint64, e
 	for i := 0; i < 20; i++ {
 		receiptResponse, err := s.AuthClient().GetReceipt(has).Call(ctx)
 		if err != nil {
-			return
+			return 0, err
 		}
 		status = receiptResponse.GetReceiptInfo().GetReceipt().GetStatus()
 		if status != uint64(iotextypes.ReceiptStatus_Success) {
