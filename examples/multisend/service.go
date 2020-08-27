@@ -101,7 +101,11 @@ func (s *multiSendService) MultiSend(ctx context.Context, to []string, amount []
 	if err != nil {
 		return
 	}
-	h, err := s.AuthClient().Contract(s.contract, s.abi).Execute("multiSend", to, amount, "").SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).Call(ctx)
+	total := new(big.Int)
+	for _, a := range amount {
+		total = total.Add(total, a)
+	}
+	h, err := s.AuthClient().Contract(s.contract, s.abi).Execute("multiSend", to, amount, "").SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).SetAmount(total).Call(ctx)
 	if err != nil {
 		return
 	}
