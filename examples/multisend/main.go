@@ -59,7 +59,7 @@ func main() {
 
 	// 0.1iotex once
 	wasteTime := make([]uint64, 0)
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 30; i++ {
 		r, err := s.MultiSend(context.Background(), []string{"io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg"}, []*big.Int{big.NewInt(10)})
 		if err != nil {
 			fmt.Println(err)
