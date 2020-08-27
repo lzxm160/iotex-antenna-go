@@ -58,7 +58,7 @@ func main() {
 	}
 
 	// 0.1iotex once
-	var wasteTime []uint64
+	wasteTime := make([]uint64, 0)
 	for i := 0; i < 10; i++ {
 		r, err := s.MultiSend(context.Background(), []string{"io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg"}, []*big.Int{big.NewInt(10)})
 		if err != nil {
@@ -71,6 +71,7 @@ func main() {
 			fmt.Println("failed one", r, err)
 			continue
 		}
+		fmt.Println("ttttttttt", t)
 		wasteTime = append(wasteTime, t)
 	}
 	var tt uint64
@@ -85,6 +86,8 @@ func main() {
 		}
 		tt += t
 	}
+	fmt.Println("float64(tt)", float64(tt))
+	fmt.Println("float64(len(wasteTime))", float64(len(wasteTime)))
 	fmt.Println("everage time:", float64(tt)/float64(len(wasteTime)))
 	fmt.Println("max", max)
 	fmt.Println("min", min)
