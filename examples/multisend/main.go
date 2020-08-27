@@ -26,13 +26,13 @@ func main() {
 		return
 	}
 
-	bin, err := ioutil.ReadFile("multiSend.bin")
+	bin, err := ioutil.ReadFile("multisend.bin")
 	if err != nil {
 		fmt.Println("multiSend.bin not found")
 		return
 	}
 
-	abi, err := ioutil.ReadFile("multiSend.abi")
+	abi, err := ioutil.ReadFile("multisend.abi")
 	if err != nil {
 		fmt.Println("multiSend.abi not found")
 		return
