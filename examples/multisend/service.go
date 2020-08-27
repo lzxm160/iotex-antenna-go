@@ -16,7 +16,6 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-proto/golang/iotextypes"
@@ -24,17 +23,15 @@ import (
 	"github.com/iotexproject/iotex-antenna-go/v2/examples/util"
 )
 
-// Xrc20Service is the Xrc20Service interface
-type Xrc20Service interface {
+// MultiSendService is the MultiSendService interface
+type MultiSendService interface {
 	// Deploy is the Deploy interface
 	Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (string, error)
-	// Transfer is the Transfer interface
-	Transfer(ctx context.Context, to string, amount *big.Int) (string, error)
-	// BalanceOf is the BalanceOf interface
-	BalanceOf(ctx context.Context, addr string) (*big.Int, error)
+	// MultiSend is the MultiSend interface
+	MultiSend(ctx context.Context, to []string, amount []*big.Int) (string, error)
 }
 
-type xrc20Service struct {
+type multiSendService struct {
 	util.IotexService
 
 	contract address.Address
@@ -44,8 +41,8 @@ type xrc20Service struct {
 	gasLimit uint64
 }
 
-// NewXrc20Service returns Xrc20Service
-func NewXrc20Service(accountPrivate, abiString, binString, contract string, gasPrice *big.Int, gasLimit uint64, endpoint string, secure bool) (Xrc20Service, error) {
+// NewMultiSendService returns MultiSendService
+func NewMultiSendService(accountPrivate, abiString, binString, contract string, gasPrice *big.Int, gasLimit uint64, endpoint string, secure bool) (MultiSendService, error) {
 	abi, err := abi.JSON(strings.NewReader(abiString))
 	if err != nil {
 		return nil, err
@@ -57,14 +54,14 @@ func NewXrc20Service(accountPrivate, abiString, binString, contract string, gasP
 			return nil, err
 		}
 	}
-	return &xrc20Service{
+	return &multiSendService{
 		util.NewIotexService(accountPrivate, endpoint, secure),
 		addr, abi, binString, gasPrice, gasLimit,
 	}, nil
 }
 
 // Deploy is the Deploy interface
-func (s *xrc20Service) Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (hash string, err error) {
+func (s *multiSendService) Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (hash string, err error) {
 	err = s.Connect()
 	if err != nil {
 		return
@@ -93,39 +90,21 @@ func (s *xrc20Service) Deploy(ctx context.Context, waitContractAddress bool, arg
 		if err != nil {
 			return "", err
 		}
+		fmt.Println("s.contract", s.contract)
 	}
 	return
 }
 
-// Transfer is the Transfer interface
-func (s *xrc20Service) Transfer(ctx context.Context, to string, amount *big.Int) (hash string, err error) {
+// MultiSend is the MultiSend interface
+func (s *multiSendService) MultiSend(ctx context.Context, to []string, amount []*big.Int) (hash string, err error) {
 	err = s.Connect()
 	if err != nil {
 		return
 	}
-	addr, err := address.FromString(to)
-	if err != nil {
-		return
-	}
-	ethAddr := common.HexToAddress(hex.EncodeToString(addr.Bytes()))
-	h, err := s.AuthClient().Contract(s.contract, s.abi).Execute("transfer", ethAddr, amount).SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).Call(ctx)
+	h, err := s.AuthClient().Contract(s.contract, s.abi).Execute("multiSend", to, amount, "").SetGasPrice(s.gasPrice).SetGasLimit(s.gasLimit).Call(ctx)
 	if err != nil {
 		return
 	}
 	hash = hex.EncodeToString(h[:])
-	return
-}
-
-// BalanceOf is the BalanceOf interface
-func (s *xrc20Service) BalanceOf(ctx context.Context, addr string) (balance *big.Int, err error) {
-	err = s.Connect()
-	if err != nil {
-		return
-	}
-	ret, err := s.ReadOnlyClient().ReadOnlyContract(s.contract, s.abi).Read("balanceOf", addr).Call(ctx)
-	if err != nil {
-		return
-	}
-	balance = new(big.Int).SetBytes(ret.Raw)
 	return
 }
