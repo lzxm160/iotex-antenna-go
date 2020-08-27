@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/iotexproject/go-pkgs/hash"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 
 	"github.com/iotexproject/iotex-address/address"
@@ -29,6 +31,7 @@ type MultiSendService interface {
 	Deploy(ctx context.Context, waitContractAddress bool, args ...interface{}) (string, error)
 	// MultiSend is the MultiSend interface
 	MultiSend(ctx context.Context, to []string, amount []*big.Int) (string, error)
+	CheckTime(ctx context.Context, h string) (t uint64, err error)
 }
 
 type multiSendService struct {
@@ -110,5 +113,36 @@ func (s *multiSendService) MultiSend(ctx context.Context, to []string, amount []
 		return
 	}
 	hash = hex.EncodeToString(h[:])
+	return
+}
+
+// MultiSend is the MultiSend interface
+func (s *multiSendService) CheckTime(ctx context.Context, h string) (t uint64, err error) {
+	err = s.Connect()
+	if err != nil {
+		return
+	}
+	ha, err := hex.DecodeString(h)
+	if err != nil {
+		return
+	}
+	has := hash.BytesToHash256(ha)
+	start := time.Now().Second()
+	var status uint64
+	for i := 0; i < 20; i++ {
+		receiptResponse, err := s.AuthClient().GetReceipt(has).Call(ctx)
+		if err != nil {
+			return
+		}
+		status = receiptResponse.GetReceiptInfo().GetReceipt().GetStatus()
+		if status != uint64(iotextypes.ReceiptStatus_Success) {
+			continue
+		}
+		time.Sleep(time.Second)
+	}
+	if status != uint64(iotextypes.ReceiptStatus_Success) {
+		return 0, errors.New("not success")
+	}
+	t = uint64(time.Now().Second() - start)
 	return
 }

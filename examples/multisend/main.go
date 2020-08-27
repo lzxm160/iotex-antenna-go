@@ -57,10 +57,35 @@ func main() {
 		return
 	}
 
-	r, err := s.MultiSend(context.Background(), []string{"io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg"}, []*big.Int{big.NewInt(10)})
-	if err != nil {
-		fmt.Println(err)
-		return
+	// 0.1iotex once
+	var wasteTime []uint64
+	for i := 0; i < 10; i++ {
+		r, err := s.MultiSend(context.Background(), []string{"io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg"}, []*big.Int{big.NewInt(10)})
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println("Token MultiSend completed: ", r)
+		t, err := s.CheckTime(context.Background(), r)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		wasteTime = append(wasteTime, t)
 	}
-	fmt.Println("Token MultiSend completed: ", r)
+	var tt uint64
+	var max uint64 = wasteTime[0]
+	var min uint64 = wasteTime[0]
+	for _, t := range wasteTime {
+		if t > max {
+			max = t
+		}
+		if t < min {
+			min = t
+		}
+		tt += t
+	}
+	fmt.Println("everage time:", float64(tt)/float64(len(wasteTime)))
+	fmt.Println("max", max)
+	fmt.Println("min", min)
 }
