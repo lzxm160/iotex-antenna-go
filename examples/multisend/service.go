@@ -145,6 +145,7 @@ func (s *multiSendService) CheckTime(ctx context.Context, h string) (t uint64, e
 		//	break
 		//}
 	}
+	fmt.Println("iiiii", i)
 	if i > 19 {
 		return 0, errors.New("not success")
 	}
