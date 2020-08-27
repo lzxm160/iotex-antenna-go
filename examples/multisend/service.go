@@ -136,11 +136,11 @@ func (s *multiSendService) CheckTime(ctx context.Context, h string) (t uint64, e
 		}
 		status = receiptResponse.GetReceiptInfo().GetReceipt().GetStatus()
 		if status != uint64(iotextypes.ReceiptStatus_Success) {
+			time.Sleep(time.Second)
 			continue
 		} else {
 			break
 		}
-		time.Sleep(time.Second)
 	}
 	if status != uint64(iotextypes.ReceiptStatus_Success) {
 		return 0, errors.New("not success")
