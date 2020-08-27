@@ -68,7 +68,7 @@ func main() {
 		fmt.Println("Token MultiSend completed: ", r)
 		t, err := s.CheckTime(context.Background(), r)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("failed one", r, err)
 			continue
 		}
 		wasteTime = append(wasteTime, t)
