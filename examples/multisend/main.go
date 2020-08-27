@@ -38,23 +38,29 @@ func main() {
 		return
 	}
 
-	s, err := NewMultiSendService(PrivateKey, string(abi), string(bin), "", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	r, err := s.Deploy(context.Background(), true)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Contract deployed, action hash:", r)
-
-	//r, err = s.Transfer(context.Background(), "io1zk6gqq0m2z9ytlu77t76e3632ezy39fa83xjnn", big.NewInt(10))
+	//s, err := NewMultiSendService(PrivateKey, string(abi), string(bin), "", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
 	//if err != nil {
 	//	fmt.Println(err)
 	//	return
 	//}
-	//fmt.Println("Token transfer completed: ", r)
+
+	//r, err := s.Deploy(context.Background(), true)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
+	//fmt.Println("Contract deployed, action hash:", r)
+
+	s, err := NewMultiSendService(PrivateKey, string(abi), string(bin), "io17hc9cdtxc58mhfnwrjf0mvsgr5zvm3mdgflzp7", gasPrice, gasLimit, "api.testnet.iotex.one:80", false)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	r, err := s.MultiSend(context.Background(), []string{"io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg"}, []*big.Int{big.NewInt(10)})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Token MultiSend completed: ", r)
 }
