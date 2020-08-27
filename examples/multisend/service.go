@@ -130,17 +130,20 @@ func (s *multiSendService) CheckTime(ctx context.Context, h string) (t uint64, e
 	start := time.Now().Second()
 	var status uint64
 	for i := 0; i < 20; i++ {
-		receiptResponse, err := s.AuthClient().GetReceipt(has).Call(ctx)
+		_, err := s.AuthClient().GetReceipt(has).Call(ctx)
 		if err != nil {
-			return 0, err
-		}
-		status = receiptResponse.GetReceiptInfo().GetReceipt().GetStatus()
-		if status != uint64(iotextypes.ReceiptStatus_Success) {
 			time.Sleep(time.Second)
 			continue
 		} else {
 			break
 		}
+		//status = receiptResponse.GetReceiptInfo().GetReceipt().GetStatus()
+		//if status != uint64(iotextypes.ReceiptStatus_Success) {
+		//	time.Sleep(time.Second)
+		//	continue
+		//} else {
+		//	break
+		//}
 	}
 	if status != uint64(iotextypes.ReceiptStatus_Success) {
 		return 0, errors.New("not success")
