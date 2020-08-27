@@ -149,6 +149,9 @@ func (s *multiSendService) CheckTime(ctx context.Context, h string) (t uint64, e
 	if i > 19 {
 		return 0, errors.New("not success")
 	}
-	t = uint64(time.Now().Second() - start)
+	end := time.Now().Second()
+	fmt.Println("start", start)
+	fmt.Println("end", end)
+	t = uint64(end - start)
 	return
 }
