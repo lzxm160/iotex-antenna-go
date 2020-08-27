@@ -12,7 +12,7 @@ contract Multisend {
         }
         require(msg.value >= totalAmount, "not enough token");
         uint refund = msg.value - totalAmount;
-        for(i = 0; i < recipients.length; i++) {
+        for(uint i = 0; i < recipients.length; i++) {
             recipients[i].transfer(amounts[i]);
             emit Transfer(recipients[i],amounts[i]);
         }
